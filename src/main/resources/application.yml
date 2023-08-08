@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active:
+      - dev
+    include:
+      - secret
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+
+  data:
+    - secret
+
+springdoc:
+  version: 0.0.1
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    path: /swagger-ui.html
+
+logging:
+  level:
+    org.hibernate.SQL: debug
