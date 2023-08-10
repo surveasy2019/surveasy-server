@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  backend-dev:
+    image: surveasy/surveasy-server-release:latest
+    container_name: server-release
+    hostname: server-release
+    expose:
+      - "8080"
+
+  nginx:
+    depends_on:
+      - server-release
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./config/nginx
+    ports:
+      - "80:80"
