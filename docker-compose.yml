@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  backend-dev:
+  server-dev:
     image: surveasy/surveasy-server-dev:latest
     container_name: server-dev
     hostname: server-dev
