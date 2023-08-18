@@ -2,12 +2,13 @@ package surveasy.domain.survey.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

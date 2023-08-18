@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.response.SurveyListResponse;
 import surveasy.domain.survey.dto.response.SurveyServiceResponse;
 import surveasy.domain.survey.service.SurveyService;
 
@@ -23,5 +24,11 @@ public class SurveyController {
     @PostMapping("/service")
     public SurveyServiceResponse createSurvey(@RequestBody @Valid SurveyServiceDTO surveyServiceDTO) {
         return surveyService.createSurvey(surveyServiceDTO);
+    }
+
+    @Operation(summary = "설문 리스트 불러오기")
+    @GetMapping("/list")
+    public SurveyListResponse getSurveyList() {
+        return surveyService.getSurveyList();
     }
 }
