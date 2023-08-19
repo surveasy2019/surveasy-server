@@ -130,7 +130,8 @@ public class Survey {
     }
 
     public String listToString(List<Integer> intList) {
-        return intList.toString();
+        String str = intList.toString();
+        return str.substring(1, str.length()-1);
     }
 
 

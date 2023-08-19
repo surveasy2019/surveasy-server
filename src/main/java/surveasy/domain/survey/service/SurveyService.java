@@ -30,7 +30,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public Survey updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+    public Long updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
         return surveyHelper.updateAdminSurvey(id, surveyAdminDTO);
     }
 

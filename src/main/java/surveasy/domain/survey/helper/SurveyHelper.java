@@ -31,7 +31,7 @@ public class SurveyHelper {
         return savedSurvey.getId();
     }
 
-    public Survey updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+    public Long updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
         Survey survey = surveyRepository
                         .findById(id)
                         .orElseThrow(() -> {
@@ -57,6 +57,6 @@ public class SurveyHelper {
             survey.setNoticeToPanel(surveyAdminDTO.getNoticeToPanel());
         }
 
-        return surveyRepository.save(survey);
+        return surveyRepository.save(survey).getId();
     }
 }
