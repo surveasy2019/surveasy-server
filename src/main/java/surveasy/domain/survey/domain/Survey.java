@@ -7,6 +7,7 @@ import lombok.*;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -18,19 +19,19 @@ public class Survey {
     private Long id;
 
     @NotNull
-    private Long lastCheckedId;
+    private Long sid;
 
     @NotNull
     private Integer progress;
 
     @NotNull
-    private Boolean enTarget;
+    private Boolean english;
 
     @NotNull
-    private String account_userName;
+    private String accountName;
 
     @NotNull
-    private String dueDate;
+    private Date dueDate;
 
     @NotNull
     private String institute;
@@ -45,41 +46,34 @@ public class Survey {
     private String noticeToPanel;
 
     @NotNull
-    private Integer panelReward;
+    private Integer reward;
 
     @NotNull
-    private Integer point_add;
+    private Integer pointAdd;
 
     @NotNull
     private Integer price;
 
     @NotNull
-    private String priceIdentity;
-
-    // String -> Int 자료형 변경 필요
-    @NotNull
-    private Integer requiredHeadCount;
+    private Integer priceDiscounted;
 
     @NotNull
-    private String spendTime;
+    private Integer priceIdentity;
+
+    @NotNull
+    private Integer headCount;
+
+    @NotNull
+    private Integer spendTime;
 
     @Nullable
-    private String target;
+    private String tarInput;
 
     @NotNull
-    private Integer targetingAge;
+    private String tarAge;
 
     @NotNull
-    private Integer targetingAgeOption;
-
-    @NotNull
-    private String targetingAgeOptionList;
-
-    @NotNull
-    private Integer targetingGender;
-
-    @NotNull
-    private String targetingGenderOptionList;
+    private Integer tarGender;
 
     @NotNull
     private String title;
@@ -88,72 +82,76 @@ public class Survey {
     private Date uploadedAt;
 
     @NotNull
-    private String uploader;
+    private String email;
+
+    @NotNull
+    private String username;
 
     @Builder
-    public Survey(Boolean enTarget,
-                  String account_userName,
-                  String dueDate,
+    public Survey(Boolean english,
+                  String accountName,
+                  Date dueDate,
                   String institute,
                   String link,
                   String notice,
-                  Integer point_add,
+                  Integer pointAdd,
                   Integer price,
-                  String priceIdentity,
-                  Integer requiredHeadCount,
-                  String spendTime,
-                  String target,
-                  Integer targetingAge,
-                  Integer targetingAgeOption,
-                  String targetingAgeOptionList,
-                  Integer targetingGender,
-                  String targetingGenderOptionList,
+                  Integer priceDiscounted,
+                  Integer priceIdentity,
+                  Integer headCount,
+                  Integer spendTime,
+                  String tarInput,
+                  List<Integer> tarAge,
+                  Integer tarGender,
                   String title) {
-        this.enTarget = enTarget;
-        this.account_userName = account_userName;
+        this.english = english;
+        this.accountName = accountName;
         this.dueDate = dueDate;
         this.institute = institute;
         this.link = link;
         this.notice = notice;
-        this.point_add = point_add;
+        this.pointAdd = pointAdd;
         this.price = price;
+        this.priceDiscounted = priceDiscounted;
         this.priceIdentity = priceIdentity;
-        this.requiredHeadCount = requiredHeadCount;
+        this.headCount = headCount;
         this.spendTime = spendTime;
-        this.target = target;
-        this.targetingAge = targetingAge;
-        this.targetingAgeOption = targetingAgeOption;
-        this.targetingAgeOptionList = targetingAgeOptionList;
-        this.targetingGender = targetingGender;
-        this.targetingGenderOptionList = targetingGenderOptionList;
+        this.tarInput = tarInput;
+        this.tarAge = listToString(tarAge);
+        this.tarGender = tarGender;
         this.title = title;
 
-        this.uploader = "mindong";
+        this.username = "김민동";
+        this.email = "min@dong.com";
         this.uploadedAt = new Date();
-        this.lastCheckedId = 0L;
+        this.sid = 0L;
         this.progress = 0;
-        this.panelReward = 0;
+        this.reward = 0;
     }
+
+    public String listToString(List<Integer> intList) {
+        return intList.toString();
+    }
+
+
 
     public static Survey of(SurveyServiceDTO surveyServiceDTO) {
         return Survey.builder()
-                .enTarget(surveyServiceDTO.getEnTarget())
-                .account_userName(surveyServiceDTO.getAccount_userName())
+                .english(surveyServiceDTO.getEnglish())
+                .accountName(surveyServiceDTO.getAccountName())
                 .dueDate(surveyServiceDTO.getDueDate())
                 .institute(surveyServiceDTO.getInstitute())
                 .link(surveyServiceDTO.getLink())
                 .notice(surveyServiceDTO.getNotice())
-                .point_add(surveyServiceDTO.getPoint_add())
+                .pointAdd(surveyServiceDTO.getPointAdd())
                 .price(surveyServiceDTO.getPrice())
+                .priceDiscounted(surveyServiceDTO.getPriceDiscounted())
                 .priceIdentity(surveyServiceDTO.getPriceIdentity())
-                .requiredHeadCount(surveyServiceDTO.getRequiredHeadCount())
+                .headCount(surveyServiceDTO.getHeadCount())
                 .spendTime(surveyServiceDTO.getSpendTime())
-                .target(surveyServiceDTO.getTarget())
-                .targetingAge(surveyServiceDTO.getTargetingAge())
-                .targetingAgeOption(surveyServiceDTO.getTargetingAgeOption())
-                .targetingAgeOptionList(surveyServiceDTO.getTargetingAgeOptionList())
-                .targetingGender(surveyServiceDTO.getTargetingGender())
-                .targetingGenderOptionList(surveyServiceDTO.getTargetingGenderOptionList())
+                .tarInput(surveyServiceDTO.getTarInput())
+                .tarAge(surveyServiceDTO.getTarAge())
+                .tarGender(surveyServiceDTO.getTarGender())
                 .title(surveyServiceDTO.getTitle())
                 .build();
     }

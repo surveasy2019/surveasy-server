@@ -11,7 +11,7 @@ public class SurveyAdminDTO {
 
     private String noticeToPanel;
 
-    private Integer panelReward;
+    private Integer reward;
 
     private String link;
 }

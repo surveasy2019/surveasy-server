@@ -45,8 +45,8 @@ public class SurveyHelper {
             }
         }
 
-        if(surveyAdminDTO.getPanelReward() != null) {
-            survey.setPanelReward(surveyAdminDTO.getPanelReward());
+        if(surveyAdminDTO.getReward() != null) {
+            survey.setReward(surveyAdminDTO.getReward());
         }
 
         if(surveyAdminDTO.getLink() != null) {
