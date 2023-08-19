@@ -24,6 +24,11 @@ public class SurveyHelper {
                 });
     }
 
+    public Long getSurveyTotalCount() {
+        return surveyRepository
+                .countByProgressGreaterThan(0);
+    }
+
     public Long createSurvey(SurveyServiceDTO surveyServiceDTO) {
         Survey newSurvey = surveyMapper.toEntity(surveyServiceDTO);
         Survey savedSurvey = surveyRepository.save(newSurvey);
