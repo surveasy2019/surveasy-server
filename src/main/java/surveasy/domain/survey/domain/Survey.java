@@ -9,7 +9,7 @@ import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import java.util.Date;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Survey {
 

@@ -3,12 +3,11 @@ package surveasy.domain.survey.helper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import surveasy.domain.survey.domain.Survey;
+import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -25,11 +24,39 @@ public class SurveyHelper {
                 });
     }
 
-
     public Long createSurvey(SurveyServiceDTO surveyServiceDTO) {
         Survey newSurvey = surveyMapper.toEntity(surveyServiceDTO);
         Survey savedSurvey = surveyRepository.save(newSurvey);
 
         return savedSurvey.getId();
+    }
+
+    public Survey updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+        Survey survey = surveyRepository
+                        .findById(id)
+                        .orElseThrow(() -> {
+                            throw SurveyNotFound.EXCEPTION;
+                        });
+
+        if(surveyAdminDTO.getProgress() != null) {
+            survey.setProgress(surveyAdminDTO.getProgress());
+            if(surveyAdminDTO.getProgress() == 2) {
+                // lastCheckedId 발급
+            }
+        }
+
+        if(surveyAdminDTO.getPanelReward() != null) {
+            survey.setPanelReward(surveyAdminDTO.getPanelReward());
+        }
+
+        if(surveyAdminDTO.getLink() != null) {
+            survey.setLink(surveyAdminDTO.getLink());
+        }
+
+        if(surveyAdminDTO.getNoticeToPanel() != null) {
+            survey.setNoticeToPanel(surveyAdminDTO.getNoticeToPanel());
+        }
+
+        return surveyRepository.save(survey);
     }
 }

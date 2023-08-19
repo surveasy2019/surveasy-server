@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.survey.domain.Survey;
+import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.SurveyListResponse;
 import surveasy.domain.survey.dto.response.SurveyServiceResponse;
@@ -26,6 +27,11 @@ public class SurveyService {
     @Transactional
     public SurveyServiceResponse createSurvey(SurveyServiceDTO surveyServiceDTO) {
         return surveyMapper.toSurveyServiceResponse(surveyHelper.createSurvey(surveyServiceDTO));
+    }
+
+    @Transactional
+    public Survey updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+        return surveyHelper.updateAdminSurvey(id, surveyAdminDTO);
     }
 
     @Transactional
