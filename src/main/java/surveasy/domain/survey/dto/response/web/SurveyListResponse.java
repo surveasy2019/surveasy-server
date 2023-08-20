@@ -1,4 +1,4 @@
-package surveasy.domain.survey.dto.response;
+package surveasy.domain.survey.dto.response.web;
 
 
 import lombok.Builder;

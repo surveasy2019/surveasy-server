@@ -5,4 +5,6 @@ import surveasy.domain.survey.domain.Survey;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
 
+    Long countByProgressGreaterThan(Integer min);
+
 }

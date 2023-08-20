@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -14,13 +17,13 @@ import lombok.NoArgsConstructor;
 public class SurveyServiceDTO {
 
     @NotNull
-    private Boolean enTarget;
+    private Boolean english;
 
     @NotNull
-    private String account_userName;
+    private String accountName;
 
     @NotNull
-    private String dueDate;
+    private Date dueDate;
 
     @NotNull
     private String institute;
@@ -32,37 +35,31 @@ public class SurveyServiceDTO {
     private String notice;
 
     @NotNull
-    private Integer point_add;
+    private Integer pointAdd;
 
     @NotNull
     private Integer price;
 
     @NotNull
-    private String priceIdentity;
+    private Integer priceDiscounted;
 
     @NotNull
-    private Integer requiredHeadCount;
+    private Integer priceIdentity;
 
     @NotNull
-    private String spendTime;
+    private Integer headCount;
+
+    @NotNull
+    private Integer spendTime;
 
     @Nullable
-    private String target;
+    private String tarInput;
 
     @NotNull
-    private Integer targetingAge;
+    private List<Integer> tarAge;
 
     @NotNull
-    private Integer targetingAgeOption;
-
-    @NotNull
-    private String targetingAgeOptionList;
-
-    @NotNull
-    private Integer targetingGender;
-
-    @NotNull
-    private String targetingGenderOptionList;
+    private Integer tarGender;
 
     @NotNull
     private String title;

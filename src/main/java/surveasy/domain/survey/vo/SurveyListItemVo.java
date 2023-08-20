@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import surveasy.domain.survey.domain.Survey;
 
+import java.util.Date;
+
 @Getter
 public class SurveyListItemVo {
 
-    private Long lastIdChecked;
+    private Long sid;
 
     private String title;
 
@@ -15,32 +17,32 @@ public class SurveyListItemVo {
 
     private Integer dDay;
 
-    private String target;
+    private String tarInput;
 
-    private Integer requiredHeadCount;
+    private Integer headCount;
 
     private String username;
 
     @Builder
-    public SurveyListItemVo(Long lastIdChecked, String title, Boolean isDone, Integer dDay, String target, Integer requiredHeadCount, String username) {
-        this.lastIdChecked = lastIdChecked;
+    public SurveyListItemVo(Long sid, String title, Boolean isDone, Integer dDay, String tarInput, Integer headCount, String username) {
+        this.sid = sid;
         this.title = title;
         this.isDone = isDone;
         this.dDay = dDay;
-        this.target = target;
-        this.requiredHeadCount = requiredHeadCount;
+        this.tarInput = tarInput;
+        this.headCount = headCount;
         this.username = username;
     }
 
     public static SurveyListItemVo from(Survey survey) {
         return SurveyListItemVo.builder()
-                .lastIdChecked(survey.getLastCheckedId())
+                .sid(survey.getSid())
                 .title(survey.getTitle())
                 .isDone(false)
                 .dDay(7)
-                .target(survey.getTarget())
-                .requiredHeadCount(survey.getRequiredHeadCount())
-                .username(survey.getUploader())
+                .tarInput(survey.getTarInput())
+                .headCount(survey.getHeadCount())
+                .username(survey.getUsername())
                 .build();
     }
 }

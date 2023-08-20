@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
-import surveasy.domain.survey.dto.response.SurveyListResponse;
-import surveasy.domain.survey.dto.response.SurveyServiceResponse;
+import surveasy.domain.survey.dto.response.web.SurveyHomeResponse;
+import surveasy.domain.survey.dto.response.web.SurveyListResponse;
+import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
@@ -25,13 +26,18 @@ public class SurveyService {
     private final SurveyMapper surveyMapper;
 
     @Transactional
-    public SurveyServiceResponse createSurvey(SurveyServiceDTO surveyServiceDTO) {
-        return surveyMapper.toSurveyServiceResponse(surveyHelper.createSurvey(surveyServiceDTO));
+    public SurveyIdResponse createSurvey(SurveyServiceDTO surveyServiceDTO) {
+        return surveyMapper.toSurveyIdResponse(surveyHelper.createSurvey(surveyServiceDTO));
     }
 
     @Transactional
-    public Survey updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
-        return surveyHelper.updateAdminSurvey(id, surveyAdminDTO);
+    public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+        return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
+    }
+
+    @Transactional
+    public SurveyHomeResponse getSurveyTotalCount() {
+        return surveyMapper.toSurveyHomeResponse(surveyHelper.getSurveyTotalCount());
     }
 
     @Transactional

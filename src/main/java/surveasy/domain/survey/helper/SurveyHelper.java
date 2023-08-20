@@ -24,6 +24,11 @@ public class SurveyHelper {
                 });
     }
 
+    public Long getSurveyTotalCount() {
+        return surveyRepository
+                .countByProgressGreaterThan(0);
+    }
+
     public Long createSurvey(SurveyServiceDTO surveyServiceDTO) {
         Survey newSurvey = surveyMapper.toEntity(surveyServiceDTO);
         Survey savedSurvey = surveyRepository.save(newSurvey);
@@ -31,7 +36,7 @@ public class SurveyHelper {
         return savedSurvey.getId();
     }
 
-    public Survey updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+    public Long updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
         Survey survey = surveyRepository
                         .findById(id)
                         .orElseThrow(() -> {
@@ -45,8 +50,8 @@ public class SurveyHelper {
             }
         }
 
-        if(surveyAdminDTO.getPanelReward() != null) {
-            survey.setPanelReward(surveyAdminDTO.getPanelReward());
+        if(surveyAdminDTO.getReward() != null) {
+            survey.setReward(surveyAdminDTO.getReward());
         }
 
         if(surveyAdminDTO.getLink() != null) {
@@ -57,6 +62,6 @@ public class SurveyHelper {
             survey.setNoticeToPanel(surveyAdminDTO.getNoticeToPanel());
         }
 
-        return surveyRepository.save(survey);
+        return surveyRepository.save(survey).getId();
     }
 }
