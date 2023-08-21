@@ -7,7 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import surveasy.domain.panel.dto.request.PanelInfoDTO;
+import surveasy.domain.panel.dto.request.PanelInfoDAO;
+import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 
 import java.util.Date;
 
@@ -46,7 +47,7 @@ public class Panel {
     Boolean didFirstSurvey;
 
     @NotNull
-    Integer inflowPath;
+    String inflowPath;
 
     @Nullable
     Date lastParticipatedAt;
@@ -61,9 +62,9 @@ public class Panel {
     Integer platform;
 
     @NotNull
-    Integer pushOn;
+    Boolean pushOn;
 
-    @NotNull
+    @Nullable
     Date signedUpAt;
 
     @NotNull
@@ -72,8 +73,10 @@ public class Panel {
     @NotNull
     Integer rewardTotal;
 
+    @Nullable
     Boolean snsAuth;
 
+    @Nullable
     String snsUid;
 
 
@@ -92,7 +95,7 @@ public class Panel {
     String family;
 
     @Nullable
-    Integer houseType;
+    String houseType;
 
     @Nullable
     String job;
@@ -117,13 +120,13 @@ public class Panel {
     public Panel(String name, String email, String fcmToken,
                  Integer gender, Date birth, String accountOwner,
                  String accountType, Boolean didFirstSurvey,
-                 Integer inflowPath, Date lastParticipatedAt,
+                 String inflowPath, Date lastParticipatedAt,
                  Boolean marketingAgree, String phoneNumber,
-                 Integer platform, Integer pushOn, Date signedUpAt,
+                 Integer platform, Boolean pushOn, Date signedUpAt,
                  Integer rewardCurrent, Integer rewardTotal,
                  Boolean snsAuth, String snsUid,
                  Boolean english, String city, String district,
-                 String family, Integer houseType, String job,
+                 String family, String houseType, String job,
                  String major, Integer married, Integer military,
                  String pet, String university) {
         this.name = name;
@@ -159,38 +162,39 @@ public class Panel {
     }
 
 
-    public static Panel of(PanelInfoDTO panelInfoDTO) {
+    public static Panel of(PanelInfoDAO panelInfoDAO, PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO) {
         return Panel.builder()
-                .name(panelInfoDTO.getName())
-                .email(panelInfoDTO.getEmail())
-                .fcmToken(panelInfoDTO.getFcmToken())
-                .gender(panelInfoDTO.getGender())
-                .birth(panelInfoDTO.getBirth())
-                .accountOwner(panelInfoDTO.getAccountOwner())
-                .accountType(panelInfoDTO.getAccountType())
-                .didFirstSurvey(panelInfoDTO.getDidFirstSurvey())
-                .inflowPath(panelInfoDTO.getInflowPath())
-                .lastParticipatedAt(panelInfoDTO.getLastParticipatedAt())
-                .marketingAgree(panelInfoDTO.getMarketingAgree())
-                .phoneNumber(panelInfoDTO.getPhoneNumber())
-                .platform(panelInfoDTO.getPlatform())
-                .pushOn(panelInfoDTO.getPushOn())
-                .signedUpAt(panelInfoDTO.getSignedUpAt())
-                .rewardCurrent(panelInfoDTO.getRewardCurrent())
-                .rewardTotal(panelInfoDTO.getRewardTotal())
-                .snsAuth(panelInfoDTO.getSnsAuth())
-                .snsUid(panelInfoDTO.getSnsUid())
-                .english(panelInfoDTO.getEnglish())
-                .city(panelInfoDTO.getCity())
-                .district(panelInfoDTO.getDistrict())
-                .family(panelInfoDTO.getFamily())
-                .houseType(panelInfoDTO.getHouseType())
-                .job(panelInfoDTO.getJob())
-                .major(panelInfoDTO.getMajor())
-                .married(panelInfoDTO.getMarried())
-                .military(panelInfoDTO.getMilitary())
-                .pet(panelInfoDTO.getPet())
-                .university(panelInfoDTO.getUniversity())
+                .name(panelInfoDAO.getName())
+                .email(panelInfoDAO.getEmail())
+                .fcmToken(panelInfoDAO.getFcmToken())
+                .gender(panelInfoDAO.getGender())
+                .birth(panelInfoDAO.getBirth())
+                .accountOwner(panelInfoDAO.getAccountOwner())
+                .accountType(panelInfoDAO.getAccountType())
+                .didFirstSurvey(panelInfoDAO.getDidFirstSurvey())
+                .inflowPath(panelInfoDAO.getInflowPath())
+                .lastParticipatedAt(panelInfoDAO.getLastParticipatedAt())
+                .marketingAgree(panelInfoDAO.getMarketingAgree())
+                .phoneNumber(panelInfoDAO.getPhoneNumber())
+                .platform(panelInfoDAO.getPlatform())
+                .pushOn(panelInfoDAO.getPushOn())
+                .signedUpAt(panelInfoDAO.getSignedUpAt())
+                .rewardCurrent(panelInfoDAO.getRewardCurrent())
+                .rewardTotal(panelInfoDAO.getRewardTotal())
+                .snsAuth(panelInfoDAO.getSnsAuth())
+                .snsUid(panelInfoDAO.getSnsUid())
+
+                .english(panelInfoFirstSurveyDAO.getEnglish())
+                .city(panelInfoFirstSurveyDAO.getCity())
+                .district(panelInfoFirstSurveyDAO.getDistrict())
+                .family(panelInfoFirstSurveyDAO.getFamily())
+                .houseType(panelInfoFirstSurveyDAO.getHouseType())
+                .job(panelInfoFirstSurveyDAO.getJob())
+                .major(panelInfoFirstSurveyDAO.getMajor())
+                .married(panelInfoFirstSurveyDAO.getMarried())
+                .military(panelInfoFirstSurveyDAO.getMilitary())
+                .pet(panelInfoFirstSurveyDAO.getPet())
+                .university(panelInfoFirstSurveyDAO.getUniversity())
                 .build();
     }
 }
