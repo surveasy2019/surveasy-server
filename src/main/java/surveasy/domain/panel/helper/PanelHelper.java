@@ -51,7 +51,7 @@ public class PanelHelper {
             if(documentSnapshotFS.exists()) {
                 didFirstSurvey = true;
                 panelInfoFirstSurveyDAO = PanelInfoFirstSurveyDAO.builder()
-                        .english(documentSnapshotFS.getBoolean("didFirstSurvey"))
+                        .english(documentSnapshotFS.getBoolean("EngSurvey"))
                         .city(documentSnapshotFS.getString("city"))
                         .district(documentSnapshotFS.getString("district"))
                         .family(documentSnapshotFS.getString("family"))

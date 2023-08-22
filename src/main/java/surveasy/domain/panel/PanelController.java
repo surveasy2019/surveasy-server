@@ -1,5 +1,7 @@
 package surveasy.domain.panel;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @RequestMapping("/panel")
 @RequiredArgsConstructor
+@Tag(name = "Panel")
 public class PanelController {
 
     private final PanelService panelService;
@@ -30,6 +33,7 @@ public class PanelController {
 
 
     @PostMapping("/auth")
+    @Operation(summary = "App 기존 패널 가입시키기")
     public Panel addExistingPanel(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
         return panelService.addExistingPanel(panelUidDTO);
     }
