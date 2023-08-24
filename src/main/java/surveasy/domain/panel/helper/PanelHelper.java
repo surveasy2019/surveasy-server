@@ -10,6 +10,7 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.exception.PanelNotFound;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 
@@ -97,9 +98,8 @@ public class PanelHelper {
             return savedPanel;
         } else {
             // 가입된 적 없는 패널 처리
+            throw PanelNotFound.EXCEPTION;
         }
-
-        return null;
     }
 
     private Date strToDate(String strDate) throws ParseException {
