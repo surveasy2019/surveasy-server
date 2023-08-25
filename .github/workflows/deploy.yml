@@ -45,14 +45,6 @@ jobs:
         env:
           PROPERTIES_DEV: ${{ secrets.APPLICATION_SECRET }}
 
-      - name: Make firebaseServiceAccountKey.json
-        run: |
-          touch ./src/main/resources/firebaseServiceAccountKey.json
-          echo "$ACCOUNT_KEY" | base64 -d > ./src/main/resources/firebaseServiceAccountKey.json
-        env:
-          ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-          
-
       # Gradle build
       - name: Build with Gradle
         run: ./gradlew build -x test
