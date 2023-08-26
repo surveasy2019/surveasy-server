@@ -30,6 +30,9 @@ public class PanelHelper {
     public static final String COLLECTION_FS_NAME = "FirstSurvey";
 
 
+    // addExistingPanel 호출 전에 이미 db에 있는 패널인지 확인 필요
+
+
     public Panel addExistingPanel(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
         Firestore db = FirestoreClient.getFirestore();
 

@@ -23,6 +23,9 @@ public class Panel {
     Long id;
 
     @NotNull
+    String role;
+
+    @NotNull
     String name;
 
     @NotNull
