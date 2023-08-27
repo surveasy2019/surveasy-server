@@ -12,7 +12,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @AllArgsConstructor
 public enum PanelErrorCode implements BaseErrorCode {
 
-    PANEL_NOT_FOUND(NOT_FOUND, "PANEL_404_1", "존재하지 않는 패널입니다.");
+    PANEL_NOT_FOUND_FB(NOT_FOUND, "PANEL_404_1", "FB에 존재하지 않는 패널입니다."),
+    PANEL_NOT_FOUND_DB(NOT_FOUND, "PANEL_404_2", "DB에 존제하지 않는 패널입니다");
 
     private HttpStatus status;
     private String code;

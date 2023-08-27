@@ -10,6 +10,8 @@ import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.service.SurveyService;
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -24,26 +26,27 @@ public class SurveyServiceTest {
     @DisplayName("설문 주문 추가하기")
     public void createSurvey() throws Exception {
         // given
-        SurveyServiceDTO surveyServiceDTO = SurveyServiceDTO.builder()
-                .ENTarget(false)
-                .account_userName("계좌주")
-                .dueDate("2020-12-12")
-                .institute("기관기관")
-                .link("linklink")
-                .notice("안내사항")
-                .point_add(100)
-                .price(15000)
-                .priceIdentity("대학생")
-                .requiredHeadCount(100)
-                .spendTime("1~3분")
-                .target("스마트폰 이용자")
-                .targetingAge(0)
-                .targetingAgeOption(2)
-                .targetingAgeOptionList("20대,30대")
-                .targetingGender(2)
-                .targetingGenderOptionList("남,여")
-                .title("스마트폰에 대한 연구")
-                .build();
+        SurveyServiceDTO surveyServiceDTO = null;
+//        SurveyServiceDTO surveyServiceDTO = SurveyServiceDTO.builder()
+//                .english(false)
+//                .accountName("계좌주")
+//                .dueDate(new Date())
+//                .institute("기관기관")
+//                .link("linklink")
+//                .notice("안내사항")
+//                .pointAdd(100)
+//                .price(15000)
+//                .priceIdentity(1)
+//                .headCount(100)
+//                .spendTime(1)
+//                .tarInput("스마트폰 이용자")
+//                .targetingAge(0)
+//                .targetingAgeOption(2)
+//                .targetingAgeOptionList("20대,30대")
+//                .targetingGender(2)
+//                .targetingGenderOptionList("남,여")
+//                .title("스마트폰에 대한 연구")
+//                .build();
 
         // when
         surveyService.createSurvey(surveyServiceDTO);

@@ -17,18 +17,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     @Transactional
-    public UserDetails loadUserByUid(String uid) throws UsernameNotFoundException {
-        return panelRepository.findByUid(uid)
-                .map(panel -> createPanel(uid, panel))
-                .orElseThrow(() -> new UsernameNotFoundException(uid + " -> DB에서 찾을 수 없음"));
+    public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
+        return panelRepository.findById(id)
+                .map(panel -> createPanel(id, panel))
+                .orElseThrow(() -> new UsernameNotFoundException(id + " -> DB에서 찾을 수 없음"));
     }
 
 
-    private UserDetails createPanel(String uid, Panel panel) {
+    private UserDetails createPanel(Long id, Panel panel) {
         return new UserDetailsImpl(panel);
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return null;
     }

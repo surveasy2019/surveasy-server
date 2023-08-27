@@ -7,5 +7,7 @@ import java.util.Optional;
 
 public interface PanelRepository extends JpaRepository<Panel, Long> {
 
+    Optional<Panel> findById(Long id);
     Optional<Panel> findByUid(String uid);
+
 }

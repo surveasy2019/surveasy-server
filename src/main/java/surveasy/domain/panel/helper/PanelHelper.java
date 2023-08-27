@@ -17,6 +17,7 @@ import surveasy.domain.panel.repository.PanelRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @Component
@@ -34,75 +35,83 @@ public class PanelHelper {
 
 
     public Panel addExistingPanel(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
-        Firestore db = FirestoreClient.getFirestore();
+        Optional<Panel> panel = panelRepository.findByUid(panelUidDTO.getUid());
 
-        // Fetch Info
-        ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(panelUidDTO.getUid()).get();
-        DocumentSnapshot documentSnapshot = future.get();
+        // DB에 아직 없는 패널
+        if(panel.isEmpty()) {
+            Firestore db = FirestoreClient.getFirestore();
 
-        // Fetch First Survey Info
-        ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(panelUidDTO.getUid())
-                                                        .collection(COLLECTION_FS_NAME).document(panelUidDTO.getUid()).get();
-        DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
+            // Fetch Info
+            ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(panelUidDTO.getUid()).get();
+            DocumentSnapshot documentSnapshot = future.get();
+
+            // Fetch First Survey Info
+            ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(panelUidDTO.getUid())
+                    .collection(COLLECTION_FS_NAME).document(panelUidDTO.getUid()).get();
+            DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
 
 
-        if(documentSnapshot.exists()) {
-            Date birth = strToDate(documentSnapshot.getString("birthDate"));
-            Date signedAt = strToDate(documentSnapshot.getString("registerDate"));
-            Boolean didFirstSurvey = false;
-            PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
+            if(documentSnapshot.exists()) {
+                Date birth = strToDate(documentSnapshot.getString("birthDate"));
+                Date signedAt = strToDate(documentSnapshot.getString("registerDate"));
+                Boolean didFirstSurvey = false;
+                PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
 
-            if(documentSnapshotFS.exists()) {
-                didFirstSurvey = true;
-                panelInfoFirstSurveyDAO = PanelInfoFirstSurveyDAO.builder()
-                        .english(documentSnapshotFS.getBoolean("EngSurvey"))
-                        .city(documentSnapshotFS.getString("city"))
-                        .district(documentSnapshotFS.getString("district"))
-                        .family(documentSnapshotFS.getString("family"))
-                        .houseType(documentSnapshotFS.getString("housingType"))
-                        .job(documentSnapshotFS.getString("job"))
-                        .major(documentSnapshotFS.getString("major"))
-                        .married(documentSnapshotFS.getString("married"))
-                        .military(documentSnapshotFS.getString("military"))
-                        .pet(documentSnapshotFS.getString("pet"))
-                        .university(documentSnapshotFS.getString("university"))
+                if(documentSnapshotFS.exists()) {
+                    didFirstSurvey = true;
+                    panelInfoFirstSurveyDAO = PanelInfoFirstSurveyDAO.builder()
+                            .english(documentSnapshotFS.getBoolean("EngSurvey"))
+                            .city(documentSnapshotFS.getString("city"))
+                            .district(documentSnapshotFS.getString("district"))
+                            .family(documentSnapshotFS.getString("family"))
+                            .houseType(documentSnapshotFS.getString("housingType"))
+                            .job(documentSnapshotFS.getString("job"))
+                            .major(documentSnapshotFS.getString("major"))
+                            .married(documentSnapshotFS.getString("married"))
+                            .military(documentSnapshotFS.getString("military"))
+                            .pet(documentSnapshotFS.getString("pet"))
+                            .university(documentSnapshotFS.getString("university"))
+                            .build();
+                }
+
+                PanelInfoDAO panelInfoDAO = PanelInfoDAO.builder()
+                        .uid(documentSnapshot.getString("uid"))
+                        .name(documentSnapshot.getString("name"))
+                        .email(documentSnapshot.getString("email"))
+                        .fcmToken(documentSnapshot.getString("fcmToken"))
+                        .gender(documentSnapshot.getString("gender"))
+                        .birth(birth)
+                        .accountOwner(documentSnapshot.getString("accountOwner"))
+                        .accountType(documentSnapshot.getString("accountType"))
+                        .didFirstSurvey(didFirstSurvey)
+                        .inflowPath(documentSnapshot.getString("inflowPath"))
+                        .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))
+                        .marketingAgree(documentSnapshot.getBoolean("marketingAgree"))
+                        .phoneNumber(documentSnapshot.getString("phoneNumber"))
+                        .platform(0)
+                        .pushOn(documentSnapshot.getBoolean("pushOn"))
+                        .signedUpAt(signedAt)
+                        .rewardCurrent(documentSnapshot.get("reward_current", Integer.class))
+                        .rewardTotal(documentSnapshot.get("reward_total", Integer.class))
+                        .snsAuth(documentSnapshot.getBoolean("snsAuth"))
+                        .snsUid(documentSnapshot.getString("snsUid"))
                         .build();
+
+
+                Panel newPanel = panelMapper.toEntity(panelInfoDAO, panelInfoFirstSurveyDAO);
+                Panel savedPanel = panelRepository.save(newPanel);
+
+                // 토큰 생성
+
+
+                return savedPanel;
+            } else {
+                // FB에 가입된 적 없는 패널 처리
+                throw PanelNotFound.EXCEPTION_FB;
             }
-
-            PanelInfoDAO panelInfoDAO = PanelInfoDAO.builder()
-                    .name(documentSnapshot.getString("name"))
-                    .email(documentSnapshot.getString("email"))
-                    .fcmToken(documentSnapshot.getString("fcmToken"))
-                    .gender(documentSnapshot.getString("gender"))
-                    .birth(birth)
-                    .accountOwner(documentSnapshot.getString("accountOwner"))
-                    .accountType(documentSnapshot.getString("accountType"))
-                    .didFirstSurvey(didFirstSurvey)
-                    .inflowPath(documentSnapshot.getString("inflowPath"))
-                    .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))
-                    .marketingAgree(documentSnapshot.getBoolean("marketingAgree"))
-                    .phoneNumber(documentSnapshot.getString("phoneNumber"))
-                    .platform(0)
-                    .pushOn(documentSnapshot.getBoolean("pushOn"))
-                    .signedUpAt(signedAt)
-                    .rewardCurrent(documentSnapshot.get("reward_current", Integer.class))
-                    .rewardTotal(documentSnapshot.get("reward_total", Integer.class))
-                    .snsAuth(documentSnapshot.getBoolean("snsAuth"))
-                    .snsUid(documentSnapshot.getString("snsUid"))
-                    .build();
-
-
-            Panel newPanel = panelMapper.toEntity(panelInfoDAO, panelInfoFirstSurveyDAO);
-            Panel savedPanel = panelRepository.save(newPanel);
-
-            // 토큰 생성
-
-
-            return savedPanel;
-        } else {
-            // 가입된 적 없는 패널 처리
-            throw PanelNotFound.EXCEPTION;
         }
+
+        throw PanelNotFound.EXCEPTION_DB;
     }
 
     private Date strToDate(String strDate) throws ParseException {
