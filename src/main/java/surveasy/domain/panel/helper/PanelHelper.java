@@ -10,13 +10,15 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
-import surveasy.domain.panel.exception.PanelNotFound;
+import surveasy.domain.panel.exception.PanelDuplicateData;
+import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @Component
@@ -30,16 +32,26 @@ public class PanelHelper {
     public static final String COLLECTION_FS_NAME = "FirstSurvey";
 
 
-    public Panel addExistingPanel(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
+    // addExistingPanel 호출 전에 이미 db에 있는 패널인지 확인 필요
+
+    private Date strToDate(String strDate) throws ParseException {
+        if(strDate == null) return null;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = format.parse(strDate);
+        return date;
+    }
+
+    private Panel createPanelFromFirestore(String uid) throws ExecutionException, InterruptedException, ParseException {
         Firestore db = FirestoreClient.getFirestore();
 
         // Fetch Info
-        ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(panelUidDTO.getUid()).get();
+        ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(uid).get();
         DocumentSnapshot documentSnapshot = future.get();
 
         // Fetch First Survey Info
-        ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(panelUidDTO.getUid())
-                                                        .collection(COLLECTION_FS_NAME).document(panelUidDTO.getUid()).get();
+        ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(uid)
+                .collection(COLLECTION_FS_NAME).document(uid).get();
         DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
 
 
@@ -49,7 +61,7 @@ public class PanelHelper {
             Boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
 
-            if(documentSnapshotFS.exists()) {
+            if (documentSnapshotFS.exists()) {
                 didFirstSurvey = true;
                 panelInfoFirstSurveyDAO = PanelInfoFirstSurveyDAO.builder()
                         .english(documentSnapshotFS.getBoolean("EngSurvey"))
@@ -67,6 +79,7 @@ public class PanelHelper {
             }
 
             PanelInfoDAO panelInfoDAO = PanelInfoDAO.builder()
+                    .uid(documentSnapshot.getString("uid"))
                     .name(documentSnapshot.getString("name"))
                     .email(documentSnapshot.getString("email"))
                     .fcmToken(documentSnapshot.getString("fcmToken"))
@@ -89,25 +102,32 @@ public class PanelHelper {
                     .build();
 
 
-            Panel newPanel = panelMapper.toEntity(panelInfoDAO, panelInfoFirstSurveyDAO);
-            Panel savedPanel = panelRepository.save(newPanel);
+            Panel panel = panelMapper.toEntity(panelInfoDAO, panelInfoFirstSurveyDAO);
+            return panel;
 
-            // 토큰 생성
-
-
-            return savedPanel;
         } else {
-            // 가입된 적 없는 패널 처리
-            throw PanelNotFound.EXCEPTION;
+            throw PanelNotFoundFB.EXCEPTION;
         }
     }
 
-    private Date strToDate(String strDate) throws ParseException {
-        if(strDate == null) return null;
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = format.parse(strDate);
-        return date;
+    public Panel addPanelIfNeed(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
+        String uid = panelUidDTO.getUid();
+        Optional<Panel> panel = panelRepository.findByUid(uid);
+
+        // DB에 아직 없는 패널
+        if(panel.isEmpty()) {
+            Panel newPanel = createPanelFromFirestore(uid);
+            panelRepository.save(newPanel);
+        }
+
+        // DB에 이미 존재하는 패널
+        else {
+            throw PanelDuplicateData.EXCEPTION;
+        }
+
+        return panelRepository.findByUid(uid).get();
     }
+
 
 }

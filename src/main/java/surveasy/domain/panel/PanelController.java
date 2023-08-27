@@ -5,10 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
@@ -28,14 +26,12 @@ import java.util.concurrent.ExecutionException;
 public class PanelController {
 
     private final PanelService panelService;
-    private final PanelHelper panelHelper;
-    private final PanelMapper panelMapper;
 
 
     @PostMapping("/auth")
-    @Operation(summary = "App 기존 패널 가입시키기")
-    public Panel addExistingPanel(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
-        return panelService.addExistingPanel(panelUidDTO);
+    @Operation(summary = "App 패널 정보 가져와서 가입시키기")
+    public PanelTokenResponse signIn(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
+        return panelService.signIn(panelUidDTO);
     }
 
 }

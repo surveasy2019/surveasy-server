@@ -12,6 +12,8 @@ public class PanelInfoDAO {
     private Map<String, Integer> genderMap = Map.of("남", 0, "여", 1);
     private Map<String, Integer> platformMap = Map.of("ios", 0, "android", 1);
 
+    String uid;
+
     String name;
 
     String email;
@@ -52,7 +54,7 @@ public class PanelInfoDAO {
 
 
     @Builder
-    public PanelInfoDAO(String name, String email,
+    public PanelInfoDAO(String uid, String name, String email,
                         String fcmToken, String gender,
                         Date birth, String accountOwner,
                         String accountType, Boolean didFirstSurvey,
@@ -63,6 +65,7 @@ public class PanelInfoDAO {
                         Integer rewardTotal, Boolean snsAuth,
                         String snsUid
     ) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;

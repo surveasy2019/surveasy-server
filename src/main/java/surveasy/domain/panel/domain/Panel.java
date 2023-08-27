@@ -1,5 +1,6 @@
 package surveasy.domain.panel.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +24,12 @@ public class Panel {
     Long id;
 
     @NotNull
+    String role;
+
+    @NotNull
+    String uid;
+
+    @NotNull
     String name;
 
     @NotNull
@@ -35,6 +42,7 @@ public class Panel {
     Integer gender;
 
     @NotNull
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     Date birth;
 
     @NotNull
@@ -117,7 +125,7 @@ public class Panel {
 
 
     @Builder
-    public Panel(String name, String email, String fcmToken,
+    public Panel(String uid, String name, String email, String fcmToken,
                  Integer gender, Date birth, String accountOwner,
                  String accountType, Boolean didFirstSurvey,
                  String inflowPath, Date lastParticipatedAt,
@@ -129,6 +137,7 @@ public class Panel {
                  String family, String houseType, String job,
                  String major, Integer married, Integer military,
                  String pet, String university) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;
@@ -159,11 +168,14 @@ public class Panel {
         this.military = military;
         this.pet = pet;
         this.university = university;
+
+        this.role = "ROLE_USER";
     }
 
 
     public static Panel of(PanelInfoDAO panelInfoDAO, PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO) {
         return Panel.builder()
+                .uid(panelInfoDAO.getUid())
                 .name(panelInfoDAO.getName())
                 .email(panelInfoDAO.getEmail())
                 .fcmToken(panelInfoDAO.getFcmToken())
