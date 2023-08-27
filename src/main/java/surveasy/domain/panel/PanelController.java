@@ -26,20 +26,12 @@ import java.util.concurrent.ExecutionException;
 public class PanelController {
 
     private final PanelService panelService;
-    private final PanelHelper panelHelper;
-    private final PanelMapper panelMapper;
 
 
     @PostMapping("/auth")
-    @Operation(summary = "App 기존 패널 가입시키기")
-    public Panel addExistingPanel(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
-        return panelService.addExistingPanel(panelUidDTO);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        System.out.println("------------------------------------------------------------- PanelController.test");
-        return ResponseEntity.ok("TTTTTTTTTTest");
+    @Operation(summary = "App 패널 정보 가져와서 가입시키기")
+    public PanelTokenResponse signIn(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
+        return panelService.signIn(panelUidDTO);
     }
 
 }
