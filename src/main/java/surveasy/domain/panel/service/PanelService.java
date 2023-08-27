@@ -8,7 +8,7 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
-import surveasy.global.config.jwt.TokenProvider;
+//import surveasy.global.config.jwt.TokenProvider;
 
 import java.text.ParseException;
 import java.util.concurrent.ExecutionException;
@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class PanelService {
 
-    private final TokenProvider tokenProvider;
+//    private final TokenProvider tokenProvider;
     private final PanelHelper panelHelper;
     private final PanelMapper panelMapper;
 
