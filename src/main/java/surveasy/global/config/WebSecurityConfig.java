@@ -18,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import surveasy.global.config.jwt.JwtAccessDeniedHandler;
 import surveasy.global.config.jwt.JwtAuthenticationEntryPoint;
 import surveasy.global.config.jwt.JwtAuthenticationFilter;
-//import surveasy.global.config.jwt.JwtExceptionHandlerFilter;
+import surveasy.global.config.jwt.JwtExceptionHandlerFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ public class WebSecurityConfig {
     private String SERVER_URL;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-//    private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
+    private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
 
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -67,14 +67,17 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .requestMatchers(SwaggerPatterns).permitAll()
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("panel/auth").permitAll()
+                .requestMatchers("/survey/home", "/survey/list").permitAll()
+                .requestMatchers("/survey/service/**").hasAuthority("ROLE_USER")
+                .requestMatchers("/survey/admin/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable();
 
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.addFilterBefore(jwtExceptionHandlerFilter, JwtAuthenticationFilter.class);
+        http.addFilterBefore(jwtExceptionHandlerFilter, JwtAuthenticationFilter.class);
 
 
         return http.build();
