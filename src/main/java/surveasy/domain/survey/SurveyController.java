@@ -45,8 +45,8 @@ public class SurveyController {
 
     @Operation(summary = "Admin 설문 리스트")
     @GetMapping("/admin/list")
-    public SurveyAdminListResponse getSurveyAdminList(@PageableDefault(size = 10) Pageable pageable) {
-        return surveyService.getSurveyAdminList(pageable);
+    public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable) {
+        return surveyService.getAdminSurveyList(pageable);
     }
 
     @Operation(summary = "Admin 설문 정보 업데이트 - progress, link, noticeToPanel, panelReward")

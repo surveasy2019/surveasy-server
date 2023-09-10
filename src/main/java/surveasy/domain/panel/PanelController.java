@@ -5,11 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
@@ -34,4 +37,9 @@ public class PanelController {
         return panelService.signIn(panelUidDTO);
     }
 
+    @GetMapping("/admin/list")
+    @Operation(summary = "Admin 패널 리스트")
+    public PanelAdminListResponse getAdminPanelList(@PageableDefault(size = 50) Pageable pageable) {
+        return panelService.getAdminPanelList(pageable);
+    }
 }

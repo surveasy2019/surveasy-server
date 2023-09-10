@@ -49,7 +49,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public SurveyAdminListResponse getSurveyAdminList(Pageable pageable) {
+    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
         return surveyHelper.getAdminSurveyList(pageable);
     }
 }
