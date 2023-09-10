@@ -2,11 +2,13 @@ package surveasy.domain.survey.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyHomeResponse;
 import surveasy.domain.survey.dto.response.web.SurveyListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
@@ -44,5 +46,10 @@ public class SurveyService {
     public SurveyListResponse getSurveyList() {
         List<Survey> surveyList = surveyRepository.findAll();
         return surveyMapper.toSurveyListResponse(surveyList);
+    }
+
+    @Transactional
+    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
+        return surveyHelper.getAdminSurveyList(pageable);
     }
 }

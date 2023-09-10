@@ -5,19 +5,27 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
+import surveasy.global.common.dto.PageInfo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -130,4 +138,26 @@ public class PanelHelper {
     }
 
 
+    public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
+        int pageNum = pageable.getPageNumber();
+        int pageSize = pageable.getPageSize();
+
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+        Page<Panel> panels = panelRepository.findAll(pageRequest);
+
+        List<Panel> panelList = new ArrayList<>();
+
+        if(panels != null && panels.hasContent()) {
+            panelList = panels.getContent();
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .totalElements(panels.getTotalElements())
+                .totalPages(panels.getTotalPages())
+                .build();
+
+        return PanelAdminListResponse.from(panelList, pageInfo);
+    }
 }

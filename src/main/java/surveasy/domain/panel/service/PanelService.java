@@ -2,11 +2,13 @@ package surveasy.domain.panel.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
@@ -33,6 +35,11 @@ public class PanelService {
         final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
         return panelMapper.toPanelTokenResponse(panel.getId(), accessToken, refreshToken);
+    }
+
+    @Transactional
+    public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
+        return panelHelper.getAdminPanelList(pageable);
     }
 
 }

@@ -3,6 +3,7 @@ package surveasy.domain.survey.mapper;
 import org.springframework.stereotype.Component;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyHomeResponse;
 import surveasy.domain.survey.dto.response.web.SurveyListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
