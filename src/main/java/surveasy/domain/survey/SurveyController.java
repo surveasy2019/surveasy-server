@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyHomeResponse;
 import surveasy.domain.survey.dto.response.web.SurveyListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
@@ -38,6 +41,12 @@ public class SurveyController {
     @GetMapping("/list")
     public SurveyListResponse getSurveyList() {
         return surveyService.getSurveyList();
+    }
+
+    @Operation(summary = "Admin 설문 리스트")
+    @GetMapping("/admin/list")
+    public SurveyAdminListResponse getSurveyAdminList(@PageableDefault(size = 10) Pageable pageable) {
+        return surveyService.getSurveyAdminList(pageable);
     }
 
     @Operation(summary = "Admin 설문 정보 업데이트 - progress, link, noticeToPanel, panelReward")
