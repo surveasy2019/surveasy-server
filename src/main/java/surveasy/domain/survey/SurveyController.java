@@ -9,11 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.SurveyMyPageEmailDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
-import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
-import surveasy.domain.survey.dto.response.web.SurveyHomeResponse;
-import surveasy.domain.survey.dto.response.web.SurveyListResponse;
-import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
+import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.service.SurveyService;
 
 @Slf4j
@@ -41,6 +39,18 @@ public class SurveyController {
     @GetMapping("/list")
     public SurveyListResponse getSurveyList() {
         return surveyService.getSurveyList();
+    }
+
+    @Operation(summary = "Web 마이페이지 진행중 / 완료 설문 개수")
+    @PostMapping("/mypage")
+    public SurveyMyPageCountResponse getMyPageSurveyCounts(@RequestBody @Valid SurveyMyPageEmailDTO surveyMyPageEmailDTO) {
+        return surveyService.getMyPageSurveyCounts(surveyMyPageEmailDTO.getEmail());
+    }
+
+    @Operation(summary = "Web 마이페이지 나의 설문 리스트")
+    @PostMapping("/mypage/list")
+    public SurveyMyPageOrderListResponse getMyPageOrderList(@RequestBody @Valid SurveyMyPageEmailDTO surveyMyPageEmailDTO) {
+        return surveyService.getSurveyMyPageOrderList(surveyMyPageEmailDTO.getEmail());
     }
 
     @Operation(summary = "Admin 설문 리스트")

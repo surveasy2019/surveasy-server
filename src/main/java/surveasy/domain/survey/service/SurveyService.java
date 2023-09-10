@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
-import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
-import surveasy.domain.survey.dto.response.web.SurveyHomeResponse;
-import surveasy.domain.survey.dto.response.web.SurveyListResponse;
-import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
+import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
@@ -46,6 +43,19 @@ public class SurveyService {
     public SurveyListResponse getSurveyList() {
         List<Survey> surveyList = surveyRepository.findAll();
         return surveyMapper.toSurveyListResponse(surveyList);
+    }
+
+    @Transactional
+    public SurveyMyPageOrderListResponse getSurveyMyPageOrderList(String email) {
+        return surveyMapper.toSurveyMyPageOrderListResponse(surveyHelper.getMyPageOrderList(email));
+    }
+
+    @Transactional
+    public SurveyMyPageCountResponse getMyPageSurveyCounts(String email) {
+        return surveyMapper.toSurveyMyPageCountResponse(
+                surveyHelper.getMyPageSurveyOngoingCount(email),
+                surveyHelper.getMyPageSurveyDoneCount(email)
+        );
     }
 
     @Transactional

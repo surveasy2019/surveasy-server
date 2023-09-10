@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
@@ -44,6 +43,18 @@ public class SurveyHelper {
         Survey savedSurvey = surveyRepository.save(newSurvey);
 
         return savedSurvey.getId();
+    }
+
+    public Long getMyPageSurveyOngoingCount(String email) {
+        return surveyRepository.countByEmailAndProgressEquals(email, 2);
+    }
+
+    public Long getMyPageSurveyDoneCount(String email) {
+        return surveyRepository.countByEmailAndProgressGreaterThanEqual(email, 3);
+    }
+
+    public List<Survey> getMyPageOrderList(String email) {
+        return surveyRepository.findAllByEmail(email);
     }
 
     public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
