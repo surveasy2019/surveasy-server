@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.helper.SurveyHelper;
@@ -27,11 +28,6 @@ public class SurveyService {
     @Transactional
     public SurveyIdResponse createSurvey(SurveyServiceDTO surveyServiceDTO) {
         return surveyMapper.toSurveyIdResponse(surveyHelper.createSurvey(surveyServiceDTO));
-    }
-
-    @Transactional
-    public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
-        return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
     }
 
     @Transactional
@@ -59,7 +55,17 @@ public class SurveyService {
     }
 
     @Transactional
+    public SurveyIdResponse editMyPageSurvey(Long id, SurveyMyPageEditDTO surveyMyPageEditDTO) {
+        return surveyMapper.toSurveyIdResponse(surveyHelper.editMyPageSurvey(id, surveyMyPageEditDTO));
+    }
+
+    @Transactional
     public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
         return surveyHelper.getAdminSurveyList(pageable);
+    }
+
+    @Transactional
+    public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
+        return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
     }
 }
