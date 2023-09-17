@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.SurveyMyPageEmailDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.web.*;
@@ -51,6 +52,18 @@ public class SurveyController {
     @PostMapping("/mypage/list")
     public SurveyMyPageOrderListResponse getMyPageOrderList(@RequestBody @Valid SurveyMyPageEmailDTO surveyMyPageEmailDTO) {
         return surveyService.getSurveyMyPageOrderList(surveyMyPageEmailDTO.getEmail());
+    }
+
+    @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headCount, price")
+    @PatchMapping("/mypage/edit/{surveyId}")
+    public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId, @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
+        return surveyService.editMyPageSurvey(surveyId, surveyMyPageEditDTO);
+    }
+
+    @Operation(summary = "Web 마이페이지 설문 삭제")
+    @DeleteMapping("/mypage/delete/{surveyId}")
+    public SurveyIdResponse deleteMyPageSurvey(@PathVariable Long surveyId) {
+        return surveyService.deleteMyPageSurvey(surveyId);
     }
 
     @Operation(summary = "Admin 설문 리스트")
