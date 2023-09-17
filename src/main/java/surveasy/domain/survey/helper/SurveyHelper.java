@@ -12,6 +12,7 @@ import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
+import surveasy.domain.survey.exception.SurveyCannotDelete;
 import surveasy.domain.survey.exception.SurveyCannotEdit;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
@@ -110,6 +111,19 @@ public class SurveyHelper {
         }
 
         return surveyRepository.save(survey).getId();
+    }
+
+    public Long deleteMyPageSurvey(Long id) {
+        Survey survey = surveyRepository.findById(id).orElseThrow(() -> {
+            throw SurveyNotFound.EXCEPTION;
+        });
+
+        if(survey.getProgress() >= 2) {
+            throw SurveyCannotDelete.EXCEPTION;
+        }
+
+        surveyRepository.deleteById(id);
+        return id;
     }
 
     public Long updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {

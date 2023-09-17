@@ -54,10 +54,16 @@ public class SurveyController {
         return surveyService.getSurveyMyPageOrderList(surveyMyPageEmailDTO.getEmail());
     }
 
-    @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headcount")
+    @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headCount, price")
     @PatchMapping("/mypage/edit/{surveyId}")
     public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId, @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
         return surveyService.editMyPageSurvey(surveyId, surveyMyPageEditDTO);
+    }
+
+    @Operation(summary = "Web 마이페이지 설문 삭제")
+    @DeleteMapping("/mypage/delete/{surveyId}")
+    public SurveyIdResponse deleteMyPageSurvey(@PathVariable Long surveyId) {
+        return surveyService.deleteMyPageSurvey(surveyId);
     }
 
     @Operation(summary = "Admin 설문 리스트")

@@ -60,6 +60,11 @@ public class SurveyService {
     }
 
     @Transactional
+    public SurveyIdResponse deleteMyPageSurvey(Long id) {
+        return surveyMapper.toSurveyIdResponse(surveyHelper.deleteMyPageSurvey(id));
+    }
+
+    @Transactional
     public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
         return surveyHelper.getAdminSurveyList(pageable);
     }
