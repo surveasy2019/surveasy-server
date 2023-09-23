@@ -11,7 +11,6 @@ import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
-import surveasy.domain.survey.dto.response.web.SurveyIdResponse;
 import surveasy.domain.survey.exception.SurveyCannotDelete;
 import surveasy.domain.survey.exception.SurveyCannotEdit;
 import surveasy.domain.survey.exception.SurveyNotFound;
@@ -37,11 +36,15 @@ public class SurveyHelper {
                 });
     }
 
+
+    // [Web] 홈화면 진행중인 설문 개수
     public Long getSurveyTotalCount() {
         return surveyRepository
-                .countByProgressGreaterThan(0);
+                .countByProgressGreaterThan(1);
     }
 
+
+    // [Web] 설문 주문하기
     public Long createSurvey(SurveyServiceDTO surveyServiceDTO) {
         Survey newSurvey = surveyMapper.toEntity(surveyServiceDTO);
         Survey savedSurvey = surveyRepository.save(newSurvey);
@@ -49,41 +52,27 @@ public class SurveyHelper {
         return savedSurvey.getId();
     }
 
+
+    // [Web] 마이 페이지 진행중인 설문 개수
     public Long getMyPageSurveyOngoingCount(String email) {
         return surveyRepository.countByEmailAndProgressEquals(email, 2);
     }
 
+
+    // [Web] 마이 페이지 완료된 설문 개수
     public Long getMyPageSurveyDoneCount(String email) {
         return surveyRepository.countByEmailAndProgressGreaterThanEqual(email, 3);
     }
 
+
+    // [Web] 마이 페이지 주문 목록
     public List<Survey> getMyPageOrderList(String email) {
         return surveyRepository.findAllByEmail(email);
     }
 
-    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
-        int pageNum = pageable.getPageNumber();
-        int pageSize = pageable.getPageSize();
 
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by("id").descending());
-
-        Page<Survey> surveys = surveyRepository.findAll(pageRequest);
-        List<Survey> surveyList = new ArrayList<>();
-
-        if(surveys != null && surveys.hasContent()) {
-            surveyList = surveys.getContent();
-        }
-
-        PageInfo pageInfo = PageInfo.builder()
-                .pageNum(pageNum)
-                .pageSize(pageSize)
-                .totalElements(surveys.getTotalElements())
-                .totalPages(surveys.getTotalPages())
-                .build();
-
-        return SurveyAdminListResponse.from(surveyList, pageInfo);
-    }
-
+    // [Web] 마이 페이지 설문 수정 (title, link, headCount, price)
+    /* progress 2 미만일 경우만 가능 */
     public Long editMyPageSurvey(Long id, SurveyMyPageEditDTO surveyMyPageEditDTO) {
         Survey survey = surveyRepository.findById(id)
                 .orElseThrow(() -> {
@@ -113,6 +102,9 @@ public class SurveyHelper {
         return surveyRepository.save(survey).getId();
     }
 
+
+    // [Web] 마이 페이지 설문 삭제
+    /* progress 2 미만일 경우만 가능 */
     public Long deleteMyPageSurvey(Long id) {
         Survey survey = surveyRepository.findById(id).orElseThrow(() -> {
             throw SurveyNotFound.EXCEPTION;
@@ -126,6 +118,40 @@ public class SurveyHelper {
         return id;
     }
 
+
+    // [Web] 어드민 설문 전체 목록
+    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
+        int pageNum = pageable.getPageNumber();
+        int pageSize = pageable.getPageSize();
+
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by("id").descending());
+
+        Page<Survey> surveys = surveyRepository.findAll(pageRequest);
+        List<Survey> surveyList = new ArrayList<>();
+
+        if(surveys != null && surveys.hasContent()) {
+            surveyList = surveys.getContent();
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .totalElements(surveys.getTotalElements())
+                .totalPages(surveys.getTotalPages())
+                .build();
+
+        return SurveyAdminListResponse.from(surveyList, pageInfo);
+    }
+
+    // [Web] 현재 sid 최댓값 가져오기
+    /* 검수 후 progress == 2로 업데이트 하려는 경우, 현재 sid == 0이면 sid를 (최댓값 + 1)으로 부여 */
+    public Long findMaxSid() {
+        return surveyRepository.findMaxSid();
+    }
+
+
+    // [Web] 어드민 검수 완료 (progress, noticeToPanel, reward)
+    /* sid == 0 인 경우, sid를 current max 값으로 업데이트 */
     public Long updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
         Survey survey = surveyRepository
                         .findById(id)
@@ -135,8 +161,9 @@ public class SurveyHelper {
 
         if(surveyAdminDTO.getProgress() != null) {
             survey.setProgress(surveyAdminDTO.getProgress());
-            if(surveyAdminDTO.getProgress() == 2) {
-                // lastCheckedId 발급
+
+            if(survey.getSid() == 0 && surveyAdminDTO.getProgress() == 2) {
+                survey.setSid(findMaxSid()+1);      // sid 발급
             }
         }
 

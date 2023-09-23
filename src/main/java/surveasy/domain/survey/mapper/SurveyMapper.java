@@ -10,15 +10,16 @@ import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
 import java.util.Comparator;
 import java.util.List;
 
+// Mapper의 역할 1 : Entity로 매핑
+// Mapper의 역할 2 : DTO로 매핑
+
 @Component
 public class SurveyMapper {
 
-    // Mapper의 역할 1 : Entity로 매핑
     public Survey toEntity(SurveyServiceDTO surveyServiceDTO) {
         return Survey.of(surveyServiceDTO);
     }
 
-    // Mapper의 역할 2 : DTO로 매핑
     public SurveyIdResponse toSurveyIdResponse(Long surveyId) {
         return SurveyIdResponse.from(surveyId);
     }
