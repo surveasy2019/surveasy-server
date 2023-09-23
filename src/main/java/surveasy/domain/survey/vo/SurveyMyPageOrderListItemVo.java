@@ -23,6 +23,8 @@ public class SurveyMyPageOrderListItemVo {
 
     private Integer price;
 
+    private String link;
+
     private String uploadedAt;
 
     private String dueDate;
@@ -30,7 +32,7 @@ public class SurveyMyPageOrderListItemVo {
     @Builder
     public SurveyMyPageOrderListItemVo(Long id, Long sid, String title,
                                        Boolean isDone, Integer headCount, Long nowCount,
-                                       Integer progress, Integer price,
+                                       Integer progress, Integer price, String link,
                                        String uploadedAt, String dueDate) {
         this.id = id;
         this.sid = sid;
@@ -40,6 +42,7 @@ public class SurveyMyPageOrderListItemVo {
         this.nowCount = nowCount;
         this.progress = progress;
         this.price = price;
+        this.link = link;
         this.uploadedAt = uploadedAt;
         this.dueDate = dueDate;
     }
@@ -58,6 +61,7 @@ public class SurveyMyPageOrderListItemVo {
                 .nowCount(100L)
                 .progress(survey.getProgress())
                 .price(survey.getPrice())
+                .link(survey.getLink())
                 .uploadedAt(uploadedAt)
                 .dueDate(dueDate)
                 .build();
