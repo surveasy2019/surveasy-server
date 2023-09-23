@@ -35,12 +35,14 @@ public class SurveyListItemVo {
     }
 
     public static SurveyListItemVo from(Survey survey) {
+        Boolean isDone = (survey.getProgress() > 2) ? true : false;
+        Integer dDay = isDone ? 0 : calculateDDay(survey.getDueDate());
 
         return SurveyListItemVo.builder()
                 .sid(survey.getSid())
                 .title(survey.getTitle())
-                .isDone(false)
-                .dDay(calculateDDay(survey.getDueDate()))
+                .isDone(isDone)
+                .dDay(dDay)
                 .tarInput(survey.getTarInput())
                 .headCount(survey.getHeadCount())
                 .username(survey.getUsername())
