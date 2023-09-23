@@ -35,14 +35,24 @@ public class SurveyListItemVo {
     }
 
     public static SurveyListItemVo from(Survey survey) {
+
         return SurveyListItemVo.builder()
                 .sid(survey.getSid())
                 .title(survey.getTitle())
                 .isDone(false)
-                .dDay(7)
+                .dDay(calculateDDay(survey.getDueDate()))
                 .tarInput(survey.getTarInput())
                 .headCount(survey.getHeadCount())
                 .username(survey.getUsername())
                 .build();
+    }
+
+    private static Integer calculateDDay(Date dueDate) {
+        Date now = new Date();
+        Long diffSec = (dueDate.getTime() - now.getTime()) / 1000;
+        Long diffDays = diffSec / (24 * 60 * 60);
+        Integer dDay = diffDays.intValue();
+
+        return dDay;
     }
 }

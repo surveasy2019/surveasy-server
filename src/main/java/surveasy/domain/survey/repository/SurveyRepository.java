@@ -8,9 +8,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import surveasy.domain.survey.domain.Survey;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface SurveyRepository extends JpaRepository<Survey, Long>, PagingAndSortingRepository<Survey, Long>, JpaSpecificationExecutor<Survey> {
+public interface SurveyRepository extends JpaRepository<Survey, Long>, PagingAndSortingRepository<Survey, Long>, JpaSpecificationExecutor<Survey>, SurveyRepositoryCustom {
 
     Long countByProgressGreaterThan(Integer min);
 
