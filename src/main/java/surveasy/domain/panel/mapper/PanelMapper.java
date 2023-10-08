@@ -7,6 +7,7 @@ import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
+import surveasy.domain.panel.dto.response.PanelIdResponse;
 import surveasy.domain.panel.dto.response.PanelMyPageInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 
@@ -20,6 +21,10 @@ public class PanelMapper {
 
     public Panel toEntityNew(PanelSignUpDTO panelSignUpDTO) {
         return Panel.ofNew(panelSignUpDTO);
+    }
+
+    public PanelIdResponse toPanelIdResponse(Long panelId) {
+        return PanelIdResponse.from(panelId);
     }
 
     public PanelHomeInfoResponse toPanelHomeInfoResponse(Panel panel, Long count) {

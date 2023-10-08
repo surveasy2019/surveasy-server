@@ -10,10 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.dto.request.PanelInfoDAO;
-import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
-import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
@@ -21,6 +18,7 @@ import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.global.common.dto.PageInfo;
 import surveasy.global.common.function.DateAndString;
+import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -39,6 +37,8 @@ public class PanelHelper {
     public static final String COLLECTION_NAME = "panelData";
     public static final String COLLECTION_FS_NAME = "FirstSurvey";
 
+
+    // [App] Firebase 기존 패널 정보 가져오기
     private Panel createPanelFromFirestore(String uid) throws ExecutionException, InterruptedException, ParseException {
         Firestore db = FirestoreClient.getFirestore();
 
@@ -109,36 +109,31 @@ public class PanelHelper {
     }
 
 
+    // [App] 기존 패널 가입 처리
     public Panel addExistingPanelIfNeed(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
         String uid = panelUidDTO.getUid();
         Optional<Panel> panel = panelRepository.findByUid(uid);
 
-        // DB에 아직 없는 패널
-        if(panel.isEmpty()) {
+        if(panel.isEmpty()) {   // DB에 아직 없는 패널
             Panel newPanel = createPanelFromFirestore(uid);
             panelRepository.save(newPanel);
-        }
-
-        // DB에 이미 존재하는 패널
-        else {
+        } else {                // DB에 이미 존재하는 패널
             throw PanelDuplicateData.EXCEPTION;
         }
 
         return panelRepository.findByUid(uid).get();
     }
 
+
+    // [App] 신규 회원 가입 처리
     public Panel addNewPanelIfNeed(PanelSignUpDTO panelSignUpDTO) {
         String email = panelSignUpDTO.getEmail();
         Optional<Panel> panel = panelRepository.findByEmail(email);
 
-        // DB에 아직 없는 패널
-        if(panel.isEmpty()) {
+        if(panel.isEmpty()) {   // DB에 아직 없는 패널
             Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
             panelRepository.save(newPanel);
-        }
-
-        // DB에 이미 존재하는 패널
-        else {
+        } else {                // DB에 이미 존재하는 패널
             throw PanelDuplicateData.EXCEPTION;
         }
 
@@ -146,11 +141,36 @@ public class PanelHelper {
     }
 
 
+    // [App] Home - 현재까지 참여한 설문 개수
     public Long getPanelResponseCount(Long userId) {
         return 10L;     // responseRepository.findAllByUserId(userId);
     }
 
 
+    // [App] MyPage - 패널 정보 업데이트
+    /* phoneNumber, accountType, accountNumber, english */
+    public Panel updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO) {
+        if(panelInfoUpdateDTO.getPhoneNumber() != null) {
+            panel.setPhoneNumber(panelInfoUpdateDTO.getPhoneNumber());
+        }
+
+        if(panelInfoUpdateDTO.getAccountType() != null) {
+            panel.setAccountType(panelInfoUpdateDTO.getAccountType());
+        }
+
+        if(panelInfoUpdateDTO.getAccountNumber() != null) {
+            panel.setAccountNumber(panelInfoUpdateDTO.getAccountNumber());
+        }
+
+        if(panelInfoUpdateDTO.getEnglish() != null) {
+            panel.setEnglish(panelInfoUpdateDTO.getEnglish());
+        }
+
+        return panelRepository.save(panel);
+    }
+
+
+    // [App] Admin - 패널 전체 목록
     public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
         int pageNum = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();

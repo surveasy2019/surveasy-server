@@ -7,12 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
-import surveasy.domain.panel.dto.response.PanelAdminListResponse;
-import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
-import surveasy.domain.panel.dto.response.PanelMyPageInfoResponse;
-import surveasy.domain.panel.dto.response.PanelTokenResponse;
+import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.global.config.jwt.TokenProvider;
@@ -60,13 +58,20 @@ public class PanelService {
         return panelMapper.toPanelHomeInfoResponse(panel, count);
     }
 
+    @Transactional
+    public PanelMyPageInfoResponse updatePanelInfo(PanelDetails panelDetails, PanelInfoUpdateDTO panelInfoUpdateDTO) {
+        final Panel panel = panelDetails.getPanel();
+        return panelMapper.toPanelMyPageInfoResponse(panelHelper.updatePanelInfo(panel, panelInfoUpdateDTO));
+    }
+
+
     @Transactional(readOnly = true)
     public PanelMyPageInfoResponse getPanelMyPageInfo(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
         return panelMapper.toPanelMyPageInfoResponse(panel);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
         return panelHelper.getAdminPanelList(pageable);
     }

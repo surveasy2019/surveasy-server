@@ -9,12 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
-import surveasy.domain.panel.dto.response.PanelAdminListResponse;
-import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
-import surveasy.domain.panel.dto.response.PanelMyPageInfoResponse;
-import surveasy.domain.panel.dto.response.PanelTokenResponse;
+import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.global.config.user.PanelDetails;
 
@@ -53,6 +51,13 @@ public class PanelController {
     @Operation(summary = "App 마이페이지 패널 정보 불러오기")
     public PanelMyPageInfoResponse getPanelMyPageInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
         return panelService.getPanelMyPageInfo(panelDetails);
+    }
+
+    @PatchMapping("/mypage/update")
+    @Operation(summary = "App 마이페이지 패널 정보 수정하기")
+    public PanelMyPageInfoResponse updatePanelInfo(@AuthenticationPrincipal PanelDetails panelDetails,
+                                           @RequestBody PanelInfoUpdateDTO panelInfoUpdateDTO) {
+        return panelService.updatePanelInfo(panelDetails, panelInfoUpdateDTO);
     }
 
     @GetMapping("/admin/list")
