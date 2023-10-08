@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.dto.request.PanelInfoDAO;
+import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
@@ -27,8 +29,19 @@ public class PanelService {
     private final PanelMapper panelMapper;
 
     @Transactional
-    public PanelTokenResponse signIn(PanelUidDTO panelUidDTO) throws ParseException, ExecutionException, InterruptedException {
-        Panel panel = panelHelper.addPanelIfNeed(panelUidDTO);
+    public PanelTokenResponse signUpExisting(PanelUidDTO panelUidDTO) throws ParseException, ExecutionException, InterruptedException {
+        Panel panel = panelHelper.addExistingPanelIfNeed(panelUidDTO);
+
+        final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
+        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+
+        return panelMapper.toPanelTokenResponse(panel.getId(), accessToken, refreshToken);
+    }
+
+    @Transactional
+    public PanelTokenResponse signUpNew(PanelSignUpDTO panelSignUpDTO) {
+        Panel panel = panelHelper.addNewPanelIfNeed(panelSignUpDTO);
 
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
         final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);

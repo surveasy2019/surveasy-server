@@ -12,5 +12,7 @@ public interface PanelRepository extends JpaRepository<Panel, Long> {
     Optional<Panel> findById(Long id);
     Optional<Panel> findByUid(String uid);
 
+    Optional<Panel> findByEmail(String email);
+
     Page<Panel> findAll(Pageable pageable);
 }

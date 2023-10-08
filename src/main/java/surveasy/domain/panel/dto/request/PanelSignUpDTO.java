@@ -9,12 +9,10 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-public class PanelInfoDAO {
+public class PanelSignUpDTO {
 
     private Map<String, Integer> genderMap = Map.of("남", 0, "여", 1);
     private Map<String, Integer> platformMap = Map.of("ios", 0, "android", 1);
-
-    String uid;
 
     String name;
 
@@ -32,11 +30,7 @@ public class PanelInfoDAO {
 
     String accountNum;
 
-    Boolean didFirstSurvey;
-
     String inflowPath;
-
-    Date lastParticipatedAt;
 
     Boolean marketingAgree;
 
@@ -52,24 +46,14 @@ public class PanelInfoDAO {
 
     Integer rewardTotal;
 
-    Boolean snsAuth;
-
-    String snsUid;
-
 
     @Builder
-    public PanelInfoDAO(String uid, String name, String email,
+    public PanelSignUpDTO(String name, String email,
                         String fcmToken, String gender, Date birth,
                         String accountOwner, String accountType, String accountNum,
-                        Boolean didFirstSurvey,
-                        String inflowPath, Date lastParticipatedAt,
-                        Boolean marketingAgree, String phoneNumber,
-                        Integer platform, Boolean pushOn,
-                        Date signedUpAt, Integer rewardCurrent,
-                        Integer rewardTotal, Boolean snsAuth,
-                        String snsUid
+                        String inflowPath, Boolean marketingAgree, String phoneNumber,
+                        Integer platform, Boolean pushOn
     ) {
-        this.uid = uid;
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;
@@ -78,17 +62,13 @@ public class PanelInfoDAO {
         this.accountOwner = accountOwner;
         this.accountType = accountType;
         this.accountNum = accountNum;
-        this.didFirstSurvey = didFirstSurvey;
         this.inflowPath = inflowPath;
-        this.lastParticipatedAt = lastParticipatedAt;
         this.marketingAgree = marketingAgree;
         this.phoneNumber = phoneNumber;
         this.platform = platform;
         this.pushOn = pushOn;
-        this.signedUpAt = signedUpAt;
-        this.rewardCurrent = rewardCurrent;
-        this.rewardTotal = rewardTotal;
-        this.snsAuth = snsAuth;
-        this.snsUid = snsUid;
+        this.signedUpAt = new Date();
+        this.rewardCurrent = 0;
+        this.rewardTotal = 0;
     }
 }
