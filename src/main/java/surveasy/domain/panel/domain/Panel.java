@@ -53,7 +53,7 @@ public class Panel {
     String accountType;
 
     @NotNull
-    String accountNum;
+    String accountNumber;
 
     @NotNull
     Boolean didFirstSurvey;
@@ -131,7 +131,7 @@ public class Panel {
     @Builder
     public Panel(String uid, String name, String email, String fcmToken,
                  Integer gender, Date birth,
-                 String accountOwner, String accountType, String accountNum,
+                 String accountOwner, String accountType, String accountNumber,
                  Boolean didFirstSurvey,
                  String inflowPath, Date lastParticipatedAt,
                  Boolean marketingAgree, String phoneNumber,
@@ -150,7 +150,7 @@ public class Panel {
         this.birth = birth;
         this.accountOwner = accountOwner;
         this.accountType = accountType;
-        this.accountNum = accountNum;
+        this.accountNumber = accountNumber;
         this.didFirstSurvey = didFirstSurvey;
         this.inflowPath = inflowPath;
         this.lastParticipatedAt = lastParticipatedAt;
@@ -189,7 +189,7 @@ public class Panel {
                 .birth(panelInfoDAO.getBirth())
                 .accountOwner(panelInfoDAO.getAccountOwner())
                 .accountType(panelInfoDAO.getAccountType())
-                .accountNum(panelInfoDAO.getAccountNum())
+                .accountNumber(panelInfoDAO.getAccountNumber())
                 .didFirstSurvey(panelInfoDAO.getDidFirstSurvey())
                 .inflowPath(panelInfoDAO.getInflowPath())
                 .lastParticipatedAt(panelInfoDAO.getLastParticipatedAt())
@@ -227,7 +227,7 @@ public class Panel {
                 .birth(panelSignUpDTO.getBirth())
                 .accountOwner(panelSignUpDTO.getAccountOwner())
                 .accountType(panelSignUpDTO.getAccountType())
-                .accountNum(panelSignUpDTO.getAccountNum())
+                .accountNumber(panelSignUpDTO.getAccountNumber())
                 .didFirstSurvey(false)
                 .inflowPath(panelSignUpDTO.getInflowPath())
                 .lastParticipatedAt(null)

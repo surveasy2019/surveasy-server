@@ -30,7 +30,7 @@ public class PanelInfoDAO {
 
     String accountType;
 
-    String accountNum;
+    String accountNumber;
 
     Boolean didFirstSurvey;
 
@@ -60,7 +60,7 @@ public class PanelInfoDAO {
     @Builder
     public PanelInfoDAO(String uid, String name, String email,
                         String fcmToken, String gender, Date birth,
-                        String accountOwner, String accountType, String accountNum,
+                        String accountOwner, String accountType, String accountNumber,
                         Boolean didFirstSurvey,
                         String inflowPath, Date lastParticipatedAt,
                         Boolean marketingAgree, String phoneNumber,
@@ -77,7 +77,7 @@ public class PanelInfoDAO {
         this.birth = birth;
         this.accountOwner = accountOwner;
         this.accountType = accountType;
-        this.accountNum = accountNum;
+        this.accountNumber = accountNumber;
         this.didFirstSurvey = didFirstSurvey;
         this.inflowPath = inflowPath;
         this.lastParticipatedAt = lastParticipatedAt;

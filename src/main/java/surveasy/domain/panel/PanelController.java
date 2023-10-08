@@ -13,6 +13,7 @@ import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
+import surveasy.domain.panel.dto.response.PanelMyPageInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.global.config.user.PanelDetails;
@@ -43,9 +44,15 @@ public class PanelController {
     }
 
     @GetMapping("")
-    @Operation(summary = "App 패널 정보 불러오기")
-    public PanelHomeInfoResponse getPanelInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return panelService.getPanelInfo(panelDetails);
+    @Operation(summary = "App 홈화면 패널 정보 불러오기")
+    public PanelHomeInfoResponse getPanelHomeInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return panelService.getPanelHomeInfo(panelDetails);
+    }
+
+    @GetMapping("/mypage")
+    @Operation(summary = "App 마이페이지 패널 정보 불러오기")
+    public PanelMyPageInfoResponse getPanelMyPageInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return panelService.getPanelMyPageInfo(panelDetails);
     }
 
     @GetMapping("/admin/list")

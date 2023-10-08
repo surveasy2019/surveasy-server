@@ -28,7 +28,7 @@ public class PanelSignUpDTO {
 
     String accountType;
 
-    String accountNum;
+    String accountNumber;
 
     String inflowPath;
 
@@ -50,7 +50,7 @@ public class PanelSignUpDTO {
     @Builder
     public PanelSignUpDTO(String name, String email,
                         String fcmToken, String gender, Date birth,
-                        String accountOwner, String accountType, String accountNum,
+                        String accountOwner, String accountType, String accountNumber,
                         String inflowPath, Boolean marketingAgree, String phoneNumber,
                         Integer platform, Boolean pushOn
     ) {
@@ -61,7 +61,7 @@ public class PanelSignUpDTO {
         this.birth = birth;
         this.accountOwner = accountOwner;
         this.accountType = accountType;
-        this.accountNum = accountNum;
+        this.accountNumber = accountNumber;
         this.inflowPath = inflowPath;
         this.marketingAgree = marketingAgree;
         this.phoneNumber = phoneNumber;

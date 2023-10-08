@@ -20,9 +20,9 @@ import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.global.common.dto.PageInfo;
+import surveasy.global.common.function.DateAndString;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,15 +39,6 @@ public class PanelHelper {
     public static final String COLLECTION_NAME = "panelData";
     public static final String COLLECTION_FS_NAME = "FirstSurvey";
 
-
-    private Date strToDate(String strDate) throws ParseException {
-        if(strDate == null) return null;
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = format.parse(strDate);
-        return date;
-    }
-
     private Panel createPanelFromFirestore(String uid) throws ExecutionException, InterruptedException, ParseException {
         Firestore db = FirestoreClient.getFirestore();
 
@@ -62,8 +53,8 @@ public class PanelHelper {
 
 
         if(documentSnapshot.exists()) {
-            Date birth = strToDate(documentSnapshot.getString("birthDate"));
-            Date signedAt = strToDate(documentSnapshot.getString("registerDate"));
+            Date birth = DateAndString.stringToDateYMD(documentSnapshot.getString("birthDate"));
+            Date signedAt = DateAndString.stringToDateYMD(documentSnapshot.getString("registerDate"));
             Boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
 
@@ -93,7 +84,7 @@ public class PanelHelper {
                     .birth(birth)
                     .accountOwner(documentSnapshot.getString("accountOwner"))
                     .accountType(documentSnapshot.getString("accountType"))
-                    .accountNum(documentSnapshot.getString("accountNumber"))
+                    .accountNumber(documentSnapshot.getString("accountNumber"))
                     .didFirstSurvey(didFirstSurvey)
                     .inflowPath(documentSnapshot.getString("inflowPath"))
                     .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))

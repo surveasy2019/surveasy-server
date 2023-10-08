@@ -11,6 +11,7 @@ import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
+import surveasy.domain.panel.dto.response.PanelMyPageInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
@@ -52,11 +53,17 @@ public class PanelService {
     }
 
     @Transactional(readOnly = true)
-    public PanelHomeInfoResponse getPanelInfo(PanelDetails panelDetails) {
+    public PanelHomeInfoResponse getPanelHomeInfo(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
         Long count = panelHelper.getPanelResponseCount(panel.getId());
 
-        return panelMapper.toPanelInfoResponse(panel, count);
+        return panelMapper.toPanelHomeInfoResponse(panel, count);
+    }
+
+    @Transactional(readOnly = true)
+    public PanelMyPageInfoResponse getPanelMyPageInfo(PanelDetails panelDetails) {
+        final Panel panel = panelDetails.getPanel();
+        return panelMapper.toPanelMyPageInfoResponse(panel);
     }
 
     @Transactional
