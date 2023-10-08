@@ -15,11 +15,13 @@ import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
+import surveasy.domain.panel.dto.response.PanelInfoResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.global.common.dto.PageInfo;
+import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -152,6 +154,11 @@ public class PanelHelper {
         }
 
         return panelRepository.findByEmail(email).get();
+    }
+
+
+    public Long getPanelResponseCount(Long userId) {
+        return 10L;     // responseRepository.findAllByUserId(userId);
     }
 
 

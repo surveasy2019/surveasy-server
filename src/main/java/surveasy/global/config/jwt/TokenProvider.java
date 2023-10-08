@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.global.config.user.UserDetailsServiceImpl;
+import surveasy.global.config.user.PanelDetailsService;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final PanelDetailsService userDetailsService;
 
     @Value("${spring.jwt.secret}")
     private String secret;

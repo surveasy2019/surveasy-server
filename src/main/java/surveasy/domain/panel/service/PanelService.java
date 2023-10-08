@@ -11,10 +11,12 @@ import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
+import surveasy.domain.panel.dto.response.PanelInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.global.config.jwt.TokenProvider;
+import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
 import java.util.concurrent.ExecutionException;
@@ -48,6 +50,14 @@ public class PanelService {
         final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
         return panelMapper.toPanelTokenResponse(panel.getId(), accessToken, refreshToken);
+    }
+
+    @Transactional(readOnly = true)
+    public PanelInfoResponse getPanelInfo(PanelDetails panelDetails) {
+        final Panel panel = panelDetails.getPanel();
+        Long count = panelHelper.getPanelResponseCount(panel.getId());
+
+        return panelMapper.toPanelInfoResponse(panel, count);
     }
 
     @Transactional
