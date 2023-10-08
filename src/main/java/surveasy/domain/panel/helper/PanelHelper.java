@@ -8,21 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.dto.request.PanelInfoDAO;
-import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
-import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.global.common.dto.PageInfo;
+import surveasy.global.common.function.DateAndString;
+import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,32 +38,23 @@ public class PanelHelper {
     public static final String COLLECTION_FS_NAME = "FirstSurvey";
 
 
-    // addExistingPanel 호출 전에 이미 db에 있는 패널인지 확인 필요
-
-    private Date strToDate(String strDate) throws ParseException {
-        if(strDate == null) return null;
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = format.parse(strDate);
-        return date;
-    }
-
+    // [App] Firebase 기존 패널 정보 가져오기
     private Panel createPanelFromFirestore(String uid) throws ExecutionException, InterruptedException, ParseException {
         Firestore db = FirestoreClient.getFirestore();
 
-        // Fetch Info
+        // Fetch - Firebase Panel Info
         ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(uid).get();
         DocumentSnapshot documentSnapshot = future.get();
 
-        // Fetch First Survey Info
+        // Fetch - Firebase Panel First Survey Info
         ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(uid)
                 .collection(COLLECTION_FS_NAME).document(uid).get();
         DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
 
 
         if(documentSnapshot.exists()) {
-            Date birth = strToDate(documentSnapshot.getString("birthDate"));
-            Date signedAt = strToDate(documentSnapshot.getString("registerDate"));
+            Date birth = DateAndString.stringToDateYMD(documentSnapshot.getString("birthDate"));
+            Date signedAt = DateAndString.stringToDateYMD(documentSnapshot.getString("registerDate"));
             Boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
 
@@ -95,6 +84,7 @@ public class PanelHelper {
                     .birth(birth)
                     .accountOwner(documentSnapshot.getString("accountOwner"))
                     .accountType(documentSnapshot.getString("accountType"))
+                    .accountNumber(documentSnapshot.getString("accountNumber"))
                     .didFirstSurvey(didFirstSurvey)
                     .inflowPath(documentSnapshot.getString("inflowPath"))
                     .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))
@@ -110,7 +100,7 @@ public class PanelHelper {
                     .build();
 
 
-            Panel panel = panelMapper.toEntity(panelInfoDAO, panelInfoFirstSurveyDAO);
+            Panel panel = panelMapper.toEntityExisting(panelInfoDAO, panelInfoFirstSurveyDAO);
             return panel;
 
         } else {
@@ -119,18 +109,15 @@ public class PanelHelper {
     }
 
 
-    public Panel addPanelIfNeed(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
+    // [App] 기존 패널 가입 처리
+    public Panel addExistingPanelIfNeed(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
         String uid = panelUidDTO.getUid();
         Optional<Panel> panel = panelRepository.findByUid(uid);
 
-        // DB에 아직 없는 패널
-        if(panel.isEmpty()) {
+        if(panel.isEmpty()) {   // DB에 아직 없는 패널
             Panel newPanel = createPanelFromFirestore(uid);
             panelRepository.save(newPanel);
-        }
-
-        // DB에 이미 존재하는 패널
-        else {
+        } else {                // DB에 이미 존재하는 패널
             throw PanelDuplicateData.EXCEPTION;
         }
 
@@ -138,6 +125,52 @@ public class PanelHelper {
     }
 
 
+    // [App] 신규 회원 가입 처리
+    public Panel addNewPanelIfNeed(PanelSignUpDTO panelSignUpDTO) {
+        String email = panelSignUpDTO.getEmail();
+        Optional<Panel> panel = panelRepository.findByEmail(email);
+
+        if(panel.isEmpty()) {   // DB에 아직 없는 패널
+            Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
+            panelRepository.save(newPanel);
+        } else {                // DB에 이미 존재하는 패널
+            throw PanelDuplicateData.EXCEPTION;
+        }
+
+        return panelRepository.findByEmail(email).get();
+    }
+
+
+    // [App] Home - 현재까지 참여한 설문 개수
+    public Long getPanelResponseCount(Long userId) {
+        return 10L;     // responseRepository.findAllByUserId(userId);
+    }
+
+
+    // [App] MyPage - 패널 정보 업데이트
+    /* phoneNumber, accountType, accountNumber, english */
+    public Panel updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO) {
+        if(panelInfoUpdateDTO.getPhoneNumber() != null) {
+            panel.setPhoneNumber(panelInfoUpdateDTO.getPhoneNumber());
+        }
+
+        if(panelInfoUpdateDTO.getAccountType() != null) {
+            panel.setAccountType(panelInfoUpdateDTO.getAccountType());
+        }
+
+        if(panelInfoUpdateDTO.getAccountNumber() != null) {
+            panel.setAccountNumber(panelInfoUpdateDTO.getAccountNumber());
+        }
+
+        if(panelInfoUpdateDTO.getEnglish() != null) {
+            panel.setEnglish(panelInfoUpdateDTO.getEnglish());
+        }
+
+        return panelRepository.save(panel);
+    }
+
+
+    // [App] Admin - 패널 전체 목록
     public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
         int pageNum = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.global.common.function.ListAndString;
 
 import java.util.Date;
 import java.util.List;
@@ -117,7 +118,7 @@ public class Survey {
         this.headCount = headCount;
         this.spendTime = spendTime;
         this.tarInput = tarInput;
-        this.tarAge = listToString(tarAge);
+        this.tarAge = ListAndString.listToString(tarAge);
         this.tarGender = tarGender;
         this.title = title;
 
@@ -128,13 +129,6 @@ public class Survey {
         this.progress = 0;
         this.reward = 0;
     }
-
-    public String listToString(List<Integer> intList) {
-        String str = intList.toString();
-        return str.substring(1, str.length()-1);
-    }
-
-
 
     public static Survey of(SurveyServiceDTO surveyServiceDTO) {
         return Survey.builder()

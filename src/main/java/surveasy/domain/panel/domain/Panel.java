@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
+import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 
 import java.util.Date;
 
@@ -50,6 +51,9 @@ public class Panel {
 
     @NotNull
     String accountType;
+
+    @NotNull
+    String accountNumber;
 
     @NotNull
     Boolean didFirstSurvey;
@@ -126,8 +130,9 @@ public class Panel {
 
     @Builder
     public Panel(String uid, String name, String email, String fcmToken,
-                 Integer gender, Date birth, String accountOwner,
-                 String accountType, Boolean didFirstSurvey,
+                 Integer gender, Date birth,
+                 String accountOwner, String accountType, String accountNumber,
+                 Boolean didFirstSurvey,
                  String inflowPath, Date lastParticipatedAt,
                  Boolean marketingAgree, String phoneNumber,
                  Integer platform, Boolean pushOn, Date signedUpAt,
@@ -145,6 +150,7 @@ public class Panel {
         this.birth = birth;
         this.accountOwner = accountOwner;
         this.accountType = accountType;
+        this.accountNumber = accountNumber;
         this.didFirstSurvey = didFirstSurvey;
         this.inflowPath = inflowPath;
         this.lastParticipatedAt = lastParticipatedAt;
@@ -173,7 +179,7 @@ public class Panel {
     }
 
 
-    public static Panel of(PanelInfoDAO panelInfoDAO, PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO) {
+    public static Panel ofExisting(PanelInfoDAO panelInfoDAO, PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO) {
         return Panel.builder()
                 .uid(panelInfoDAO.getUid())
                 .name(panelInfoDAO.getName())
@@ -183,6 +189,7 @@ public class Panel {
                 .birth(panelInfoDAO.getBirth())
                 .accountOwner(panelInfoDAO.getAccountOwner())
                 .accountType(panelInfoDAO.getAccountType())
+                .accountNumber(panelInfoDAO.getAccountNumber())
                 .didFirstSurvey(panelInfoDAO.getDidFirstSurvey())
                 .inflowPath(panelInfoDAO.getInflowPath())
                 .lastParticipatedAt(panelInfoDAO.getLastParticipatedAt())
@@ -207,6 +214,42 @@ public class Panel {
                 .military(panelInfoFirstSurveyDAO.getMilitary())
                 .pet(panelInfoFirstSurveyDAO.getPet())
                 .university(panelInfoFirstSurveyDAO.getUniversity())
+                .build();
+    }
+
+    public static Panel ofNew(PanelSignUpDTO panelSignUpDTO) {
+        return Panel.builder()
+                .uid(panelSignUpDTO.getEmail())
+                .name(panelSignUpDTO.getName())
+                .email(panelSignUpDTO.getEmail())
+                .fcmToken(panelSignUpDTO.getFcmToken())
+                .gender(panelSignUpDTO.getGender())
+                .birth(panelSignUpDTO.getBirth())
+                .accountOwner(panelSignUpDTO.getAccountOwner())
+                .accountType(panelSignUpDTO.getAccountType())
+                .accountNumber(panelSignUpDTO.getAccountNumber())
+                .didFirstSurvey(false)
+                .inflowPath(panelSignUpDTO.getInflowPath())
+                .lastParticipatedAt(null)
+                .marketingAgree(panelSignUpDTO.getMarketingAgree())
+                .phoneNumber(panelSignUpDTO.getPhoneNumber())
+                .platform(panelSignUpDTO.getPlatform())
+                .pushOn(panelSignUpDTO.getPushOn())
+                .signedUpAt(panelSignUpDTO.getSignedUpAt())
+                .rewardCurrent(0)
+                .rewardTotal(0)
+
+                .english(null)
+                .city(null)
+                .district(null)
+                .family(null)
+                .houseType(null)
+                .job(null)
+                .major(null)
+                .married(null)
+                .military(null)
+                .pet(null)
+                .university(null)
                 .build();
     }
 }

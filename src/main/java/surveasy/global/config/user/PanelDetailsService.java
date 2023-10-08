@@ -11,7 +11,7 @@ import surveasy.domain.panel.repository.PanelRepository;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class PanelDetailsService implements UserDetailsService {
 
     private final PanelRepository panelRepository;
 
@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     private UserDetails createPanel(Long id, Panel panel) {
-        return new UserDetailsImpl(panel);
+        return new PanelDetails(panel);
     }
 
     @Override

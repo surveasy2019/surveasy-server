@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
-public class UserDetailsImpl implements UserDetails {
+public class PanelDetails implements UserDetails {
 
     private Panel panel;
 
-    public UserDetailsImpl(Panel panel) {
+    public PanelDetails(Panel panel) {
         this.panel = panel;
     }
 
