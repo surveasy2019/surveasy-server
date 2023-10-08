@@ -11,9 +11,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class PanelSignUpDTO {
 
-    private Map<String, Integer> genderMap = Map.of("남", 0, "여", 1);
-    private Map<String, Integer> platformMap = Map.of("ios", 0, "android", 1);
-
     String name;
 
     String email;
@@ -54,6 +51,9 @@ public class PanelSignUpDTO {
                         String inflowPath, Boolean marketingAgree, String phoneNumber,
                         Integer platform, Boolean pushOn
     ) {
+
+        Map<String, Integer> genderMap = Map.of("남", 0, "여", 1);
+
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;

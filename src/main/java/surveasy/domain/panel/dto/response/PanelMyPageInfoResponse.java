@@ -5,6 +5,9 @@ import lombok.Getter;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.global.common.function.DateAndString;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 @Getter
 public class PanelMyPageInfoResponse {
 
@@ -38,10 +41,12 @@ public class PanelMyPageInfoResponse {
     }
 
     public static PanelMyPageInfoResponse from(Panel panel) {
+        String[] genderStr = new String[]{"남", "여"};
+
         return PanelMyPageInfoResponse.builder()
                 .name(panel.getName())
                 .birth(DateAndString.dateToStringYMD(panel.getBirth()))
-                .gender((panel.getGender() == 0) ? "남" : "여")
+                .gender(genderStr[panel.getGender()])
                 .email(panel.getEmail())
                 .phoneNumber(panel.getPhoneNumber())
                 .accountType(panel.getAccountType())
