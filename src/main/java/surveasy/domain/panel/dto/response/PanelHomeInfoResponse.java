@@ -5,7 +5,7 @@ import lombok.Getter;
 import surveasy.domain.panel.domain.Panel;
 
 @Getter
-public class PanelInfoResponse {
+public class PanelHomeInfoResponse {
 
     String name;
 
@@ -16,15 +16,15 @@ public class PanelInfoResponse {
     Integer rewardTotal;
 
     @Builder
-    private PanelInfoResponse(String name, Long count, Integer rewardCurrent, Integer rewardTotal) {
+    private PanelHomeInfoResponse(String name, Long count, Integer rewardCurrent, Integer rewardTotal) {
         this.name = name;
         this.count = count;
         this.rewardCurrent = rewardCurrent;
         this.rewardTotal = rewardTotal;
     }
 
-    public static PanelInfoResponse from(Panel panel, Long count) {
-        return PanelInfoResponse.builder()
+    public static PanelHomeInfoResponse from(Panel panel, Long count) {
+        return PanelHomeInfoResponse.builder()
                 .name(panel.getName())
                 .count(count)
                 .rewardCurrent(panel.getRewardCurrent())

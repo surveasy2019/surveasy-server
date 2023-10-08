@@ -7,11 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
-import surveasy.domain.panel.dto.response.PanelInfoResponse;
+import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
@@ -53,7 +52,7 @@ public class PanelService {
     }
 
     @Transactional(readOnly = true)
-    public PanelInfoResponse getPanelInfo(PanelDetails panelDetails) {
+    public PanelHomeInfoResponse getPanelInfo(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
         Long count = panelHelper.getPanelResponseCount(panel.getId());
 

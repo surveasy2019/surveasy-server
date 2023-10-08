@@ -9,11 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
-import surveasy.domain.panel.dto.response.PanelInfoResponse;
+import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.global.config.user.PanelDetails;
@@ -45,7 +44,7 @@ public class PanelController {
 
     @GetMapping("")
     @Operation(summary = "App 패널 정보 불러오기")
-    public PanelInfoResponse getPanelInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
+    public PanelHomeInfoResponse getPanelInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
         return panelService.getPanelInfo(panelDetails);
     }
 
