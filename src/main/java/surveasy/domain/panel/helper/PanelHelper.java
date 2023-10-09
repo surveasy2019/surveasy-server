@@ -147,6 +147,18 @@ public class PanelHelper {
     }
 
 
+    // [App] List - 설문 참여 완료 후 패널 정보 업데이트
+    /* rewardCurrent, lastParticipatedDate */
+    public void updatePanelInfoAfterResponse(Panel panel, Integer reward) {
+        Integer rewardCurrent = panel.getRewardCurrent();
+
+        panel.setRewardCurrent(rewardCurrent + reward);
+        panel.setLastParticipatedAt(new Date());
+
+        panelRepository.save(panel);
+    }
+
+
     // [App] MyPage - 패널 정보 업데이트
     /* phoneNumber, accountType, accountNumber, english */
     public Panel updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO) {
@@ -170,7 +182,7 @@ public class PanelHelper {
     }
 
 
-    // [App] Admin - 패널 전체 목록
+    // [Web] Admin - 패널 전체 목록
     public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
         int pageNum = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();

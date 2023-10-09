@@ -65,6 +65,9 @@ public class Survey {
     private Integer headCount;
 
     @NotNull
+    private Integer responseCount;
+
+    @NotNull
     private Integer spendTime;
 
     @Nullable
@@ -128,6 +131,7 @@ public class Survey {
         this.sid = 0L;
         this.progress = 0;
         this.reward = 0;
+        this.responseCount = 0;
     }
 
     public static Survey of(SurveyServiceDTO surveyServiceDTO) {

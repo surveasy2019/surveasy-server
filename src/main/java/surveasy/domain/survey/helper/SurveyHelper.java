@@ -181,4 +181,18 @@ public class SurveyHelper {
 
         return surveyRepository.save(survey).getId();
     }
+
+    // [App] 설문 현재 응답수 업데이트
+    public Integer updateCurrentHeadCount(Survey survey) {
+        Integer responseCount = survey.getResponseCount();
+        survey.setResponseCount(responseCount + 1);
+
+        return surveyRepository.save(survey).getResponseCount();
+    }
+
+    // [App] 설문 progress 업데이트 (2 -> 3)
+    public Long updateProgress2To3(Survey survey) {
+        survey.setProgress(3);
+        return surveyRepository.save(survey).getId();
+    }
 }
