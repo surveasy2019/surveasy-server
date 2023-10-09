@@ -24,7 +24,7 @@ public class PanelDetailsService implements UserDetailsService {
     }
 
 
-    private UserDetails createPanel(Long id, Panel panel) {
+    private PanelDetails createPanel(Long id, Panel panel) {
         return new PanelDetails(panel);
     }
 
