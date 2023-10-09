@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
+import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
 import surveasy.domain.response.helper.ResponseHelper;
@@ -30,5 +31,11 @@ public class ResponseService {
     public ResponseMyPageListResponse getResponseMyPageList(PanelDetails panelDetails, String type, Pageable pageable) {
         final Panel panel = panelDetails.getPanel();
         return responseHelper.getResponseMyPageList(panel.getId(), type, pageable);
+    }
+
+    @Transactional
+    public ResponseIdResponse updateResponseImgUrl(PanelDetails panelDetails, Long responseId, ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
+        final Panel panel = panelDetails.getPanel();
+        return responseMapper.toResponseIdResponse(responseHelper.updateResponseImgUrl(panel, responseId, responseImgUrlUpdateRequestDTO));
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
+import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
 import surveasy.domain.response.service.ResponseService;
@@ -38,5 +39,13 @@ public class ResponseController {
                                                             @PathVariable String type,
                                                             @PageableDefault(size = 10) Pageable pageable) {
         return responseService.getResponseMyPageList(panelDetails, type, pageable);
+    }
+
+    @Operation(summary = "App 마이페이지 설문 응답 이미지 수정하기")
+    @PutMapping("/mypage/update/{responseId}")
+    public ResponseIdResponse updateResponseImgUrl(@AuthenticationPrincipal PanelDetails panelDetails,
+                                                   @PathVariable Long responseId,
+                                                   @RequestBody ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
+        return responseService.updateResponseImgUrl(panelDetails, responseId, responseImgUrlUpdateRequestDTO);
     }
 }

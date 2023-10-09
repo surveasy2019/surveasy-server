@@ -10,8 +10,12 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
+import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
+import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
 import surveasy.domain.response.exception.ResponseDuplicateData;
+import surveasy.domain.response.exception.ResponseNotFound;
+import surveasy.domain.response.exception.ResponseUnauthorized;
 import surveasy.domain.response.mapper.ResponseMapper;
 import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.Survey;
@@ -25,6 +29,7 @@ import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -121,4 +126,26 @@ public class ResponseHelper {
         return responseMapper.toResponseMyPageListResponse(type, responseList, pageInfo);
     }
 
+
+    // [App] MyPage - 응답 사진 변경하기
+    /* 설문 progress 2인 경우에만 변경 가능 */
+    public Long updateResponseImgUrl(Panel panel, Long responseId, ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
+        Response response = responseRepository.findById(responseId)
+                .orElseThrow(() -> {
+                    throw ResponseNotFound.EXCEPTION;
+                });
+
+        // 응답한 패널이 아닌데 수정하려는 경우
+        if(!Objects.equals(panel.getId(), response.getPanel().getId())) {
+            throw ResponseUnauthorized.EXCEPTION;
+        }
+
+        // 이미 종료된 설문의 응답을 수정하려는 경우
+        if(response.getSurvey().getProgress() > 2) {
+            throw SurveyExpired.EXCEPTION;
+        }
+
+        response.setImgUrl(responseImgUrlUpdateRequestDTO.getImgUrl());
+        return responseRepository.save(response).getId();
+    }
 }
