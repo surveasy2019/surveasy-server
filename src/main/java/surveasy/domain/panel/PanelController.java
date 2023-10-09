@@ -41,6 +41,12 @@ public class PanelController {
         return panelService.signUpNew(panelSignUpDTO);
     }
 
+    @GetMapping("/auth/token/{panelId}")
+    @Operation(summary = "임시 - accessToken 재발행")
+    public String reissueAccessToken(@PathVariable Long panelId) {
+        return panelService.reissueAccessToken(panelId);
+    }
+
     @GetMapping("")
     @Operation(summary = "App 홈화면 패널 정보 불러오기")
     public PanelHomeInfoResponse getPanelHomeInfo(@AuthenticationPrincipal PanelDetails panelDetails) {

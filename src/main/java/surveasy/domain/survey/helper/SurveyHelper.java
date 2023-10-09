@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import surveasy.domain.response.domain.Response;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
@@ -34,6 +35,15 @@ public class SurveyHelper {
                 .orElseThrow(() -> {
                     throw SurveyNotFound.EXCEPTION;
                 });
+    }
+
+    public PageInfo getPageInfo(int pageNum, int pageSize, Page<Survey> surveys) {
+        return PageInfo.builder()
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .totalElements(surveys.getTotalElements())
+                .totalPages(surveys.getTotalPages())
+                .build();
     }
 
 
@@ -125,23 +135,17 @@ public class SurveyHelper {
         int pageSize = pageable.getPageSize();
 
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by("id").descending());
-
         Page<Survey> surveys = surveyRepository.findAll(pageRequest);
-        List<Survey> surveyList = new ArrayList<>();
+        PageInfo pageInfo = getPageInfo(pageNum, pageSize, surveys);
 
+        List<Survey> surveyList = new ArrayList<>();
         if(surveys != null && surveys.hasContent()) {
             surveyList = surveys.getContent();
         }
 
-        PageInfo pageInfo = PageInfo.builder()
-                .pageNum(pageNum)
-                .pageSize(pageSize)
-                .totalElements(surveys.getTotalElements())
-                .totalPages(surveys.getTotalPages())
-                .build();
-
         return SurveyAdminListResponse.from(surveyList, pageInfo);
     }
+
 
     // [Web] 현재 sid 최댓값 가져오기
     /* 검수 후 progress == 2로 업데이트 하려는 경우, 현재 sid == 0이면 sid를 (최댓값 + 1)으로 부여 */
@@ -179,6 +183,22 @@ public class SurveyHelper {
             survey.setNoticeToPanel(surveyAdminDTO.getNoticeToPanel());
         }
 
+        return surveyRepository.save(survey).getId();
+    }
+
+
+    // [App] 설문 현재 응답수 업데이트
+    public Integer updateCurrentHeadCount(Survey survey) {
+        Integer responseCount = survey.getResponseCount();
+        survey.setResponseCount(responseCount + 1);
+
+        return surveyRepository.save(survey).getResponseCount();
+    }
+
+
+    // [App] 설문 progress 업데이트 (2 -> 3)
+    public Long updateProgress2To3(Survey survey) {
+        survey.setProgress(3);
         return surveyRepository.save(survey).getId();
     }
 }
