@@ -13,6 +13,7 @@ import surveasy.domain.panel.dto.request.PanelUidDTO;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
+import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.global.config.jwt.TokenProvider;
 import surveasy.global.config.user.PanelDetails;
 
@@ -27,6 +28,8 @@ public class PanelService {
     private final TokenProvider tokenProvider;
     private final PanelHelper panelHelper;
     private final PanelMapper panelMapper;
+
+    private final ResponseHelper responseHelper;
 
     @Transactional
     public PanelTokenResponse signUpExisting(PanelUidDTO panelUidDTO) throws ParseException, ExecutionException, InterruptedException {
@@ -53,7 +56,7 @@ public class PanelService {
     @Transactional(readOnly = true)
     public PanelHomeInfoResponse getPanelHomeInfo(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
-        Long count = panelHelper.getPanelResponseCount(panel.getId());
+        Long count = responseHelper.getPanelResponseCount(panel.getId());
 
         return panelMapper.toPanelHomeInfoResponse(panel, count);
     }

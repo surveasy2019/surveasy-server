@@ -141,12 +141,6 @@ public class PanelHelper {
     }
 
 
-    // [App] Home - 현재까지 참여한 설문 개수
-    public Long getPanelResponseCount(Long userId) {
-        return 10L;     // responseRepository.findAllByUserId(userId);
-    }
-
-
     // [App] List - 설문 참여 완료 후 패널 정보 업데이트
     /* rewardCurrent, lastParticipatedDate */
     public void updatePanelInfoAfterResponse(Panel panel, Integer reward) {
