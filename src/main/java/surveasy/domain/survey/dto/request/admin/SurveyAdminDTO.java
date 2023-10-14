@@ -1,4 +1,4 @@
-package surveasy.domain.survey.dto.request;
+package surveasy.domain.survey.dto.request.admin;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

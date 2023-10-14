@@ -3,14 +3,11 @@ package surveasy.Survey;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.service.SurveyService;
-
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -5,14 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.SurveyAdminDTO;
-import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
+import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
+import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
+import surveasy.global.config.user.PanelDetails;
 
 import java.util.List;
 
@@ -62,6 +65,12 @@ public class SurveyService {
     @Transactional
     public SurveyIdResponse deleteMyPageSurvey(Long id) {
         return surveyMapper.toSurveyIdResponse(surveyHelper.deleteMyPageSurvey(id));
+    }
+
+    @Transactional
+    public SurveyAppHomeListResponse getSurveyAppHomeListResponse(PanelDetails panelDetails) {
+        final Panel panel = panelDetails.getPanel();
+        return surveyMapper.toSurveyAppHomeListResponse(surveyHelper.getSurveyListProgressEq2(), panel.getId());
     }
 
     @Transactional

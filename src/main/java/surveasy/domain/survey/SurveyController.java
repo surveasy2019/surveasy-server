@@ -7,13 +7,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import surveasy.domain.survey.dto.request.SurveyAdminDTO;
-import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.SurveyMyPageEmailDTO;
-import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
+import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
+import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.service.SurveyService;
+import surveasy.global.config.user.PanelDetails;
 
 @Slf4j
 @RestController
@@ -64,6 +67,12 @@ public class SurveyController {
     @DeleteMapping("/mypage/delete/{surveyId}")
     public SurveyIdResponse deleteMyPageSurvey(@PathVariable Long surveyId) {
         return surveyService.deleteMyPageSurvey(surveyId);
+    }
+
+    @Operation(summary = "App 홈화면 설문 리스트")
+    @GetMapping("/app/home")
+    public SurveyAppHomeListResponse getAppSurveyHomeList(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return surveyService.getSurveyAppHomeListResponse(panelDetails);
     }
 
     @Operation(summary = "Admin 설문 리스트")
