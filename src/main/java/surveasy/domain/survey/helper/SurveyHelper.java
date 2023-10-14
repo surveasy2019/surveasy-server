@@ -6,20 +6,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import surveasy.domain.response.domain.Response;
+import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.SurveyAdminDTO;
-import surveasy.domain.survey.dto.request.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
+import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.exception.SurveyCannotDelete;
 import surveasy.domain.survey.exception.SurveyCannotEdit;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
+import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
 import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -28,6 +30,8 @@ public class SurveyHelper {
 
     private final SurveyRepository surveyRepository;
     private final SurveyMapper surveyMapper;
+
+    private final ResponseRepository responseRepository;
 
     public Survey findById(Long surveyId) {
         return surveyRepository
@@ -184,6 +188,13 @@ public class SurveyHelper {
         }
 
         return surveyRepository.save(survey).getId();
+    }
+
+    // [App] 진행중인 설문 목록
+    /* progress == 2 */
+    public List<Survey> getSurveyListProgressEq2() {
+        List<Survey> surveyList = surveyRepository.findSurveyListByProgressEq2();
+        return surveyList;
     }
 
 

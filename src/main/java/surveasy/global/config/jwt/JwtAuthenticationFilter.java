@@ -11,6 +11,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import surveasy.global.error.exception.NoTokenException;
+import surveasy.global.error.exception.TokenValidateException;
 
 import java.io.IOException;
 
@@ -47,8 +49,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //                    // 로그아웃 O
 //                }
 
-            } else {
-                // throw exception
+            }
+
+            else if(!StringUtils.isNotBlank(jwt)) {
+                throw NoTokenException.EXCEPTION;
+            }
+
+            else {
+                throw TokenValidateException.EXCEPTION;
             }
 
         } catch (AuthenticationException authenticationException) {

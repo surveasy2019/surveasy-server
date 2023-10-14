@@ -1,4 +1,4 @@
-package surveasy.domain.survey.dto.request;
+package surveasy.domain.survey.dto.request.web;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -63,5 +63,11 @@ public class SurveyServiceDTO {
 
     @NotNull
     private String title;
+
+    @NotNull
+    private String email;
+
+    @NotNull
+    private String username;
 
 }

@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import surveasy.domain.survey.dto.request.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.global.common.function.ListAndString;
 
 import java.util.Date;
@@ -107,7 +107,9 @@ public class Survey {
                   String tarInput,
                   List<Integer> tarAge,
                   Integer tarGender,
-                  String title) {
+                  String title,
+                  String email,
+                  String username) {
         this.english = english;
         this.accountName = accountName;
         this.dueDate = dueDate;
@@ -124,9 +126,9 @@ public class Survey {
         this.tarAge = ListAndString.listToString(tarAge);
         this.tarGender = tarGender;
         this.title = title;
+        this.email = email;
+        this.username = username;
 
-        this.username = "김민동";
-        this.email = "min@dong.com";
         this.uploadedAt = new Date();
         this.sid = 0L;
         this.progress = 0;
@@ -152,6 +154,8 @@ public class Survey {
                 .tarAge(surveyServiceDTO.getTarAge())
                 .tarGender(surveyServiceDTO.getTarGender())
                 .title(surveyServiceDTO.getTitle())
+                .email(surveyServiceDTO.getEmail())
+                .username(surveyServiceDTO.getUsername())
                 .build();
     }
 }
