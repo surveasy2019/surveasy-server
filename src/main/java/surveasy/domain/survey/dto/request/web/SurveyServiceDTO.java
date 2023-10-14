@@ -64,4 +64,10 @@ public class SurveyServiceDTO {
     @NotNull
     private String title;
 
+    @NotNull
+    private String email;
+
+    @NotNull
+    private String username;
+
 }
