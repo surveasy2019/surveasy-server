@@ -21,10 +21,7 @@ import surveasy.global.common.function.DateAndString;
 import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Component
@@ -173,6 +170,15 @@ public class PanelHelper {
         }
 
         return panelRepository.save(panel);
+    }
+
+
+    public List<Panel> getActivePanelList() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -7);
+        Date aWeekAgo = cal.getTime();
+
+        return panelRepository.findAllByLastParticipatedAtGreaterThan(aWeekAgo);
     }
 
 
