@@ -1,9 +1,11 @@
 package surveasy.domain.survey.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import surveasy.domain.response.domain.Response;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.global.common.function.ListAndString;
 
@@ -90,6 +92,11 @@ public class Survey {
 
     @NotNull
     private String username;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "response_id")
+    @JsonIgnore
+    private List<Response> responseList;
 
     @Builder
     public Survey(Boolean english,

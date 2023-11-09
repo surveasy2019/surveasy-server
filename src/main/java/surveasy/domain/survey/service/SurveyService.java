@@ -15,6 +15,7 @@ import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
+import surveasy.domain.survey.vo.SurveyListItemVo;
 import surveasy.global.config.user.PanelDetails;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class SurveyService {
 
     @Transactional
     public SurveyListResponse getSurveyList() {
-        List<Survey> surveyList = surveyRepository.findAll();
+        List<SurveyListItemVo> surveyList = surveyRepository.findSurveyList();
         return surveyMapper.toSurveyListResponse(surveyList);
     }
 
@@ -70,7 +71,7 @@ public class SurveyService {
     @Transactional
     public SurveyAppHomeListResponse getSurveyAppHomeListResponse(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
-        return surveyMapper.toSurveyAppHomeListResponse(surveyHelper.getSurveyListProgressEq2(), panel.getId());
+        return surveyMapper.toSurveyAppHomeListResponse(panel.getId(), surveyHelper.getSurveyListProgressEq2(panel.getId()));
     }
 
     @Transactional

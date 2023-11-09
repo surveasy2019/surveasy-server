@@ -24,29 +24,14 @@ public class SurveyListItemVo {
     private String username;
 
     @Builder
-    public SurveyListItemVo(Long sid, String title, Boolean isDone, Integer dDay, String tarInput, Integer headCount, String username) {
+    public SurveyListItemVo(Long sid, String title, Integer progress, Date dueDate, String tarInput, Integer headCount, String username) {
         this.sid = sid;
         this.title = title;
-        this.isDone = isDone;
-        this.dDay = dDay;
+        this.isDone = (progress > 2) ? true : false;
+        this.dDay = isDone ? 0 : calculateDDay(dueDate);
         this.tarInput = tarInput;
         this.headCount = headCount;
         this.username = username;
-    }
-
-    public static SurveyListItemVo from(Survey survey) {
-        Boolean isDone = (survey.getProgress() > 2) ? true : false;
-        Integer dDay = isDone ? 0 : calculateDDay(survey.getDueDate());
-
-        return SurveyListItemVo.builder()
-                .sid(survey.getSid())
-                .title(survey.getTitle())
-                .isDone(isDone)
-                .dDay(dDay)
-                .tarInput(survey.getTarInput())
-                .headCount(survey.getHeadCount())
-                .username(survey.getUsername())
-                .build();
     }
 
     private static Integer calculateDDay(Date dueDate) {

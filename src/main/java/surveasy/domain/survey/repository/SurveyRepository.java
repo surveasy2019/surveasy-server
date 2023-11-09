@@ -18,6 +18,4 @@ public interface SurveyRepository extends JpaRepository<Survey, Long>, PagingAnd
 
     Page<Survey> findAll(Pageable pageable);
 
-    List<Survey> findAllByEmail(String email);
-
 }

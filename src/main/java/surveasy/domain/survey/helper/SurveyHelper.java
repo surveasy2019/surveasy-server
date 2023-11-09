@@ -18,6 +18,7 @@ import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
+import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
 import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
@@ -80,8 +81,8 @@ public class SurveyHelper {
 
 
     // [Web] 마이 페이지 주문 목록
-    public List<Survey> getMyPageOrderList(String email) {
-        return surveyRepository.findAllByEmail(email);
+    public List<SurveyMyPageOrderListItemVo> getMyPageOrderList(String email) {
+        return surveyRepository.findSurveyListByEmail(email);
     }
 
 
@@ -192,8 +193,8 @@ public class SurveyHelper {
 
     // [App] 진행중인 설문 목록
     /* progress == 2 */
-    public List<Survey> getSurveyListProgressEq2() {
-        List<Survey> surveyList = surveyRepository.findSurveyListByProgressEq2();
+    public List<SurveyAppHomeListItemVo> getSurveyListProgressEq2(Long panelId) {
+        List<SurveyAppHomeListItemVo> surveyList = surveyRepository.findSurveyListProgressEq2();
         return surveyList;
     }
 

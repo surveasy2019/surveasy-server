@@ -18,21 +18,11 @@ public class SurveyAppHomeListItemVo {
     private String noticeToPanel;
 
     @Builder
-    private SurveyAppHomeListItemVo(Long id, String title, Integer reward, String link, String noticeToPanel) {
+    public SurveyAppHomeListItemVo(Long id, String title, Integer reward, String link, String noticeToPanel) {
         this.id = id;
         this.title = title;
         this.reward = reward;
         this.link = link;
         this.noticeToPanel = noticeToPanel;
-    }
-
-    public static SurveyAppHomeListItemVo from(Survey survey) {
-        return SurveyAppHomeListItemVo.builder()
-                .id(survey.getId())
-                .title(survey.getTitle())
-                .reward(survey.getReward())
-                .link(survey.getLink())
-                .noticeToPanel(survey.getNoticeToPanel())
-                .build();
     }
 }

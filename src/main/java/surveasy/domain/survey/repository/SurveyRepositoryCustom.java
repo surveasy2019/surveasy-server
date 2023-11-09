@@ -1,6 +1,8 @@
 package surveasy.domain.survey.repository;
 
-import surveasy.domain.survey.domain.Survey;
+import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
+import surveasy.domain.survey.vo.SurveyListItemVo;
+import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
 
 import java.util.List;
 
@@ -8,5 +10,9 @@ public interface SurveyRepositoryCustom {
 
     Long findMaxSid();
 
-    List<Survey> findSurveyListByProgressEq2();
+    List<SurveyListItemVo> findSurveyList();
+
+    List<SurveyAppHomeListItemVo> findSurveyListProgressEq2();
+
+    List<SurveyMyPageOrderListItemVo> findSurveyListByEmail(String email);
 }

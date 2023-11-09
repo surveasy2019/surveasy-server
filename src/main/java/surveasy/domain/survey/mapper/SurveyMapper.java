@@ -31,13 +31,7 @@ public class SurveyMapper {
         return SurveyIdResponse.from(surveyId);
     }
 
-    public SurveyListResponse toSurveyListResponse(List<Survey> surveyList) {
-        List<SurveyListItemVo> surveyListItemVos = surveyList.stream()
-                .filter(survey -> survey.getProgress() >= 2)
-                .sorted(Comparator.comparing(Survey::getId).reversed())
-                .map(SurveyListItemVo::from)
-                .toList();
-
+    public SurveyListResponse toSurveyListResponse(List<SurveyListItemVo> surveyListItemVos) {
         return SurveyListResponse.from(surveyListItemVos);
     }
 
@@ -49,20 +43,13 @@ public class SurveyMapper {
         return SurveyMyPageCountResponse.from(surveyOngoing, surveyDone);
     }
 
-    public SurveyMyPageOrderListResponse toSurveyMyPageOrderListResponse(List<Survey> surveyList) {
-        List<SurveyMyPageOrderListItemVo> surveyMyPageOrderListItemVos = surveyList.stream()
-                .sorted(Comparator.comparing(Survey::getId).reversed())
-                .map(SurveyMyPageOrderListItemVo::from)
-                .toList();
-
+    public SurveyMyPageOrderListResponse toSurveyMyPageOrderListResponse(List<SurveyMyPageOrderListItemVo> surveyMyPageOrderListItemVos) {
         return SurveyMyPageOrderListResponse.from(surveyMyPageOrderListItemVos);
     }
 
-    public SurveyAppHomeListResponse toSurveyAppHomeListResponse(List<Survey> surveyList, Long panelId) {
-        List<SurveyAppHomeListItemVo> surveyAppHomeListItemVos = surveyList.stream()
+    public SurveyAppHomeListResponse toSurveyAppHomeListResponse(Long panelId, List<SurveyAppHomeListItemVo> surveyAppHomeListItemVos) {
+        surveyAppHomeListItemVos = surveyAppHomeListItemVos.stream()
                 .filter(survey -> responseRepository.findByPidAndSidAndIsValid(panelId, survey.getId(), true) == null)
-                .sorted(Comparator.comparing(Survey::getId).reversed())
-                .map(SurveyAppHomeListItemVo::from)
                 .limit(3)
                 .toList();
         return SurveyAppHomeListResponse.from(surveyAppHomeListItemVos);

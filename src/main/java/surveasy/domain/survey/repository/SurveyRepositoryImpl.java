@@ -1,11 +1,14 @@
 package surveasy.domain.survey.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import surveasy.domain.response.domain.QResponse;
+import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.QSurvey;
-import surveasy.domain.survey.domain.Survey;
+import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
+import surveasy.domain.survey.vo.SurveyListItemVo;
+import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
 public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final ResponseRepository responseRepository;
 
     @Override
     public Long findMaxSid() {
@@ -26,12 +30,60 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     @Override
-    public List<Survey> findSurveyListByProgressEq2() {
+    public List<SurveyAppHomeListItemVo> findSurveyListProgressEq2() {
         QSurvey qSurvey = QSurvey.survey;
 
         return jpaQueryFactory
-                .selectFrom(qSurvey)
+                .select(Projections.constructor(SurveyAppHomeListItemVo.class,
+                        qSurvey.id,
+                        qSurvey.title,
+                        qSurvey.reward,
+                        qSurvey.link,
+                        qSurvey.noticeToPanel))
+                .from(qSurvey)
+                .orderBy(qSurvey.dueDate.desc())
                 .where(qSurvey.progress.eq(2))
+                .fetch();
+    }
+
+    @Override
+    public List<SurveyListItemVo> findSurveyList() {
+        QSurvey qSurvey = QSurvey.survey;
+
+        return jpaQueryFactory
+                .select(Projections.constructor(SurveyListItemVo.class,
+                        qSurvey.sid,
+                        qSurvey.title,
+                        qSurvey.progress,
+                        qSurvey.dueDate,
+                        qSurvey.tarInput,
+                        qSurvey.headCount,
+                        qSurvey.username))
+                .from(qSurvey)
+                .orderBy(qSurvey.id.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<SurveyMyPageOrderListItemVo> findSurveyListByEmail(String email) {
+        QSurvey qSurvey = QSurvey.survey;
+
+        return jpaQueryFactory
+                .select(Projections.constructor(SurveyMyPageOrderListItemVo.class,
+                        qSurvey.id,
+                        qSurvey.sid,
+                        qSurvey.title,
+                        qSurvey.headCount,
+                        qSurvey.responseCount,
+                        qSurvey.spendTime,
+                        qSurvey.progress,
+                        qSurvey.price,
+                        qSurvey.priceIdentity,
+                        qSurvey.link,
+                        qSurvey.uploadedAt,
+                        qSurvey.dueDate))
+                .from(qSurvey)
+                .orderBy(qSurvey.id.desc())
                 .fetch();
     }
 
