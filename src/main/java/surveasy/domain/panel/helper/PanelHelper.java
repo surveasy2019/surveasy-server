@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
@@ -16,15 +17,12 @@ import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
+import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
 import surveasy.global.common.function.DateAndString;
-import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Component
@@ -173,6 +171,33 @@ public class PanelHelper {
         }
 
         return panelRepository.save(panel);
+    }
+
+
+    // [Web] Active Panel 목록
+    /* 성별로 구분 */
+    public Activepanel getActivePanelList() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -7);
+        Date aWeekAgo = cal.getTime();
+
+        String totalList = "", maleList = "", femaleList = "";
+
+        for(int i=0 ; i<SurveyOptions.AGES.length-1 ; i++) {
+            Calendar ageFrom = Calendar.getInstance();
+            Calendar ageEnd = Calendar.getInstance();
+            ageFrom.add(Calendar.YEAR, -SurveyOptions.AGES[i]);
+            ageEnd.add(Calendar.YEAR, -SurveyOptions.AGES[i+1]);
+
+            long malePanel = panelRepository.countActivePanel(0, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
+            long femalePanel = panelRepository.countActivePanel(1, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
+
+            totalList += (malePanel + femalePanel) + ",";
+            maleList += malePanel + ",";
+            femaleList += femalePanel + ",";
+        }
+
+        return Activepanel.of(totalList, maleList, femaleList);
     }
 
 
