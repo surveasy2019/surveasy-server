@@ -9,14 +9,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface PanelRepository extends JpaRepository<Panel, Long> {
+public interface PanelRepository extends JpaRepository<Panel, Long>, PanelRepositoryCustom {
 
     Optional<Panel> findById(Long id);
     Optional<Panel> findByUid(String uid);
 
     Optional<Panel> findByEmail(String email);
-
-    List<Panel> findAllByLastParticipatedAtGreaterThan(Date date);
 
     Page<Panel> findAll(Pageable pageable);
 }

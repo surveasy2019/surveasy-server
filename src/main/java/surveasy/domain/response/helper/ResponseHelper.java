@@ -96,7 +96,7 @@ public class ResponseHelper {
 
         /* 설문 응답수 업데이트, 응답수 다 찬 경우 progress 업데이트 */
         Integer afterResponseCount = surveyHelper.updateCurrentHeadCount(survey);
-        if(afterResponseCount >= SurveyOptions.headCountValues[survey.getHeadCount()] + 5) {
+        if(afterResponseCount >= SurveyOptions.HEADCOUNTS[survey.getHeadCount()] + 5) {
             surveyHelper.updateProgress2To3(survey);
         }
 
