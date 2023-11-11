@@ -3,8 +3,10 @@ package surveasy.domain.survey.vo;
 import lombok.Builder;
 import lombok.Getter;
 import surveasy.domain.survey.domain.Survey;
+import surveasy.global.common.function.ListAndString;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 public class SurveyMyPageOrderListItemVo {
@@ -23,6 +25,9 @@ public class SurveyMyPageOrderListItemVo {
 
     private Integer spendTime;
 
+    private List<Integer> tarAge;
+    private Integer tarGender;
+
     private Integer progress;
 
     private Integer price;
@@ -36,9 +41,8 @@ public class SurveyMyPageOrderListItemVo {
     private String dueDate;
 
     @Builder
-    public SurveyMyPageOrderListItemVo(Long id, Long sid, String title,
-                                       Integer headCount, Integer responseCount, Integer spendTime,
-                                       Integer progress, Integer price, Integer priceIdentity, String link,
+    public SurveyMyPageOrderListItemVo(Long id, Long sid, String title, Integer headCount, Integer responseCount, Integer spendTime,
+                                       String tarAgeStr, Integer tarGender, Integer progress, Integer price, Integer priceIdentity, String link,
                                        Date uploadedAt, Date dueDate) {
         this.id = id;
         this.sid = sid;
@@ -47,6 +51,8 @@ public class SurveyMyPageOrderListItemVo {
         this.headCount = headCount;
         this.responseCount = responseCount;
         this.spendTime = spendTime;
+        this.tarAge = ListAndString.strToIntegerList(tarAgeStr);
+        this.tarGender = tarGender;
         this.progress = progress;
         this.price = price;
         this.priceIdentity = priceIdentity;
