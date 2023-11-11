@@ -1,7 +1,6 @@
 package surveasy.global.common.function;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListAndString {
@@ -12,7 +11,7 @@ public class ListAndString {
     }
 
     public static List<Integer> strToIntegerList(String strList) {
-        String[] convertedArray = strList.split(",");
+        String[] convertedArray = strList.split(", ");
         List<Integer> convertedList = new ArrayList<>();
 
         for(String strNum : convertedArray) {

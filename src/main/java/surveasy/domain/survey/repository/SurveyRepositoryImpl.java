@@ -4,7 +4,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.QSurvey;
 import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
 import surveasy.domain.survey.vo.SurveyListItemVo;
@@ -17,7 +16,6 @@ import java.util.List;
 public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-    private final ResponseRepository responseRepository;
 
     @Override
     public Long findMaxSid() {
@@ -76,6 +74,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.headCount,
                         qSurvey.responseCount,
                         qSurvey.spendTime,
+                        qSurvey.tarAge,
+                        qSurvey.tarGender,
                         qSurvey.progress,
                         qSurvey.price,
                         qSurvey.priceIdentity,
