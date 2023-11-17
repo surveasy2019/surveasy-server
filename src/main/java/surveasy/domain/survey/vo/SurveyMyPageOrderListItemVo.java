@@ -30,7 +30,7 @@ public class SurveyMyPageOrderListItemVo {
 
     private Integer progress;
 
-    private Integer price;
+    private Integer priceDiscounted;
 
     private Integer priceIdentity;
 
@@ -42,7 +42,7 @@ public class SurveyMyPageOrderListItemVo {
 
     @Builder
     public SurveyMyPageOrderListItemVo(Long id, Long sid, String title, Integer headCount, Integer responseCount, Integer spendTime,
-                                       String tarAgeStr, Integer tarGender, Integer progress, Integer price, Integer priceIdentity, String link,
+                                       String tarAgeStr, Integer tarGender, Integer progress, Integer priceDiscounted, Integer priceIdentity, String link,
                                        Date uploadedAt, Date dueDate) {
         this.id = id;
         this.sid = sid;
@@ -54,7 +54,7 @@ public class SurveyMyPageOrderListItemVo {
         this.tarAge = ListAndString.strToIntegerList(tarAgeStr);
         this.tarGender = tarGender;
         this.progress = progress;
-        this.price = price;
+        this.priceDiscounted = priceDiscounted;
         this.priceIdentity = priceIdentity;
         this.link = link;
         this.uploadedAt = uploadedAt.toString().substring(0, 10);

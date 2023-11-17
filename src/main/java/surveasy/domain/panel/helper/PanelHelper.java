@@ -192,9 +192,15 @@ public class PanelHelper {
             long malePanel = panelRepository.countActivePanel(0, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
             long femalePanel = panelRepository.countActivePanel(1, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
 
-            totalList += (malePanel + femalePanel) + ",";
-            maleList += malePanel + ",";
-            femaleList += femalePanel + ",";
+            totalList += (malePanel + femalePanel);
+            maleList += malePanel;
+            femaleList += femalePanel;
+
+            if(i<SurveyOptions.AGES.length-2) {
+                totalList += ", ";
+                maleList += ", ";
+                femaleList += ", ";
+            }
         }
 
         return Activepanel.of(totalList, maleList, femaleList);

@@ -13,8 +13,7 @@ public class ActivePanelScheduler {
     private final PanelHelper panelHelper;
     private final ActivepanelRepository activepanelRepository;
 
-    @Scheduled(cron = "0 0 3 10/10 * ?")     // 매달 10일을 시작으로 10일 단위로 [03:00:00 am]마다 실행
-//    @Scheduled(cron = "1/3 * * * * ?")
+    @Scheduled(cron = "0 0 3 1,11,21 * ?")     // 매달 1,11,21일 [03:00:00 am]마다 실행
     public void createActivePanel() {
 
         activepanelRepository.save(panelHelper.getActivePanelList());
