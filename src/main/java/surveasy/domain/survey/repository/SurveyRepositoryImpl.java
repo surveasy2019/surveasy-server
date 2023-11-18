@@ -77,7 +77,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.tarAge,
                         qSurvey.tarGender,
                         qSurvey.progress,
-                        qSurvey.priceDiscounted,
+                        qSurvey.price,
                         qSurvey.priceIdentity,
                         qSurvey.link,
                         qSurvey.uploadedAt,
