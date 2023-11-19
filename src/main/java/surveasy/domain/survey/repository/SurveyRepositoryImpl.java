@@ -84,6 +84,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.uploadedAt,
                         qSurvey.dueDate))
                 .from(qSurvey)
+                .where(qSurvey.email.eq(email))
                 .orderBy(qSurvey.id.desc())
                 .fetch();
     }

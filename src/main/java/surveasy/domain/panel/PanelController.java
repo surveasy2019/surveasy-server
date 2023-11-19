@@ -30,7 +30,6 @@ public class PanelController {
 
     private final PanelService panelService;
 
-
     @PostMapping("/auth/existing")
     @Operation(summary = "App 기존 패널 정보 가져와서 가입시키기")
     public PanelTokenResponse signUpExisting(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
