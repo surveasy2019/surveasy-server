@@ -174,6 +174,12 @@ public class PanelHelper {
     }
 
 
+    // [Web] 홈화면 전체 패널 수
+    public Long getPanelCount() {
+        return panelRepository.count();
+    }
+
+
     // [Web] Active Panel 목록
     /* 성별로 구분 */
     public Activepanel getActivePanelList() {

@@ -35,8 +35,8 @@ public class SurveyMapper {
         return SurveyListResponse.from(surveyListItemVos);
     }
 
-    public SurveyHomeResponse toSurveyHomeResponse(Long surveyCount) {
-        return SurveyHomeResponse.from(surveyCount);
+    public SurveyHomeResponse toSurveyHomeResponse(Long surveyCount, Long panelCount) {
+        return SurveyHomeResponse.from(surveyCount, panelCount);
     }
 
     public SurveyMyPageCountResponse toSurveyMyPageCountResponse(Long surveyOngoing, Long surveyDone) {

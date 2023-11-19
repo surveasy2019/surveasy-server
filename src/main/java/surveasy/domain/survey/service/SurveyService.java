@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
@@ -28,6 +29,7 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final SurveyHelper surveyHelper;
     private final SurveyMapper surveyMapper;
+    private final PanelHelper panelHelper;
 
     @Transactional
     public SurveyIdResponse createSurvey(SurveyServiceDTO surveyServiceDTO) {
@@ -36,7 +38,8 @@ public class SurveyService {
 
     @Transactional
     public SurveyHomeResponse getSurveyTotalCount() {
-        return surveyMapper.toSurveyHomeResponse(surveyHelper.getSurveyTotalCount());
+        return surveyMapper.toSurveyHomeResponse(
+                surveyHelper.getSurveyTotalCount(), panelHelper.getPanelCount());
     }
 
     @Transactional
