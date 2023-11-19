@@ -14,7 +14,9 @@ public class SurveyListItemVo {
 
     private Boolean isDone;
 
-    private Integer dDay;
+    private Integer dDay = 0;
+
+    private Integer dTime = 0;
 
     private String tarInput;
 
@@ -27,10 +29,21 @@ public class SurveyListItemVo {
         this.sid = sid;
         this.title = title;
         this.isDone = (progress > 2) ? true : false;
-        this.dDay = isDone ? 0 : calculateDDay(dueDate);
         this.tarInput = tarInput;
         this.headCount = headCount;
         this.username = username;
+
+        if(progress == 2) {
+            int dday = calculateDDay(dueDate);
+
+            if(dday > 0) {
+                this.dDay = dday;
+            }
+
+            else {
+                this.dTime = calculateDTime(dueDate);
+            }
+        }
     }
 
     private static Integer calculateDDay(Date dueDate) {
@@ -40,5 +53,14 @@ public class SurveyListItemVo {
         Integer dDay = diffDays.intValue();
 
         return dDay;
+    }
+
+    private static Integer calculateDTime(Date dueDate) {
+        Date now = new Date();
+        Long diffSec = (dueDate.getTime() - now.getTime()) / 1000;
+        Long diffHours = diffSec / (60 * 60);
+        Integer dHour = diffHours.intValue();
+
+        return dHour;
     }
 }
