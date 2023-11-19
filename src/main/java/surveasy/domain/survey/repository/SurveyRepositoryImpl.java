@@ -52,10 +52,12 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .select(Projections.constructor(SurveyListItemVo.class,
                         qSurvey.sid,
                         qSurvey.title,
+                        qSurvey.link,
                         qSurvey.progress,
                         qSurvey.dueDate,
                         qSurvey.tarInput,
                         qSurvey.headCount,
+                        qSurvey.responseCount,
                         qSurvey.username))
                 .from(qSurvey)
                 .where(qSurvey.progress.goe(2))

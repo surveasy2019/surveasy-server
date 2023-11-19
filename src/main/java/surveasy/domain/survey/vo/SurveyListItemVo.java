@@ -12,6 +12,8 @@ public class SurveyListItemVo {
 
     private String title;
 
+    private String link;
+
     private Boolean isDone;
 
     private Integer dDay = 0;
@@ -22,15 +24,19 @@ public class SurveyListItemVo {
 
     private Integer headCount;
 
+    private Integer responseCount;
+
     private String username;
 
     @Builder
-    public SurveyListItemVo(Long sid, String title, Integer progress, Date dueDate, String tarInput, Integer headCount, String username) {
+    public SurveyListItemVo(Long sid, String title, String link, Integer progress, Date dueDate, String tarInput, Integer headCount, Integer responseCount, String username) {
         this.sid = sid;
         this.title = title;
+        this.link = link;
         this.isDone = (progress > 2) ? true : false;
         this.tarInput = tarInput;
         this.headCount = headCount;
+        this.responseCount = responseCount;
         this.username = username;
 
         if(progress == 2) {
