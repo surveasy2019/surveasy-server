@@ -2,7 +2,6 @@ package surveasy.domain.survey.vo;
 
 import lombok.Builder;
 import lombok.Getter;
-import surveasy.domain.survey.domain.Survey;
 
 import java.util.Date;
 

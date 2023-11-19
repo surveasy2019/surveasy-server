@@ -58,6 +58,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.headCount,
                         qSurvey.username))
                 .from(qSurvey)
+                .where(qSurvey.progress.goe(2))
                 .orderBy(qSurvey.id.desc())
                 .fetch();
     }
