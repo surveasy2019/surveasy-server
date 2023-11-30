@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
@@ -26,6 +27,12 @@ import surveasy.global.config.user.PanelDetails;
 public class SurveyController {
 
     private final SurveyService surveyService;
+
+    @Operation(summary = "AWS Target Group 확인용")
+    @GetMapping("/tg")
+    public ResponseEntity<String> tg() {
+        return ResponseEntity.ok("success");
+    }
 
     @Operation(summary = "Web 홈화면 설문 개수")
     @GetMapping("/home")
