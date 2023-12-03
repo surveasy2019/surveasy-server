@@ -96,6 +96,7 @@ public class WebSecurityConfig {
         configuration.setAllowedOrigins(
                 Arrays.asList(
                         "http://localhost:8080",
+                        "https://newsurveasyweb.web.app",
                         SERVER_URL
                 )
         );
