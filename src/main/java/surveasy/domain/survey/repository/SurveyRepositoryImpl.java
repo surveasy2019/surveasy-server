@@ -8,6 +8,7 @@ import surveasy.domain.survey.domain.QSurvey;
 import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
 import surveasy.domain.survey.vo.SurveyListItemVo;
 import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
+import surveasy.domain.survey.vo.SurveyVo;
 
 import java.util.List;
 
@@ -89,6 +90,21 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .where(qSurvey.email.eq(email))
                 .orderBy(qSurvey.id.desc())
                 .fetch();
+    }
+
+    @Override
+    public SurveyVo findSurveyVo(Long surveyId) {
+        QSurvey qSurvey = QSurvey.survey;
+
+        return jpaQueryFactory
+                .select(Projections.constructor(SurveyVo.class,
+                        qSurvey.eHeadcount,
+                        qSurvey.eSpendTime,
+                        qSurvey.eLanguage,
+                        qSurvey.eIdentity))
+                .from(qSurvey)
+                .where(qSurvey.id.eq(surveyId))
+                .fetchFirst();
     }
 
 }

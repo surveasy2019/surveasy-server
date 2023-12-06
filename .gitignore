@@ -40,7 +40,7 @@ out/
 application-secret.yml
 
 ## Firebase serviceAccount ###
-firebaseServiceAccountKey.json
+src/main/resources/firebaseServiceAccountKey.json
 
 ## QueryDSL ###
 generated

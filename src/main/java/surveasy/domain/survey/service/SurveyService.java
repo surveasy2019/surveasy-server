@@ -17,6 +17,7 @@ import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.vo.SurveyListItemVo;
+import surveasy.domain.survey.vo.SurveyVo;
 import surveasy.global.config.user.PanelDetails;
 
 import java.util.List;
@@ -85,5 +86,10 @@ public class SurveyService {
     @Transactional
     public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
         return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
+    }
+
+    @Transactional
+    public SurveyVo getSurveyVo(Long surveyId) {
+        return surveyRepository.findSurveyVo(surveyId);
     }
 }

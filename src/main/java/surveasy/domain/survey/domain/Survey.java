@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import surveasy.domain.response.domain.Response;
+import surveasy.domain.survey.domain.option.SurveyHeadcount;
+import surveasy.domain.survey.domain.option.SurveyIdentity;
+import surveasy.domain.survey.domain.option.SurveyLanguage;
+import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.global.common.function.ListAndString;
 
@@ -92,6 +96,24 @@ public class Survey {
 
     @NotNull
     private String username;
+
+
+
+
+    @Nullable
+    private SurveyHeadcount eHeadcount = SurveyHeadcount.HEAD_30;
+
+    @Nullable
+    private SurveySpendTime eSpendTime = SurveySpendTime.TIME_0;
+
+    @Nullable
+    private SurveyLanguage eLanguage = SurveyLanguage.KOR;
+
+    @Nullable
+    private SurveyIdentity eIdentity = SurveyIdentity.GRADUATE;
+
+
+
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "response_id")

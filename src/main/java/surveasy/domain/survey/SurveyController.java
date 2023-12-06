@@ -17,6 +17,7 @@ import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.service.SurveyService;
+import surveasy.domain.survey.vo.SurveyVo;
 import surveasy.global.config.user.PanelDetails;
 
 @Slf4j
@@ -92,5 +93,10 @@ public class SurveyController {
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId, @RequestBody SurveyAdminDTO surveyAdminDTO) {
         return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
+    }
+
+    @GetMapping("/{surveyId}")
+    public ResponseEntity<SurveyVo> getSurveyVo(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(surveyService.getSurveyVo(surveyId));
     }
 }
