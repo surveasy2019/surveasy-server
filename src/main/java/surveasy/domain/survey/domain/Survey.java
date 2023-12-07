@@ -93,6 +93,9 @@ public class Survey {
     @NotNull
     private String username;
 
+    @Nullable
+    private Long reviewId;
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "response_id")
     @JsonIgnore
