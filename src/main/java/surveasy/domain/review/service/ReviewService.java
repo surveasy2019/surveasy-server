@@ -9,6 +9,7 @@ import surveasy.domain.review.dto.response.HomeReviewVoListResponse;
 import surveasy.domain.review.dto.response.ReviewIdResponse;
 import surveasy.domain.review.helper.ReviewHelper;
 import surveasy.domain.review.mapper.ReviewMapper;
+import surveasy.domain.review.vo.ReviewVo;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,10 @@ public class ReviewService {
 
     public HomeReviewVoListResponse getHomeReviewVoList() {
         return reviewMapper.toHomeReviewVoListResponse(reviewHelper.getHomeReviewVoList());
+    }
+
+    public ReviewVo getReviewVoBySurveyId(Long surveyId) {
+        return reviewHelper.getReviewVoBySurveyId(surveyId);
     }
 
     @Transactional

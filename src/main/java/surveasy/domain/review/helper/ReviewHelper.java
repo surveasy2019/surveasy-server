@@ -8,7 +8,7 @@ import surveasy.domain.review.dto.request.ReviewUpdateRequestDTO;
 import surveasy.domain.review.exception.ReviewNotFound;
 import surveasy.domain.review.mapper.ReviewMapper;
 import surveasy.domain.review.repository.ReviewRepository;
-import surveasy.domain.review.vo.HomeReviewVo;
+import surveasy.domain.review.vo.ReviewVo;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.repository.SurveyRepository;
@@ -37,8 +37,13 @@ public class ReviewHelper {
         return savedReview.getId();
     }
 
-    public List<HomeReviewVo> getHomeReviewVoList() {
+    public List<ReviewVo> getHomeReviewVoList() {
         return reviewRepository.findAllHomeReviewVo();
+    }
+
+    public ReviewVo getReviewVoBySurveyId(Long surveyId) {
+        return reviewRepository.findReviewVoBySurveyId(surveyId)
+                .orElseThrow(() -> ReviewNotFound.EXCEPTION);
     }
 
     public Long updateReview(Long reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO) {

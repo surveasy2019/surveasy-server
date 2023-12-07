@@ -6,7 +6,7 @@ import surveasy.domain.review.domain.Review;
 import surveasy.domain.review.dto.request.ReviewCreateRequestDTO;
 import surveasy.domain.review.dto.response.HomeReviewVoListResponse;
 import surveasy.domain.review.dto.response.ReviewIdResponse;
-import surveasy.domain.review.vo.HomeReviewVo;
+import surveasy.domain.review.vo.ReviewVo;
 import surveasy.domain.survey.domain.Survey;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class ReviewMapper {
         return ReviewIdResponse.from(reviewId);
     }
 
-    public HomeReviewVoListResponse toHomeReviewVoListResponse(List<HomeReviewVo> homeReviewVoList) {
-        return HomeReviewVoListResponse.from(homeReviewVoList);
+    public HomeReviewVoListResponse toHomeReviewVoListResponse(List<ReviewVo> reviewVoList) {
+        return HomeReviewVoListResponse.from(reviewVoList);
     }
 }

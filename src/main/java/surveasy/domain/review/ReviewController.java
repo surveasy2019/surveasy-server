@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.review.dto.request.ReviewCreateRequestDTO;
 import surveasy.domain.review.dto.request.ReviewUpdateRequestDTO;
 import surveasy.domain.review.dto.response.HomeReviewVoListResponse;
 import surveasy.domain.review.dto.response.ReviewIdResponse;
 import surveasy.domain.review.service.ReviewService;
+import surveasy.domain.review.vo.ReviewVo;
 
 @Slf4j
 @RestController
@@ -32,6 +34,12 @@ public class ReviewController {
     @GetMapping("/home")
     public HomeReviewVoListResponse getHomeReviewVoList() {
         return reviewService.getHomeReviewVoList();
+    }
+
+    @Operation(summary = "리뷰 1개 상세 보기")
+    @GetMapping("/{surveyId}")
+    public ResponseEntity<ReviewVo> getReviewVoBySurveyId(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(reviewService.getReviewVoBySurveyId(surveyId));
     }
 
     @Operation(summary = "Admin 리뷰 수정")

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class HomeReviewVo {
+public class ReviewVo {
 
     private Long id;
 
@@ -19,7 +19,7 @@ public class HomeReviewVo {
     private String createdAt;
 
     @Builder
-    public HomeReviewVo(Long id, String surveyTitle, String username, Integer grade, String content, String createdAt) {
+    public ReviewVo(Long id, String surveyTitle, String username, Integer grade, String content, String createdAt) {
         this.id = id;
         this.surveyTitle = surveyTitle;
         this.username = username;
