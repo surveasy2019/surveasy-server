@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.review.dto.request.ReviewCreateRequestDTO;
+import surveasy.domain.review.dto.request.ReviewUpdateRequestDTO;
+import surveasy.domain.review.dto.response.HomeReviewVoListResponse;
 import surveasy.domain.review.dto.response.ReviewIdResponse;
 import surveasy.domain.review.service.ReviewService;
 
@@ -24,5 +26,19 @@ public class ReviewController {
             @PathVariable Long surveyId,
             @RequestBody ReviewCreateRequestDTO reviewCreateRequestDTO) {
         return reviewService.createReview(surveyId, reviewCreateRequestDTO);
+    }
+
+    @Operation(summary = "Web 홈화면 리뷰 목록")
+    @GetMapping("/home")
+    public HomeReviewVoListResponse getHomeReviewVoList() {
+        return reviewService.getHomeReviewVoList();
+    }
+
+    @Operation(summary = "Admin 리뷰 수정")
+    @PatchMapping("/admin/{reviewId}")
+    public ReviewIdResponse updateReview(
+            @PathVariable Long reviewId,
+            @RequestBody ReviewUpdateRequestDTO reviewUpdateRequestDTO) {
+        return reviewService.updateReview(reviewId, reviewUpdateRequestDTO);
     }
 }
