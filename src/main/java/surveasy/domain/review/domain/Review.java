@@ -38,7 +38,7 @@ public class Review {
     private String email;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "survey_id")
     private Survey survey;
 
     @Builder
