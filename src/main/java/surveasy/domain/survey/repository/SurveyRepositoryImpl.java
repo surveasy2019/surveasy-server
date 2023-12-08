@@ -5,9 +5,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import surveasy.domain.survey.domain.QSurvey;
-import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
-import surveasy.domain.survey.vo.SurveyListItemVo;
-import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
+import surveasy.domain.survey.domain.SurveyStatus;
+import surveasy.domain.survey.vo.SurveyAppHomeVo;
+import surveasy.domain.survey.vo.SurveyListVo;
+import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
 
 import java.util.List;
 
@@ -28,11 +29,30 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     @Override
-    public List<SurveyAppHomeListItemVo> findSurveyListProgressEq2() {
+    public Long countByEmailAndStatus(String email, String statusStr) {
+        QSurvey qSurvey = QSurvey.survey;
+
+        if(statusStr.equals("ongoing")) {
+            return jpaQueryFactory
+                    .select(qSurvey.count())
+                    .from(qSurvey)
+                    .where(qSurvey.email.eq(email), qSurvey.status.eq(SurveyStatus.IN_PROGRESS))
+                    .fetchFirst();
+        }
+
+        return jpaQueryFactory
+                .select(qSurvey.count())
+                .from(qSurvey)
+                .where(qSurvey.email.eq(email), qSurvey.status.eq(SurveyStatus.DONE).or(qSurvey.status.eq(SurveyStatus.REVIEW_DONE)))
+                .fetchFirst();
+    }
+
+    @Override
+    public List<SurveyAppHomeVo> findAllSurveyAppHomeVos() {
         QSurvey qSurvey = QSurvey.survey;
 
         return jpaQueryFactory
-                .select(Projections.constructor(SurveyAppHomeListItemVo.class,
+                .select(Projections.constructor(SurveyAppHomeVo.class,
                         qSurvey.id,
                         qSurvey.title,
                         qSurvey.reward,
@@ -40,48 +60,48 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.noticeToPanel))
                 .from(qSurvey)
                 .orderBy(qSurvey.dueDate.desc())
-                .where(qSurvey.progress.eq(2))
+                .where(qSurvey.status.eq(SurveyStatus.IN_PROGRESS))
                 .fetch();
     }
 
     @Override
-    public List<SurveyListItemVo> findSurveyList() {
+    public List<SurveyListVo> findAllSurveyListVos() {
         QSurvey qSurvey = QSurvey.survey;
 
         return jpaQueryFactory
-                .select(Projections.constructor(SurveyListItemVo.class,
+                .select(Projections.constructor(SurveyListVo.class,
                         qSurvey.sid,
                         qSurvey.title,
                         qSurvey.link,
-                        qSurvey.progress,
+                        qSurvey.status,
                         qSurvey.dueDate,
-                        qSurvey.tarInput,
+                        qSurvey.targetInput,
                         qSurvey.headCount,
                         qSurvey.responseCount,
                         qSurvey.username))
                 .from(qSurvey)
-                .where(qSurvey.progress.goe(2))
+                .where(qSurvey.status.ne(SurveyStatus.CREATED), qSurvey.status.ne(SurveyStatus.WAITING))
                 .orderBy(qSurvey.id.desc())
                 .fetch();
     }
 
     @Override
-    public List<SurveyMyPageOrderListItemVo> findSurveyListByEmail(String email) {
+    public List<SurveyMyPageOrderVo> findAllSurveyMyPageVosByEmail(String email) {
         QSurvey qSurvey = QSurvey.survey;
 
         return jpaQueryFactory
-                .select(Projections.constructor(SurveyMyPageOrderListItemVo.class,
+                .select(Projections.constructor(SurveyMyPageOrderVo.class,
                         qSurvey.id,
                         qSurvey.sid,
                         qSurvey.title,
                         qSurvey.headCount,
                         qSurvey.responseCount,
                         qSurvey.spendTime,
-                        qSurvey.tarAge,
-                        qSurvey.tarGender,
-                        qSurvey.progress,
+                        qSurvey.targetAgeListStr,
+                        qSurvey.targetGender,
+                        qSurvey.status,
                         qSurvey.price,
-                        qSurvey.priceIdentity,
+                        qSurvey.identity,
                         qSurvey.link,
                         qSurvey.uploadedAt,
                         qSurvey.dueDate))

@@ -1,10 +1,10 @@
-package surveasy.global.common.function;
+package surveasy.global.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateAndString {
+public class DateAndStringUtil {
 
     public static Date stringToDateYMD(String strDate) throws ParseException {
         if(strDate == null) return null;

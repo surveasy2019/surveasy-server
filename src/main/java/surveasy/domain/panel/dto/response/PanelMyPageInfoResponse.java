@@ -3,10 +3,7 @@ package surveasy.domain.panel.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.global.common.function.DateAndString;
-
-import java.util.ArrayList;
-import java.util.Map;
+import surveasy.global.common.util.DateAndStringUtil;
 
 @Getter
 public class PanelMyPageInfoResponse {
@@ -45,7 +42,7 @@ public class PanelMyPageInfoResponse {
 
         return PanelMyPageInfoResponse.builder()
                 .name(panel.getName())
-                .birth(DateAndString.dateToStringYMD(panel.getBirth()))
+                .birth(DateAndStringUtil.dateToStringYMD(panel.getBirth()))
                 .gender(genderStr[panel.getGender()])
                 .email(panel.getEmail())
                 .phoneNumber(panel.getPhoneNumber())

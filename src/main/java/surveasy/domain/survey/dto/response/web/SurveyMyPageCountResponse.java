@@ -15,7 +15,7 @@ public class SurveyMyPageCountResponse {
         this.surveyDone = surveyDone;
     }
 
-    public static SurveyMyPageCountResponse from(Long surveyOngoing, Long surveyDone) {
+    public static SurveyMyPageCountResponse of(Long surveyOngoing, Long surveyDone) {
         return SurveyMyPageCountResponse.builder()
                 .surveyOngoing(surveyOngoing)
                 .surveyDone(surveyDone)

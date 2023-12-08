@@ -6,16 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import surveasy.domain.survey.domain.Survey;
-
-import java.util.List;
+import surveasy.domain.survey.domain.SurveyStatus;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long>, PagingAndSortingRepository<Survey, Long>, JpaSpecificationExecutor<Survey>, SurveyRepositoryCustom {
 
-    Long countByProgressGreaterThan(Integer min);
-
-    Long countByEmailAndProgressEquals(String email, Integer progress);
-    Long countByEmailAndProgressGreaterThanEqual(String email, Integer progress);
-
+    Long countByStatus(SurveyStatus status);
     Page<Survey> findAll(Pageable pageable);
 
 }

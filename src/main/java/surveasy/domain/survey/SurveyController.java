@@ -35,13 +35,13 @@ public class SurveyController {
     }
 
     @Operation(summary = "Web 홈화면 설문 개수")
-    @GetMapping("/home")
+    @GetMapping("/count")
     public SurveyHomeResponse getSurveyTotalCount() {
         return surveyService.getSurveyTotalCount();
     }
 
     @Operation(summary = "Web 설문 주문하기")
-    @PostMapping("/service")
+    @PostMapping("")
     public SurveyIdResponse createSurvey(@RequestBody @Valid SurveyServiceDTO surveyServiceDTO) {
         return surveyService.createSurvey(surveyServiceDTO);
     }
@@ -64,14 +64,14 @@ public class SurveyController {
         return surveyService.getSurveyMyPageOrderList(surveyMyPageEmailDTO.getEmail());
     }
 
-    @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headCount, price")
-    @PatchMapping("/mypage/edit/{surveyId}")
+    @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headcount, price")
+    @PatchMapping("/{surveyId}")
     public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId, @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
         return surveyService.editMyPageSurvey(surveyId, surveyMyPageEditDTO);
     }
 
     @Operation(summary = "Web 마이페이지 설문 삭제")
-    @DeleteMapping("/mypage/delete/{surveyId}")
+    @DeleteMapping("/{surveyId}")
     public SurveyIdResponse deleteMyPageSurvey(@PathVariable Long surveyId) {
         return surveyService.deleteMyPageSurvey(surveyId);
     }
@@ -88,7 +88,7 @@ public class SurveyController {
         return surveyService.getAdminSurveyList(pageable);
     }
 
-    @Operation(summary = "Admin 설문 정보 업데이트 - progress, link, noticeToPanel, panelReward")
+    @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link")
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId, @RequestBody SurveyAdminDTO surveyAdminDTO) {
         return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);

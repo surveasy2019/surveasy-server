@@ -9,7 +9,7 @@ public class SurveyIdResponse {
     private Long surveyId;
 
     @Builder
-    public SurveyIdResponse(Long surveyId) {
+    private SurveyIdResponse(Long surveyId) {
         this.surveyId = surveyId;
     }
 

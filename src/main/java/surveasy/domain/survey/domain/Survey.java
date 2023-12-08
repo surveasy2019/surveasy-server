@@ -6,8 +6,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import surveasy.domain.response.domain.Response;
+import surveasy.domain.survey.domain.option.SurveyHeadcount;
+import surveasy.domain.survey.domain.option.SurveyIdentity;
+import surveasy.domain.survey.domain.option.SurveyLanguage;
+import surveasy.domain.survey.domain.option.SurveySpendTime;
+import surveasy.domain.survey.domain.target.TargetAge;
+import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
-import surveasy.global.common.function.ListAndString;
+import surveasy.global.common.util.ListAndStringUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -21,20 +27,40 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    /* Service 1 */
     @NotNull
-    private Long sid;
+    @Enumerated(EnumType.STRING)
+    private SurveyHeadcount headCount;
 
     @NotNull
-    private Integer progress;
-
-    @NotNull
-    private Boolean english;
-
-    @NotNull
-    private String accountName;
+    @Enumerated(EnumType.STRING)
+    private SurveySpendTime spendTime;
 
     @NotNull
     private Date dueDate;
+
+    @NotNull
+    private TargetGender targetGender;
+
+    @NotNull
+    private String targetAgeListStr;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private SurveyLanguage language;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private SurveyIdentity identity;
+
+
+    /* Service 2 */
+    @NotNull
+    private String title;
+
+    @Nullable
+    private String targetInput;
 
     @NotNull
     private String institute;
@@ -45,14 +71,8 @@ public class Survey {
     @Nullable
     private String notice;
 
-    @Nullable
-    private String noticeToPanel;
-
     @NotNull
-    private Integer reward;
-
-    @NotNull
-    private Integer pointAdd;
+    private String accountName;
 
     @NotNull
     private Integer price;
@@ -61,40 +81,40 @@ public class Survey {
     private Integer priceDiscounted;
 
     @NotNull
-    private Integer priceIdentity;
+    private Integer pointAdd;
 
-    @NotNull
-    private Integer headCount;
 
-    @NotNull
-    private Integer responseCount;
-
-    @NotNull
-    private Integer spendTime;
-
-    @Nullable
-    private String tarInput;
-
-    @NotNull
-    private String tarAge;
-
-    @NotNull
-    private Integer tarGender;
-
-    @NotNull
-    private String title;
-
-    @NotNull
-    private Date uploadedAt;
-
+    /* User */
     @NotNull
     private String email;
 
     @NotNull
     private String username;
 
+
+    /* Default */
+    @NotNull
+    private Long sid;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private SurveyStatus status = SurveyStatus.CREATED;
+
+    @NotNull
+    private Date uploadedAt;
+
+    @Nullable
+    private String noticeToPanel;
+
+    @NotNull
+    private Integer reward;
+
+    @NotNull
+    private Integer responseCount;
+
     @Nullable
     private Long reviewId;
+
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "response_id")
@@ -102,68 +122,58 @@ public class Survey {
     private List<Response> responseList;
 
     @Builder
-    public Survey(Boolean english,
-                  String accountName,
-                  Date dueDate,
-                  String institute,
-                  String link,
-                  String notice,
-                  Integer pointAdd,
-                  Integer price,
-                  Integer priceDiscounted,
-                  Integer priceIdentity,
-                  Integer headCount,
-                  Integer spendTime,
-                  String tarInput,
-                  List<Integer> tarAge,
-                  Integer tarGender,
-                  String title,
-                  String email,
-                  String username) {
-        this.english = english;
-        this.accountName = accountName;
+    private Survey(SurveyHeadcount headcount, SurveySpendTime spendTime, Date dueDate,
+                  TargetGender targetGender, List<TargetAge> targetAgeList,
+                  SurveyLanguage language, SurveyIdentity identity,
+                  String title, String targetInput, String institute,
+                  String link, String notice, String accountName,
+                  Integer price, Integer priceDiscounted, Integer pointAdd,
+                  String email, String username) {
+        this.headCount = headcount;
+        this.spendTime = spendTime;
         this.dueDate = dueDate;
+        this.targetGender = targetGender;
+        this.targetAgeListStr = ListAndStringUtil.listToStr(targetAgeList);
+        this.language = language;
+        this.identity = identity;
+
+        this.title = title;
+        this.targetInput = targetInput;
         this.institute = institute;
         this.link = link;
         this.notice = notice;
-        this.pointAdd = pointAdd;
+        this.accountName = accountName;
         this.price = price;
         this.priceDiscounted = priceDiscounted;
-        this.priceIdentity = priceIdentity;
-        this.headCount = headCount;
-        this.spendTime = spendTime;
-        this.tarInput = tarInput;
-        this.tarAge = ListAndString.listToString(tarAge);
-        this.tarGender = tarGender;
-        this.title = title;
+        this.pointAdd = pointAdd;
+
         this.email = email;
         this.username = username;
 
-        this.uploadedAt = new Date();
         this.sid = 0L;
-        this.progress = 0;
+        this.uploadedAt = new Date();
         this.reward = 0;
         this.responseCount = 0;
     }
 
-    public static Survey of(SurveyServiceDTO surveyServiceDTO) {
+    public static Survey from(SurveyServiceDTO surveyServiceDTO) {
         return Survey.builder()
-                .english(surveyServiceDTO.getEnglish())
-                .accountName(surveyServiceDTO.getAccountName())
+                .headcount(surveyServiceDTO.getHeadcount())
+                .spendTime(surveyServiceDTO.getSpendTime())
                 .dueDate(surveyServiceDTO.getDueDate())
+                .targetGender(surveyServiceDTO.getTargetGender())
+                .targetAgeList(surveyServiceDTO.getTargetAgeList())
+                .language(surveyServiceDTO.getLanguage())
+                .identity(surveyServiceDTO.getIdentity())
+                .title(surveyServiceDTO.getTitle())
+                .targetInput(surveyServiceDTO.getTargetInput())
                 .institute(surveyServiceDTO.getInstitute())
                 .link(surveyServiceDTO.getLink())
                 .notice(surveyServiceDTO.getNotice())
-                .pointAdd(surveyServiceDTO.getPointAdd())
+                .accountName(surveyServiceDTO.getAccountName())
                 .price(surveyServiceDTO.getPrice())
                 .priceDiscounted(surveyServiceDTO.getPriceDiscounted())
-                .priceIdentity(surveyServiceDTO.getPriceIdentity())
-                .headCount(surveyServiceDTO.getHeadCount())
-                .spendTime(surveyServiceDTO.getSpendTime())
-                .tarInput(surveyServiceDTO.getTarInput())
-                .tarAge(surveyServiceDTO.getTarAge())
-                .tarGender(surveyServiceDTO.getTarGender())
-                .title(surveyServiceDTO.getTitle())
+                .pointAdd(surveyServiceDTO.getPointAdd())
                 .email(surveyServiceDTO.getEmail())
                 .username(surveyServiceDTO.getUsername())
                 .build();

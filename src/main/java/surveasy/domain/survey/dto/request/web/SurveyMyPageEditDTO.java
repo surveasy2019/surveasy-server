@@ -2,6 +2,7 @@ package surveasy.domain.survey.dto.request.web;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import surveasy.domain.survey.domain.option.SurveyHeadcount;
 
 @Getter
 @NoArgsConstructor
@@ -11,7 +12,7 @@ public class SurveyMyPageEditDTO {
 
     private String link;
 
-    private Integer headCount;
+    private SurveyHeadcount headCount;
 
     private Integer price;
 }

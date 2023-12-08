@@ -19,7 +19,7 @@ public class SurveyAdminListResponse {
         this.pageInfo = pageInfo;
     }
 
-    public static SurveyAdminListResponse from(List<Survey> surveyList, PageInfo pageInfo) {
+    public static SurveyAdminListResponse of(List<Survey> surveyList, PageInfo pageInfo) {
         return SurveyAdminListResponse.builder()
                 .pageInfo(pageInfo)
                 .surveyList(surveyList)

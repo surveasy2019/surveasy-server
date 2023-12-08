@@ -19,7 +19,7 @@ import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
-import surveasy.global.common.function.DateAndString;
+import surveasy.global.common.util.DateAndStringUtil;
 
 import java.text.ParseException;
 import java.util.*;
@@ -51,8 +51,8 @@ public class PanelHelper {
 
 
         if(documentSnapshot.exists()) {
-            Date birth = DateAndString.stringToDateYMD(documentSnapshot.getString("birthDate"));
-            Date signedAt = DateAndString.stringToDateYMD(documentSnapshot.getString("registerDate"));
+            Date birth = DateAndStringUtil.stringToDateYMD(documentSnapshot.getString("birthDate"));
+            Date signedAt = DateAndStringUtil.stringToDateYMD(documentSnapshot.getString("registerDate"));
             Boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
 

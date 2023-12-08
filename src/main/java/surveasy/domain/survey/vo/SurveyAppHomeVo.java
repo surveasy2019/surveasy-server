@@ -2,10 +2,9 @@ package surveasy.domain.survey.vo;
 
 import lombok.Builder;
 import lombok.Getter;
-import surveasy.domain.survey.domain.Survey;
 
 @Getter
-public class SurveyAppHomeListItemVo {
+public class SurveyAppHomeVo {
 
     private Long id;
 
@@ -18,7 +17,7 @@ public class SurveyAppHomeListItemVo {
     private String noticeToPanel;
 
     @Builder
-    public SurveyAppHomeListItemVo(Long id, String title, Integer reward, String link, String noticeToPanel) {
+    public SurveyAppHomeVo(Long id, String title, Integer reward, String link, String noticeToPanel) {
         this.id = id;
         this.title = title;
         this.reward = reward;

@@ -6,6 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import surveasy.domain.survey.domain.option.SurveyHeadcount;
+import surveasy.domain.survey.domain.option.SurveyIdentity;
+import surveasy.domain.survey.domain.option.SurveyLanguage;
+import surveasy.domain.survey.domain.option.SurveySpendTime;
+import surveasy.domain.survey.domain.target.TargetAge;
+import surveasy.domain.survey.domain.target.TargetGender;
 
 import java.util.Date;
 import java.util.List;
@@ -16,14 +22,35 @@ import java.util.List;
 @NoArgsConstructor
 public class SurveyServiceDTO {
 
+    /* Service 1 */
     @NotNull
-    private Boolean english;
+    private SurveyHeadcount headcount;
 
     @NotNull
-    private String accountName;
+    private SurveySpendTime spendTime;
 
     @NotNull
     private Date dueDate;
+
+    @NotNull
+    private TargetGender targetGender;
+
+    @NotNull
+    private List<TargetAge> targetAgeList;
+
+    @NotNull
+    private SurveyLanguage language;
+
+    @NotNull
+    private SurveyIdentity identity;
+
+
+    /* Service 2 */
+    @NotNull
+    private String title;
+
+    @Nullable
+    private String targetInput;
 
     @NotNull
     private String institute;
@@ -35,7 +62,8 @@ public class SurveyServiceDTO {
     private String notice;
 
     @NotNull
-    private Integer pointAdd;
+    private String accountName;
+
 
     @NotNull
     private Integer price;
@@ -44,30 +72,15 @@ public class SurveyServiceDTO {
     private Integer priceDiscounted;
 
     @NotNull
-    private Integer priceIdentity;
+    private Integer pointAdd;
 
-    @NotNull
-    private Integer headCount;
 
-    @NotNull
-    private Integer spendTime;
-
-    @Nullable
-    private String tarInput;
-
-    @NotNull
-    private List<Integer> tarAge;
-
-    @NotNull
-    private Integer tarGender;
-
-    @NotNull
-    private String title;
-
+    /* User */
     @NotNull
     private String email;
 
     @NotNull
     private String username;
+
 
 }

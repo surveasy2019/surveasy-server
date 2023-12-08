@@ -6,8 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.Survey;
+import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
@@ -17,12 +17,11 @@ import surveasy.domain.survey.exception.SurveyCannotEdit;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
-import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
-import surveasy.domain.survey.vo.SurveyMyPageOrderListItemVo;
+import surveasy.domain.survey.vo.SurveyAppHomeVo;
+import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
 import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -31,16 +30,6 @@ public class SurveyHelper {
 
     private final SurveyRepository surveyRepository;
     private final SurveyMapper surveyMapper;
-
-    private final ResponseRepository responseRepository;
-
-    public Survey findById(Long surveyId) {
-        return surveyRepository
-                .findById(surveyId)
-                .orElseThrow(() -> {
-                    throw SurveyNotFound.EXCEPTION;
-                });
-    }
 
     public PageInfo getPageInfo(int pageNum, int pageSize, Page<Survey> surveys) {
         return PageInfo.builder()
@@ -51,15 +40,22 @@ public class SurveyHelper {
                 .build();
     }
 
+    public boolean isDone(SurveyStatus status) {
+        return status.equals(SurveyStatus.DONE) || status.equals(SurveyStatus.REVIEW_DONE);
+    }
 
-    // [Web] 홈화면 진행중인 설문 개수
-    public Long getSurveyTotalCount() {
-        return surveyRepository
-                .countByProgressGreaterThan(1);
+    private boolean isWaiting(SurveyStatus status) {
+        return status.equals(SurveyStatus.CREATED) || status.equals(SurveyStatus.WAITING);
     }
 
 
-    // [Web] 설문 주문하기
+    /* [Web] 홈화면 진행중인 설문 개수 */
+    public Long getSurveyTotalCount() {
+        return surveyRepository.countByStatus(SurveyStatus.IN_PROGRESS);
+    }
+
+
+    /* [Web] 설문 주문하기 */
     public Long createSurvey(SurveyServiceDTO surveyServiceDTO) {
         Survey newSurvey = surveyMapper.toEntity(surveyServiceDTO);
         Survey savedSurvey = surveyRepository.save(newSurvey);
@@ -68,33 +64,31 @@ public class SurveyHelper {
     }
 
 
-    // [Web] 마이 페이지 진행중인 설문 개수
+    /* [Web] 마이 페이지 진행중인 설문 개수 */
     public Long getMyPageSurveyOngoingCount(String email) {
-        return surveyRepository.countByEmailAndProgressEquals(email, 2);
+        return surveyRepository.countByEmailAndStatus(email, "ongoing");
     }
 
 
-    // [Web] 마이 페이지 완료된 설문 개수
+    /* [Web] 마이 페이지 완료된 설문 개수 */
     public Long getMyPageSurveyDoneCount(String email) {
-        return surveyRepository.countByEmailAndProgressGreaterThanEqual(email, 3);
+        return surveyRepository.countByEmailAndStatus(email, "done");
     }
 
 
-    // [Web] 마이 페이지 주문 목록
-    public List<SurveyMyPageOrderListItemVo> getMyPageOrderList(String email) {
-        return surveyRepository.findSurveyListByEmail(email);
+    /* [Web] 마이 페이지 주문 목록 */
+    public List<SurveyMyPageOrderVo> getMyPageOrderList(String email) {
+        return surveyRepository.findAllSurveyMyPageVosByEmail(email);
     }
 
 
-    // [Web] 마이 페이지 설문 수정 (title, link, headCount, price)
-    /* progress 2 미만일 경우만 가능 */
+    /* [Web] 마이 페이지 설문 수정 (title, link, headCount, price)
+    * progress 2 미만일 경우만 가능 */
     public Long editMyPageSurvey(Long id, SurveyMyPageEditDTO surveyMyPageEditDTO) {
         Survey survey = surveyRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw SurveyNotFound.EXCEPTION;
-                });
+                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
 
-        if(survey.getProgress() >= 2) {
+        if(!isWaiting(survey.getStatus())) {
             throw SurveyCannotEdit.EXCEPTION;
         }
 
@@ -118,14 +112,13 @@ public class SurveyHelper {
     }
 
 
-    // [Web] 마이 페이지 설문 삭제
-    /* progress 2 미만일 경우만 가능 */
+    /* [Web] 마이 페이지 설문 삭제
+    * progress 2 미만일 경우만 가능 */
     public Long deleteMyPageSurvey(Long id) {
-        Survey survey = surveyRepository.findById(id).orElseThrow(() -> {
-            throw SurveyNotFound.EXCEPTION;
-        });
+        Survey survey = surveyRepository.findById(id)
+                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
 
-        if(survey.getProgress() >= 2) {
+        if(!isWaiting(survey.getStatus())) {
             throw SurveyCannotDelete.EXCEPTION;
         }
 
@@ -134,7 +127,7 @@ public class SurveyHelper {
     }
 
 
-    // [Web] 어드민 설문 전체 목록
+    /* [Web] 어드민 설문 전체 목록 */
     public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
         int pageNum = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
@@ -144,34 +137,31 @@ public class SurveyHelper {
         PageInfo pageInfo = getPageInfo(pageNum, pageSize, surveys);
 
         List<Survey> surveyList = new ArrayList<>();
-        if(surveys != null && surveys.hasContent()) {
+        if(surveys.hasContent()) {
             surveyList = surveys.getContent();
         }
 
-        return SurveyAdminListResponse.from(surveyList, pageInfo);
+        return SurveyAdminListResponse.of(surveyList, pageInfo);
     }
 
 
-    // [Web] 현재 sid 최댓값 가져오기
-    /* 검수 후 progress == 2로 업데이트 하려는 경우, 현재 sid == 0이면 sid를 (최댓값 + 1)으로 부여 */
-    public Long findMaxSid() {
+    /* [Web] 현재 sid 최댓값 가져오기
+    * 검수 후 progress == 2로 업데이트 하려는 경우, 현재 sid == 0이면 sid를 (최댓값 + 1)으로 부여 */
+    private Long findMaxSid() {
         return surveyRepository.findMaxSid();
     }
 
 
-    // [Web] 어드민 검수 완료 (progress, noticeToPanel, reward)
-    /* sid == 0 인 경우, sid를 current max 값으로 업데이트 */
+    /* [Web] 어드민 검수 완료 (progress, noticeToPanel, reward)
+    * sid == 0 인 경우, sid를 current max 값으로 업데이트 */
     public Long updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
-        Survey survey = surveyRepository
-                        .findById(id)
-                        .orElseThrow(() -> {
-                            throw SurveyNotFound.EXCEPTION;
-                        });
+        Survey survey = surveyRepository.findById(id)
+                        .orElseThrow(() -> SurveyNotFound.EXCEPTION);
 
-        if(surveyAdminDTO.getProgress() != null) {
-            survey.setProgress(surveyAdminDTO.getProgress());
+        if(surveyAdminDTO.getStatus() != null) {
+            survey.setStatus(surveyAdminDTO.getStatus());
 
-            if(survey.getSid() == 0 && surveyAdminDTO.getProgress() == 2) {
+            if(survey.getSid() == 0 && surveyAdminDTO.getStatus().equals(SurveyStatus.IN_PROGRESS)) {
                 survey.setSid(findMaxSid()+1);      // sid 발급
             }
         }
@@ -191,15 +181,15 @@ public class SurveyHelper {
         return surveyRepository.save(survey).getId();
     }
 
-    // [App] 진행중인 설문 목록
-    /* progress == 2 */
-    public List<SurveyAppHomeListItemVo> getSurveyListProgressEq2(Long panelId) {
-        List<SurveyAppHomeListItemVo> surveyList = surveyRepository.findSurveyListProgressEq2();
+    /* [App] 진행중인 설문 목록
+    * progress == 2 */
+    public List<SurveyAppHomeVo> getSurveyListProgressEq2(Long panelId) {
+        List<SurveyAppHomeVo> surveyList = surveyRepository.findAllSurveyAppHomeVos();
         return surveyList;
     }
 
 
-    // [App] 설문 현재 응답수 업데이트
+    /* [App] 설문 현재 응답수 업데이트 */
     public Integer updateCurrentHeadCount(Survey survey) {
         Integer responseCount = survey.getResponseCount();
         survey.setResponseCount(responseCount + 1);
@@ -208,9 +198,9 @@ public class SurveyHelper {
     }
 
 
-    // [App] 설문 progress 업데이트 (2 -> 3)
-    public Long updateProgress2To3(Survey survey) {
-        survey.setProgress(3);
+    /* [App] 설문 status 업데이트 (IN_PROGRESS -> DONE) */
+    public Long updateStatusToDone(Survey survey) {
+        survey.setStatus(SurveyStatus.DONE);
         return surveyRepository.save(survey).getId();
     }
 }
