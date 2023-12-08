@@ -2,23 +2,23 @@ package surveasy.domain.survey.dto.response.app;
 
 import lombok.Builder;
 import lombok.Getter;
-import surveasy.domain.survey.vo.SurveyAppHomeListItemVo;
+import surveasy.domain.survey.vo.SurveyAppHomeVo;
 
 import java.util.List;
 
 @Getter
 public class SurveyAppHomeListResponse {
 
-    private List<SurveyAppHomeListItemVo> SurveyAppHomeListItemVos;
+    private List<SurveyAppHomeVo> surveyAppHomeList;
 
     @Builder
-    private SurveyAppHomeListResponse(List<SurveyAppHomeListItemVo> SurveyAppHomeListItemVos) {
-        this.SurveyAppHomeListItemVos = SurveyAppHomeListItemVos;
+    private SurveyAppHomeListResponse(List<SurveyAppHomeVo> surveyAppHomeList) {
+        this.surveyAppHomeList = surveyAppHomeList;
     }
 
-    public static SurveyAppHomeListResponse from(List<SurveyAppHomeListItemVo> surveyAppHomeListItemVos) {
+    public static SurveyAppHomeListResponse from(List<SurveyAppHomeVo> surveyAppHomeVos) {
         return SurveyAppHomeListResponse.builder()
-                .SurveyAppHomeListItemVos(surveyAppHomeListItemVos)
+                .surveyAppHomeList(surveyAppHomeVos)
                 .build();
     }
 }

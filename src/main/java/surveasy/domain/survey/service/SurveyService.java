@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
-import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
@@ -16,7 +15,7 @@ import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
-import surveasy.domain.survey.vo.SurveyListItemVo;
+import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.global.config.user.PanelDetails;
 
 import java.util.List;
@@ -44,7 +43,7 @@ public class SurveyService {
 
     @Transactional
     public SurveyListResponse getSurveyList() {
-        List<SurveyListItemVo> surveyList = surveyRepository.findSurveyList();
+        List<SurveyListVo> surveyList = surveyRepository.findAllSurveyListVos();
         return surveyMapper.toSurveyListResponse(surveyList);
     }
 

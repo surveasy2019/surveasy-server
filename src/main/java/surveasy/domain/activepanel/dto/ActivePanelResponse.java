@@ -2,7 +2,7 @@ package surveasy.domain.activepanel.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import surveasy.global.common.function.ListAndString;
+import surveasy.global.common.util.ListAndStringUtil;
 
 import java.util.List;
 
@@ -22,9 +22,9 @@ public class ActivePanelResponse {
 
     public static ActivePanelResponse of(String totalStrList, String maleStrList, String femaleStrList) {
         return ActivePanelResponse.builder()
-                .totalList(ListAndString.strToIntegerList(totalStrList))
-                .maleList(ListAndString.strToIntegerList(maleStrList))
-                .femaleList(ListAndString.strToIntegerList(femaleStrList))
+                .totalList(ListAndStringUtil.strToIntegerList(totalStrList))
+                .maleList(ListAndStringUtil.strToIntegerList(maleStrList))
+                .femaleList(ListAndStringUtil.strToIntegerList(femaleStrList))
                 .build();
     }
 }

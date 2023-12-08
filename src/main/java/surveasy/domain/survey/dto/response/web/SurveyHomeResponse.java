@@ -10,17 +10,15 @@ public class SurveyHomeResponse {
     private Long panelCount;
 
     @Builder
-    public SurveyHomeResponse(Long surveyCount, Long panelCount) {
+    private SurveyHomeResponse(Long surveyCount, Long panelCount) {
         this.surveyCount = surveyCount;
         this.panelCount = panelCount;
     }
 
-    public static SurveyHomeResponse from(Long surveyCount, Long panelCount) {
+    public static SurveyHomeResponse of(Long surveyCount, Long panelCount) {
         return SurveyHomeResponse.builder()
                 .surveyCount(surveyCount)
                 .panelCount(panelCount)
                 .build();
     }
-
-    // review list
 }

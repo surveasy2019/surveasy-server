@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.global.common.function.DateAndString;
+import surveasy.global.common.util.DateAndStringUtil;
 
 @Getter
 public class ResponseMyPageListItemVo {
@@ -37,7 +37,7 @@ public class ResponseMyPageListItemVo {
                 .title(survey.getTitle())
                 .reward(survey.getReward())
                 .imgUrl(response.getImgUrl())
-                .createdAt(DateAndString.dateToStringYMD(response.getCreatedAt()))
+                .createdAt(DateAndStringUtil.dateToStringYMD(response.getCreatedAt()))
                 .build();
     }
 }

@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
-import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
 import surveasy.domain.response.exception.ResponseDuplicateData;
 import surveasy.domain.response.exception.ResponseNotFound;
@@ -19,6 +17,7 @@ import surveasy.domain.response.exception.ResponseUnauthorized;
 import surveasy.domain.response.mapper.ResponseMapper;
 import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.Survey;
+import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.exception.SurveyExpired;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.exception.SurveyNotReleased;
@@ -76,12 +75,12 @@ public class ResponseHelper {
                 });
 
         // 종료된 설문인지 확인
-        if(survey.getProgress() > 2) {
+        if(survey.getStatus().equals(SurveyStatus.DONE) || survey.getStatus().equals(SurveyStatus.REVIEW_DONE)) {
             throw SurveyExpired.EXCEPTION;
         }
 
         // 검수 전 설문인지 확인
-        else if(survey.getProgress() < 2) {
+        else if(survey.getStatus().equals(SurveyStatus.CREATED) || survey.getStatus().equals(SurveyStatus.WAITING)) {
             throw SurveyNotReleased.EXCEPTION;
         }
 
@@ -96,8 +95,8 @@ public class ResponseHelper {
 
         /* 설문 응답수 업데이트, 응답수 다 찬 경우 progress 업데이트 */
         Integer afterResponseCount = surveyHelper.updateCurrentHeadCount(survey);
-        if(afterResponseCount >= SurveyOptions.HEADCOUNTS[survey.getHeadCount()] + 5) {
-            surveyHelper.updateProgress2To3(survey);
+        if(afterResponseCount >= survey.getHeadCount().getValue() + 5) {
+            surveyHelper.updateStatusToDone(survey);
         }
 
         /* 패널 정보 업데이트 (rewardCurrent, lastParticipatedDate) */
@@ -141,7 +140,7 @@ public class ResponseHelper {
         }
 
         // 이미 종료된 설문의 응답을 수정하려는 경우
-        if(response.getSurvey().getProgress() > 2) {
+        if(surveyHelper.isDone(response.getSurvey().getStatus())) {
             throw SurveyExpired.EXCEPTION;
         }
 
