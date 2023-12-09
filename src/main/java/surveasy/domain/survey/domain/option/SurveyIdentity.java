@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public enum SurveyIdentity {
 
-    MID_HIGH(0, "중/고등학생"),
-    UNDERGRADUATE(1, "대학생"),
-    GRADUATE(2, "대학원생"),
-    GENERAL(3, "일반");
+    MID_HIGH(1, "중/고등학생"),
+    UNDERGRADUATE(2, "대학생"),
+    GRADUATE(3, "대학원생"),
+    GENERAL(4, "일반");
 
     private final int idx;
 
