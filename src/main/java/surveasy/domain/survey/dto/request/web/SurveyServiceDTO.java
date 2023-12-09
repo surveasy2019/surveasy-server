@@ -24,7 +24,7 @@ public class SurveyServiceDTO {
 
     /* Service 1 */
     @NotNull
-    private SurveyHeadcount headcount;
+    private SurveyHeadcount headCount;
 
     @NotNull
     private SurveySpendTime spendTime;
