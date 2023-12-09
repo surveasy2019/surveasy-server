@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
+import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
@@ -55,8 +56,8 @@ public class SurveyService {
     @Transactional
     public SurveyMyPageCountResponse getMyPageSurveyCounts(String email) {
         return surveyMapper.toSurveyMyPageCountResponse(
-                surveyHelper.getMyPageSurveyOngoingCount(email),
-                surveyHelper.getMyPageSurveyDoneCount(email)
+                surveyHelper.getMyPageSurveyCount(email, SurveyStatus.IN_PROGRESS),
+                surveyHelper.getMyPageSurveyCount(email, SurveyStatus.DONE)
         );
     }
 

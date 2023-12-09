@@ -36,7 +36,7 @@ public class SurveyListVo {
         this.sid = sid;
         this.title = title;
         this.link = link;
-        this.isDone = status.equals(SurveyStatus.DONE) || status.equals(SurveyStatus.REVIEW_DONE);
+        this.isDone = status.equals(SurveyStatus.DONE);
         this.tarInput = tarInput;
         this.headCount = headCount.getValue();
         this.responseCount = responseCount;

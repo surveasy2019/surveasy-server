@@ -1,5 +1,6 @@
 package surveasy.domain.survey.repository;
 
+import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.vo.SurveyAppHomeVo;
 import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
@@ -10,7 +11,7 @@ public interface SurveyRepositoryCustom {
 
     Long findMaxSid();
 
-    Long countByEmailAndStatus(String email, String statusStr);
+    Long countByEmailAndStatus(String email, SurveyStatus status);
 
     List<SurveyListVo> findAllSurveyListVos();
 
