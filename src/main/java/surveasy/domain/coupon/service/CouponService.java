@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.coupon.dto.request.CouponCreateDTO;
 import surveasy.domain.coupon.dto.request.CouponUpdateDTO;
+import surveasy.domain.coupon.dto.response.CouponDiscountPercentResponse;
 import surveasy.domain.coupon.dto.response.CouponIdResponse;
 import surveasy.domain.coupon.dto.response.CouponListResponse;
 import surveasy.domain.coupon.helper.CouponHelper;
@@ -16,6 +17,10 @@ public class CouponService {
 
     private final CouponHelper couponHelper;
     private final CouponMapper couponMapper;
+
+    public CouponDiscountPercentResponse getCouponDiscountPercent(String code) {
+        return couponMapper.toCouponDiscountPercentResponse(couponHelper.getCouponDiscountPercent(code));
+    }
 
     public CouponListResponse getCouponList() {
         return couponMapper.toCouponListResponse(couponHelper.getCouponList());
@@ -29,5 +34,10 @@ public class CouponService {
     @Transactional
     public CouponIdResponse updateCoupon(Long couponId, CouponUpdateDTO couponUpdateDTO) {
         return couponMapper.toCouponIdResponse(couponHelper.updateCoupon(couponId, couponUpdateDTO));
+    }
+
+    @Transactional
+    public void deleteCoupon(Long couponId) {
+        couponHelper.deleteCoupon(couponId);
     }
 }

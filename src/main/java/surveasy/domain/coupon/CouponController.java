@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.coupon.dto.request.CouponCreateDTO;
 import surveasy.domain.coupon.dto.request.CouponUpdateDTO;
+import surveasy.domain.coupon.dto.response.CouponDiscountPercentResponse;
 import surveasy.domain.coupon.dto.response.CouponIdResponse;
 import surveasy.domain.coupon.dto.response.CouponListResponse;
 import surveasy.domain.coupon.service.CouponService;
@@ -18,6 +19,12 @@ import surveasy.domain.coupon.service.CouponService;
 public class CouponController {
 
     private final CouponService couponService;
+
+    @GetMapping("/{code}")
+    @Operation(summary = "쿠폰 유효성 확인 & 할인율 받아오기")
+    public CouponDiscountPercentResponse getCouponDiscountPercent(@PathVariable String code) {
+        return couponService.getCouponDiscountPercent(code);
+    }
 
     @GetMapping("")
     @Operation(summary = "어드민 쿠폰 목록")
@@ -35,5 +42,11 @@ public class CouponController {
     @Operation(summary = "어드민 쿠폰 업데이트")
     public CouponIdResponse updateCoupon(@PathVariable Long couponId, @RequestBody CouponUpdateDTO couponUpdateDTO) {
         return couponService.updateCoupon(couponId, couponUpdateDTO);
+    }
+
+    @DeleteMapping("/{couponId}")
+    @Operation(summary = "어드민 쿠폰 삭제")
+    public void deleteCoupon(@PathVariable Long couponId) {
+        couponService.deleteCoupon(couponId);
     }
 }
