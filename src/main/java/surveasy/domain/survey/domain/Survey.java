@@ -122,14 +122,14 @@ public class Survey {
     private List<Response> responseList;
 
     @Builder
-    private Survey(SurveyHeadcount headcount, SurveySpendTime spendTime, Date dueDate,
+    private Survey(SurveyHeadcount headCount, SurveySpendTime spendTime, Date dueDate,
                   TargetGender targetGender, List<TargetAge> targetAgeList,
                   SurveyLanguage language, SurveyIdentity identity,
                   String title, String targetInput, String institute,
                   String link, String notice, String accountName,
                   Integer price, Integer priceDiscounted, Integer pointAdd,
                   String email, String username) {
-        this.headCount = headcount;
+        this.headCount = headCount;
         this.spendTime = spendTime;
         this.dueDate = dueDate;
         this.targetGender = targetGender;
@@ -158,7 +158,7 @@ public class Survey {
 
     public static Survey from(SurveyServiceDTO surveyServiceDTO) {
         return Survey.builder()
-                .headcount(surveyServiceDTO.getHeadcount())
+                .headCount(surveyServiceDTO.getHeadCount())
                 .spendTime(surveyServiceDTO.getSpendTime())
                 .dueDate(surveyServiceDTO.getDueDate())
                 .targetGender(surveyServiceDTO.getTargetGender())
