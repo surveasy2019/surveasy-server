@@ -6,17 +6,14 @@ import java.util.Date;
 
 public class DateAndStringUtil {
 
+    public static final SimpleDateFormat SDF_YYYY_MM_DD = new SimpleDateFormat("yyyy-MM-dd");
+
     public static Date stringToDateYMD(String strDate) throws ParseException {
         if(strDate == null) return null;
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = format.parse(strDate);
-        return date;
+        return SDF_YYYY_MM_DD.parse(strDate);
     }
 
     public static String dateToStringYMD(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = format.format(date);
-        return strDate;
+        return SDF_YYYY_MM_DD.format(date);
     }
 }
