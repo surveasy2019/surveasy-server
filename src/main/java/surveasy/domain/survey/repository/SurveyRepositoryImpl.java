@@ -29,21 +29,13 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     @Override
-    public Long countByEmailAndStatus(String email, String statusStr) {
+    public Long countByEmailAndStatus(String email, SurveyStatus status) {
         QSurvey qSurvey = QSurvey.survey;
-
-        if(statusStr.equals("ongoing")) {
-            return jpaQueryFactory
-                    .select(qSurvey.count())
-                    .from(qSurvey)
-                    .where(qSurvey.email.eq(email), qSurvey.status.eq(SurveyStatus.IN_PROGRESS))
-                    .fetchFirst();
-        }
 
         return jpaQueryFactory
                 .select(qSurvey.count())
                 .from(qSurvey)
-                .where(qSurvey.email.eq(email), qSurvey.status.eq(SurveyStatus.DONE).or(qSurvey.status.eq(SurveyStatus.REVIEW_DONE)))
+                .where(qSurvey.email.eq(email), qSurvey.status.eq(status))
                 .fetchFirst();
     }
 

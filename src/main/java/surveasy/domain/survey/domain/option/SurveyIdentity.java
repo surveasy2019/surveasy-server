@@ -8,7 +8,7 @@ public enum SurveyIdentity {
     MID_HIGH(1, "중/고등학생"),
     UNDERGRADUATE(2, "대학생"),
     GRADUATE(3, "대학원생"),
-    GENERAL(4, "일반");
+    NONE(4, "할인 대상이 아님");
 
     private final int idx;
 

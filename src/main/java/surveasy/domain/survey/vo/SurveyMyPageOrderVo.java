@@ -53,7 +53,7 @@ public class SurveyMyPageOrderVo {
         this.id = id;
         this.sid = sid;
         this.title = title;
-        this.isDone = (status.equals(SurveyStatus.DONE) || status.equals(SurveyStatus.REVIEW_DONE));
+        this.isDone = status.equals(SurveyStatus.DONE);
         this.headCount = headCount;
         this.responseCount = responseCount;
         this.spendTime = spendTime;

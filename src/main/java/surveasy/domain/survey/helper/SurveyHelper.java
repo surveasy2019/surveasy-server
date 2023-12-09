@@ -41,7 +41,7 @@ public class SurveyHelper {
     }
 
     public boolean isDone(SurveyStatus status) {
-        return status.equals(SurveyStatus.DONE) || status.equals(SurveyStatus.REVIEW_DONE);
+        return status.equals(SurveyStatus.DONE);
     }
 
     private boolean isWaiting(SurveyStatus status) {
@@ -64,15 +64,9 @@ public class SurveyHelper {
     }
 
 
-    /* [Web] 마이 페이지 진행중인 설문 개수 */
-    public Long getMyPageSurveyOngoingCount(String email) {
-        return surveyRepository.countByEmailAndStatus(email, "ongoing");
-    }
-
-
-    /* [Web] 마이 페이지 완료된 설문 개수 */
-    public Long getMyPageSurveyDoneCount(String email) {
-        return surveyRepository.countByEmailAndStatus(email, "done");
+    /* [Web] 마이 페이지 설문 개수 */
+    public Long getMyPageSurveyCount(String email, SurveyStatus status) {
+        return surveyRepository.countByEmailAndStatus(email, status);
     }
 
 

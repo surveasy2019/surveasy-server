@@ -75,7 +75,7 @@ public class ResponseHelper {
                 });
 
         // 종료된 설문인지 확인
-        if(survey.getStatus().equals(SurveyStatus.DONE) || survey.getStatus().equals(SurveyStatus.REVIEW_DONE)) {
+        if(survey.getStatus().equals(SurveyStatus.DONE)) {
             throw SurveyExpired.EXCEPTION;
         }
 
