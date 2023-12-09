@@ -5,12 +5,12 @@ import lombok.Getter;
 @Getter
 public enum SurveySpendTime {
 
-    TIME_0(0, "1분 이내"),
-    TIME_1_3(1, "1-3분"),
-    TIME_4_6(2, "4-6분"),
-    TIME_7_10(3, "7-10분"),
-    TIME_11_15(4, "11-15분"),
-    TIME_16_20(5, "16-20분");
+    TIME_0(1, "1분 이내"),
+    TIME_1_3(2, "1-3분"),
+    TIME_4_6(3, "4-6분"),
+    TIME_7_10(4, "7-10분"),
+    TIME_11_15(5, "11-15분"),
+    TIME_16_20(6, "16-20분");
 
     private final int idx;
 

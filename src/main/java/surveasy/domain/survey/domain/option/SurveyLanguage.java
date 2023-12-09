@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum SurveyLanguage {
 
-    KOR(0, "한국어"),
-    ENG(1, "영어");
+    KOR(1, "한국어"),
+    ENG(2, "영어");
 
     private final int idx;
 
