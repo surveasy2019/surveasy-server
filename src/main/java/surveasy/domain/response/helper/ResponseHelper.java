@@ -134,15 +134,15 @@ public class ResponseHelper {
                     throw ResponseNotFound.EXCEPTION;
                 });
 
-        // 응답한 패널이 아닌데 수정하려는 경우
-        if(!Objects.equals(panel.getId(), response.getPanel().getId())) {
-            throw ResponseUnauthorized.EXCEPTION;
-        }
-
-        // 이미 종료된 설문의 응답을 수정하려는 경우
-        if(surveyHelper.isDone(response.getSurvey().getStatus())) {
-            throw SurveyExpired.EXCEPTION;
-        }
+//        // 응답한 패널이 아닌데 수정하려는 경우
+//        if(!Objects.equals(panel.getId(), response.getPanel().getId())) {
+//            throw ResponseUnauthorized.EXCEPTION;
+//        }
+//
+//        // 이미 종료된 설문의 응답을 수정하려는 경우
+//        if(surveyHelper.isDone(response.getSurvey().getStatus())) {
+//            throw SurveyExpired.EXCEPTION;
+//        }
 
         response.setImgUrl(responseImgUrlUpdateRequestDTO.getImgUrl());
         return responseRepository.save(response).getId();

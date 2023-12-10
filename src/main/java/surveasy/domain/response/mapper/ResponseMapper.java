@@ -19,7 +19,8 @@ import java.util.List;
 public class ResponseMapper {
 
     public Response toEntity(Panel panel, Survey survey, ResponseCreateRequestDTO responseCreateRequestDTO) {
-        return Response.of(panel, survey, responseCreateRequestDTO);
+//        return Response.of(panel, survey, responseCreateRequestDTO);
+        return null;
     }
 
     public ResponseIdResponse toResponseIdResponse(Long responseId) {

@@ -12,6 +12,10 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
 
+  sql:
+    init:
+      mode: always
+
   data:
     - secret
 
