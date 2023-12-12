@@ -44,7 +44,7 @@ public class SurveyHelper {
         return status.equals(SurveyStatus.DONE);
     }
 
-    private boolean isWaiting(SurveyStatus status) {
+    public boolean isWaiting(SurveyStatus status) {
         return status.equals(SurveyStatus.CREATED) || status.equals(SurveyStatus.WAITING);
     }
 

@@ -10,9 +10,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
-import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
+import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
+import surveasy.domain.response.dto.response.AdminSurveyResponseListResponse;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
-import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
+import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.service.ResponseService;
 import surveasy.global.config.user.PanelDetails;
 
@@ -34,18 +35,31 @@ public class ResponseController {
     }
 
     @Operation(summary = "App 마이페이지 설문 응답 리스트 불러오기")
-    @GetMapping("/mypage/list/{type}")
-    public ResponseMyPageListResponse getResponseMyPageList(@AuthenticationPrincipal PanelDetails panelDetails,
-                                                            @PathVariable String type,
-                                                            @PageableDefault(size = 10) Pageable pageable) {
+    @GetMapping("/{type}")
+    public ResponseHistoryListResponse getResponseMyPageList(@AuthenticationPrincipal PanelDetails panelDetails,
+                                                             @PathVariable String type,
+                                                             @PageableDefault(size = 10) Pageable pageable) {
         return responseService.getResponseMyPageList(panelDetails, type, pageable);
     }
 
     @Operation(summary = "App 마이페이지 설문 응답 이미지 수정하기")
-    @PutMapping("/mypage/update/{responseId}")
+    @PatchMapping("/{responseId}")
     public ResponseIdResponse updateResponseImgUrl(@AuthenticationPrincipal PanelDetails panelDetails,
                                                    @PathVariable Long responseId,
-                                                   @RequestBody ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
-        return responseService.updateResponseImgUrl(panelDetails, responseId, responseImgUrlUpdateRequestDTO);
+                                                   @RequestBody ResponseUpdateRequestDTO responseUpdateRequestDTO) {
+        return responseService.updateResponseImgUrl(panelDetails, responseId, responseUpdateRequestDTO);
+    }
+
+    @Operation(summary = "어드민 설문 응답 1건 업데이트")
+    @PatchMapping("/admin/{responseId}")
+    public ResponseIdResponse updateResponseAdmin(@PathVariable Long responseId,
+                                                  @RequestBody ResponseUpdateRequestDTO responseUpdateRequestDTO) {
+        return responseService.updateResponseAdmin(responseId, responseUpdateRequestDTO);
+    }
+
+    @Operation(summary = "어드민 설문 1개 전체 응답 리스트")
+    @GetMapping("/admin/{surveyId}")
+    public AdminSurveyResponseListResponse getAdminSurveyResponseList(@PathVariable Long surveyId) {
+        return responseService.getAdminSurveyResponseList(surveyId);
     }
 }
