@@ -1,5 +1,6 @@
 package surveasy.domain.response.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -20,16 +21,16 @@ public class Response {
     private Long id;
 
     @NotNull
-    private Boolean isSent;
-
-    @NotNull
-    private Boolean isValid;
+    private ResponseStatus status;
 
     @NotNull
     private String imgUrl;
 
     @NotNull
     private Date createdAt;
+
+    @Nullable
+    private Date sentAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "panel_id", nullable = false)
@@ -40,13 +41,13 @@ public class Response {
     private Survey survey;
 
     @Builder
-    private Response(String imgUrl, Panel panel, Survey survey) {
-        this.isSent = false;
-        this.isValid = true;
-        this.imgUrl = imgUrl;
-        this.createdAt = new Date();
+    private Response(Panel panel, Survey survey, String imgUrl) {
         this.panel = panel;
         this.survey = survey;
+        this.imgUrl = imgUrl;
+
+        this.status = ResponseStatus.CREATED;
+        this.createdAt = new Date();
     }
 
     public static Response of(Panel panel, Survey survey, ResponseCreateRequestDTO responseCreateRequestDTO) {

@@ -21,7 +21,7 @@ public class ResponseRepositoryImpl implements ResponseRepositoryCustom {
                 .from(qResponse)
                 .where(qResponse.survey.id.eq(surveyId))
                 .where(qResponse.panel.id.eq(panelId))
-                .where(qResponse.isValid.eq(isValid))
+//                .where(qResponse.isValid.eq(isValid))
                 .fetchOne();
     }
 }

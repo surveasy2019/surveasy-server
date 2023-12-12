@@ -42,7 +42,7 @@ public class ResponseController {
     }
 
     @Operation(summary = "App 마이페이지 설문 응답 이미지 수정하기")
-    @PutMapping("/mypage/update/{responseId}")
+    @PatchMapping("/{responseId}")
     public ResponseIdResponse updateResponseImgUrl(@AuthenticationPrincipal PanelDetails panelDetails,
                                                    @PathVariable Long responseId,
                                                    @RequestBody ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.response.domain.Response;
+import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
@@ -52,13 +53,13 @@ public class ResponseHelper {
     }
 
 
-    // [App] Home - 현재까지 참여한 설문 개수
+    /* [App] Home - 현재까지 참여한 설문 개수 */
     public Long getPanelResponseCount(Long panelId) {
-        return responseRepository.countByPanelIdAndIsValidEquals(panelId, true);
+        return responseRepository.countByPanelIdAndStatus(panelId, ResponseStatus.DONE);
     }
 
 
-    // [App] List - 이미 응답한 설문인지 확인
+    /* [App] List - 이미 응답한 설문인지 확인 */
     private boolean checkAlreadyExists(Long panelId, Long surveyId) {
         Response response = responseRepository.findByPidAndSidAndIsValid(panelId, surveyId, true);
 
@@ -67,12 +68,10 @@ public class ResponseHelper {
     }
 
 
-    // [App] 응답 건수 생성하기 (설문 참여 완료하기)
+    /* [App] 응답 생성하기 (설문 참여 완료하기) */
     public Long createResponse(Panel panel, Long surveyId, ResponseCreateRequestDTO responseCreateRequestDTO) {
         final Survey survey = surveyRepository.findById(surveyId)
-                .orElseThrow(() -> {
-                    throw SurveyNotFound.EXCEPTION;
-                });
+                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
 
         // 종료된 설문인지 확인
         if(survey.getStatus().equals(SurveyStatus.DONE)) {
@@ -89,11 +88,11 @@ public class ResponseHelper {
             throw ResponseDuplicateData.EXCEPTION;
         }
 
-        /* 설문 응답 건수 생성 */
+        /* 설문 응답 생성 */
         Response newResponse = responseMapper.toEntity(panel, survey, responseCreateRequestDTO);
         Response savedResponse = responseRepository.save(newResponse);
 
-        /* 설문 응답수 업데이트, 응답수 다 찬 경우 progress 업데이트 */
+        /* 설문 응답수 업데이트, 응답수 다 찬 경우 status 업데이트 */
         Integer afterResponseCount = surveyHelper.updateCurrentHeadCount(survey);
         if(afterResponseCount >= survey.getHeadCount().getValue() + 5) {
             surveyHelper.updateStatusToDone(survey);
@@ -109,30 +108,28 @@ public class ResponseHelper {
     // [App] MyPage - 제출한 응답 리스트 불러오기
     /* 정산 예정 : before, 정산 완료 : after */
     public ResponseMyPageListResponse getResponseMyPageList(Long panelId, String type, Pageable pageable) {
-        Boolean isSent = !type.equals("before");
-        int pageNum = pageable.getPageNumber();
-        int pageSize = pageable.getPageSize();
-
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page<Response> responses = responseRepository.findAllByPanelIdAndIsSent(panelId, isSent, pageRequest);
-        PageInfo pageInfo = getPageInfo(pageNum, pageSize, responses);
-
-        List<Response> responseList = new ArrayList<>();
-        if(responses.hasContent()) {
-            responseList = responses.getContent();
-        }
-
-        return responseMapper.toResponseMyPageListResponse(type, responseList, pageInfo);
+//        int pageNum = pageable.getPageNumber();
+//        int pageSize = pageable.getPageSize();
+//
+//        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+//        Page<Response> responses = responseRepository.findAllByPanelIdAndStatus(panelId, type, pageRequest);
+//        PageInfo pageInfo = getPageInfo(pageNum, pageSize, responses);
+//
+//        List<Response> responseList = new ArrayList<>();
+//        if(responses.hasContent()) {
+//            responseList = responses.getContent();
+//        }
+//
+//        return responseMapper.toResponseMyPageListResponse(type, responseList, pageInfo);
+        return null;
     }
 
 
-    // [App] MyPage - 응답 사진 변경하기
-    /* 설문 progress 2인 경우에만 변경 가능 */
+    /* [App] MyPage - 응답 사진 변경
+    * 설문 status가 IN_PROGRESS인 경우만 변경 가능 */
     public Long updateResponseImgUrl(Panel panel, Long responseId, ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
         Response response = responseRepository.findById(responseId)
-                .orElseThrow(() -> {
-                    throw ResponseNotFound.EXCEPTION;
-                });
+                .orElseThrow(() -> ResponseNotFound.EXCEPTION);
 
         // 응답한 패널이 아닌데 수정하려는 경우
         if(!Objects.equals(panel.getId(), response.getPanel().getId())) {
@@ -140,7 +137,7 @@ public class ResponseHelper {
         }
 
         // 이미 종료된 설문의 응답을 수정하려는 경우
-        if(surveyHelper.isDone(response.getSurvey().getStatus())) {
+        if(response.getSurvey().getStatus().equals(SurveyStatus.DONE)) {
             throw SurveyExpired.EXCEPTION;
         }
 

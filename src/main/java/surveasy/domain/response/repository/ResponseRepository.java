@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import surveasy.domain.response.domain.Response;
+import surveasy.domain.response.domain.ResponseStatus;
 
 import java.util.List;
 
@@ -14,8 +15,6 @@ public interface ResponseRepository extends JpaRepository<Response, Long>, Pagin
 
     List<Response> findAllByPanelId(Long panelId);
 
-    Long countByPanelIdAndIsValidEquals(Long panelId, Boolean isValid);
-
-    Page<Response> findAllByPanelIdAndIsSent(Long panelId, Boolean isSent, Pageable pageable);
+    Long countByPanelIdAndStatus(Long panelId, ResponseStatus status);
 
 }
