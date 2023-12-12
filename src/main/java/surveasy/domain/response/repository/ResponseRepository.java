@@ -5,6 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ResponseRepository extends JpaRepository<Response, Long>, PagingAndSortingRepository<Response, Long>, ResponseRepositoryCustom {
@@ -12,5 +13,7 @@ public interface ResponseRepository extends JpaRepository<Response, Long>, Pagin
     Optional<Response> findByPanelIdAndSurveyId(Long panelId, Long surveyId);
 
     long countByPanelIdAndStatusNot(Long panelId, ResponseStatus status);
+
+    List<Response> findAllBySurveyIdOrderByIdDesc(Long surveyId);
 
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
+import surveasy.domain.response.dto.response.AdminSurveyResponseListResponse;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.vo.ResponseHistoryVo;
@@ -27,5 +28,9 @@ public class ResponseMapper {
 
     public ResponseHistoryListResponse toResponseHistoryList(String type, List<ResponseHistoryVo> responseList, PageInfo pageInfo) {
         return ResponseHistoryListResponse.from(type, pageInfo, responseList);
+    }
+
+    public AdminSurveyResponseListResponse toAdminSurveyResponseListResponse(List<Response> responseList) {
+        return AdminSurveyResponseListResponse.from(responseList);
     }
 }

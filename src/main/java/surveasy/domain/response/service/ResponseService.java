@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
-import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
+import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
+import surveasy.domain.response.dto.response.AdminSurveyResponseListResponse;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.helper.ResponseHelper;
@@ -34,8 +35,18 @@ public class ResponseService {
     }
 
     @Transactional
-    public ResponseIdResponse updateResponseImgUrl(PanelDetails panelDetails, Long responseId, ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
+    public ResponseIdResponse updateResponseImgUrl(PanelDetails panelDetails, Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
         final Panel panel = panelDetails.getPanel();
-        return responseMapper.toResponseIdResponse(responseHelper.updateResponseImgUrl(panel, responseId, responseImgUrlUpdateRequestDTO));
+        return responseMapper.toResponseIdResponse(responseHelper.updateResponseImgUrl(panel, responseId, responseUpdateRequestDTO));
+    }
+
+    @Transactional
+    public ResponseIdResponse updateResponseAdmin(Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
+        return responseMapper.toResponseIdResponse(responseHelper.updateResponseAdmin(responseId, responseUpdateRequestDTO));
+    }
+
+    @Transactional(readOnly = true)
+    public AdminSurveyResponseListResponse getAdminSurveyResponseList(Long surveyId) {
+        return responseMapper.toAdminSurveyResponseListResponse(responseHelper.getAdminSurveyResponseList(surveyId));
     }
 }

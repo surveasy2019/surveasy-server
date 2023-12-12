@@ -9,7 +9,7 @@ import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
-import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
+import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.exception.ResponseDuplicateData;
 import surveasy.domain.response.exception.ResponseNotFound;
@@ -121,7 +121,7 @@ public class ResponseHelper {
 
     /* [App] MyPage - 응답 사진 변경
     * 설문 status가 IN_PROGRESS인 경우만 변경 가능 */
-    public Long updateResponseImgUrl(Panel panel, Long responseId, ResponseImgUrlUpdateRequestDTO responseImgUrlUpdateRequestDTO) {
+    public Long updateResponseImgUrl(Panel panel, Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
         Response response = responseRepository.findById(responseId)
                 .orElseThrow(() -> ResponseNotFound.EXCEPTION);
 
@@ -135,7 +135,27 @@ public class ResponseHelper {
             throw SurveyExpired.EXCEPTION;
         }
 
-        response.setImgUrl(responseImgUrlUpdateRequestDTO.getImgUrl());
+        response.setImgUrl(responseUpdateRequestDTO.getImgUrl());
         return responseRepository.save(response).getId();
+    }
+
+    /* [Admin] 어드민 설문 응답 업데이트 (이미지 검수 후) */
+    public Long updateResponseAdmin(Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
+        Response response = responseRepository.findById(responseId)
+                .orElseThrow(() -> ResponseNotFound.EXCEPTION);
+
+        if(responseUpdateRequestDTO.getStatus() != null) {
+            response.setStatus(responseUpdateRequestDTO.getStatus());
+        }
+
+        return response.getId();
+    }
+
+    /* [Admin] 어드민 설문 1건의 전체 응답 목록 */
+    public List<Response> getAdminSurveyResponseList(Long surveyId) {
+        Survey survey = surveyRepository.findById(surveyId)
+                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
+
+        return responseRepository.findAllBySurveyIdOrderByIdDesc(surveyId);
     }
 }
