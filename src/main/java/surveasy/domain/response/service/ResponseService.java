@@ -9,7 +9,7 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
-import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
+import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.domain.response.mapper.ResponseMapper;
 import surveasy.global.config.user.PanelDetails;
@@ -28,7 +28,7 @@ public class ResponseService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseMyPageListResponse getResponseMyPageList(PanelDetails panelDetails, String type, Pageable pageable) {
+    public ResponseHistoryListResponse getResponseMyPageList(PanelDetails panelDetails, String type, Pageable pageable) {
         final Panel panel = panelDetails.getPanel();
         return responseHelper.getResponseMyPageList(panel.getId(), type, pageable);
     }

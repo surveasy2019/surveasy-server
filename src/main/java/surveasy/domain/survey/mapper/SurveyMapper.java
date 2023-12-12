@@ -47,10 +47,6 @@ public class SurveyMapper {
     }
 
     public SurveyAppHomeListResponse toSurveyAppHomeListResponse(Long panelId, List<SurveyAppHomeVo> surveyAppHomeVos) {
-        surveyAppHomeVos = surveyAppHomeVos.stream()
-                .filter(survey -> responseRepository.findByPidAndSidAndIsValid(panelId, survey.getId(), true) == null)
-                .limit(3)
-                .toList();
-        return SurveyAppHomeListResponse.from(surveyAppHomeVos);
+        return null;
     }
 }

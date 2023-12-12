@@ -1,8 +1,10 @@
 package surveasy.domain.response.repository;
 
-import surveasy.domain.response.domain.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import surveasy.domain.response.vo.ResponseHistoryVo;
 
 public interface ResponseRepositoryCustom {
 
-    Response findByPidAndSidAndIsValid(Long panelId, Long surveyId, Boolean isValid);
+    Page<ResponseHistoryVo> findByPanelIdAndStatusType(Long panelId, String statusType, Pageable pageable);
 }

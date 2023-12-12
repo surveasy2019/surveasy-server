@@ -2,7 +2,6 @@ package surveasy.domain.response.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
@@ -11,12 +10,13 @@ import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
-import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
+import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.exception.ResponseDuplicateData;
 import surveasy.domain.response.exception.ResponseNotFound;
 import surveasy.domain.response.exception.ResponseUnauthorized;
 import surveasy.domain.response.mapper.ResponseMapper;
 import surveasy.domain.response.repository.ResponseRepository;
+import surveasy.domain.response.vo.ResponseHistoryVo;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.exception.SurveyExpired;
@@ -24,7 +24,6 @@ import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.exception.SurveyNotReleased;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.repository.SurveyRepository;
-import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class ResponseHelper {
     private final PanelHelper panelHelper;
     private final ResponseMapper responseMapper;
 
-    public PageInfo getPageInfo(int pageNum, int pageSize, Page<Response> responses) {
+    public PageInfo getPageInfo(int pageNum, int pageSize, Page<?> responses) {
         return PageInfo.builder()
                 .pageNum(pageNum)
                 .pageSize(pageSize)
@@ -52,19 +51,16 @@ public class ResponseHelper {
                 .build();
     }
 
-
-    /* [App] Home - 현재까지 참여한 설문 개수 */
-    public Long getPanelResponseCount(Long panelId) {
-        return responseRepository.countByPanelIdAndStatus(panelId, ResponseStatus.DONE);
+    /* 기존에 제출한 응답 존재 여부 확인 */
+    private boolean checkAlreadyExists(Long panelId, Long surveyId) {
+        Response response = responseRepository.findByPanelIdAndSurveyId(panelId, surveyId).orElse(null);
+        return response != null;
     }
 
 
-    /* [App] List - 이미 응답한 설문인지 확인 */
-    private boolean checkAlreadyExists(Long panelId, Long surveyId) {
-        Response response = responseRepository.findByPidAndSidAndIsValid(panelId, surveyId, true);
-
-        if(response != null) return true;
-        return false;
+    /* [App] Home - 현재까지 참여한 설문 개수 */
+    public long getPanelResponseCount(Long panelId) {
+        return responseRepository.countByPanelIdAndStatusNot(panelId, ResponseStatus.WRONG);
     }
 
 
@@ -83,7 +79,7 @@ public class ResponseHelper {
             throw SurveyNotReleased.EXCEPTION;
         }
 
-        // 이미 제출한 유효 응답 있는지 확인
+        // 이미 제출한 응답 있는지 확인
         if(checkAlreadyExists(panel.getId(), surveyId)) {
             throw ResponseDuplicateData.EXCEPTION;
         }
@@ -105,23 +101,21 @@ public class ResponseHelper {
     }
 
 
-    // [App] MyPage - 제출한 응답 리스트 불러오기
-    /* 정산 예정 : before, 정산 완료 : after */
-    public ResponseMyPageListResponse getResponseMyPageList(Long panelId, String type, Pageable pageable) {
-//        int pageNum = pageable.getPageNumber();
-//        int pageSize = pageable.getPageSize();
-//
-//        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-//        Page<Response> responses = responseRepository.findAllByPanelIdAndStatus(panelId, type, pageRequest);
-//        PageInfo pageInfo = getPageInfo(pageNum, pageSize, responses);
-//
-//        List<Response> responseList = new ArrayList<>();
-//        if(responses.hasContent()) {
-//            responseList = responses.getContent();
-//        }
-//
-//        return responseMapper.toResponseMyPageListResponse(type, responseList, pageInfo);
-        return null;
+    /* [App] MyPage - 제출한 응답 리스트 불러오기
+     * 정산 예정 : before, 정산 완료 : after */
+    public ResponseHistoryListResponse getResponseMyPageList(Long panelId, String type, Pageable pageable) {
+        int pageNum = pageable.getPageNumber();
+        int pageSize = pageable.getPageSize();
+
+        Page<ResponseHistoryVo> responseHistoryVos = responseRepository.findByPanelIdAndStatusType(panelId, type, pageable);
+        PageInfo pageInfo = getPageInfo(pageNum, pageSize, responseHistoryVos);
+
+        List<ResponseHistoryVo> responseList = new ArrayList<>();
+        if(responseHistoryVos.hasContent()) {
+            responseList = responseHistoryVos.getContent();
+        }
+
+        return responseMapper.toResponseHistoryList(type, responseList, pageInfo);
     }
 
 

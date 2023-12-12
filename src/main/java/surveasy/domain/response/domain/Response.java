@@ -21,6 +21,7 @@ public class Response {
     private Long id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private ResponseStatus status;
 
     @NotNull

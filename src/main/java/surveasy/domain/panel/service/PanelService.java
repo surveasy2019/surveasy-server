@@ -59,8 +59,7 @@ public class PanelService {
     @Transactional(readOnly = true)
     public PanelHomeInfoResponse getPanelHomeInfo(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
-        Long count = responseHelper.getPanelResponseCount(panel.getId());
-
+        long count = responseHelper.getPanelResponseCount(panel.getId());
         return panelMapper.toPanelHomeInfoResponse(panel, count);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseImgUrlUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
-import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
+import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.service.ResponseService;
 import surveasy.global.config.user.PanelDetails;
 
@@ -34,10 +34,10 @@ public class ResponseController {
     }
 
     @Operation(summary = "App 마이페이지 설문 응답 리스트 불러오기")
-    @GetMapping("/mypage/list/{type}")
-    public ResponseMyPageListResponse getResponseMyPageList(@AuthenticationPrincipal PanelDetails panelDetails,
-                                                            @PathVariable String type,
-                                                            @PageableDefault(size = 10) Pageable pageable) {
+    @GetMapping("/{type}")
+    public ResponseHistoryListResponse getResponseMyPageList(@AuthenticationPrincipal PanelDetails panelDetails,
+                                                             @PathVariable String type,
+                                                             @PageableDefault(size = 10) Pageable pageable) {
         return responseService.getResponseMyPageList(panelDetails, type, pageable);
     }
 

@@ -6,12 +6,11 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
-import surveasy.domain.response.dto.response.ResponseMyPageListResponse;
-import surveasy.domain.response.vo.ResponseMyPageListItemVo;
+import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
+import surveasy.domain.response.vo.ResponseHistoryVo;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.global.common.dto.PageInfo;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -26,12 +25,7 @@ public class ResponseMapper {
         return ResponseIdResponse.from(responseId);
     }
 
-    public ResponseMyPageListResponse toResponseMyPageListResponse(String type, List<Response> responseList, PageInfo pageInfo) {
-        List<ResponseMyPageListItemVo> responseMyPageListItemVos = responseList.stream()
-                .sorted(Comparator.comparing(Response::getId).reversed())
-                .map(ResponseMyPageListItemVo::from)
-                .toList();
-
-        return ResponseMyPageListResponse.from(type, pageInfo, responseMyPageListItemVos);
+    public ResponseHistoryListResponse toResponseHistoryList(String type, List<ResponseHistoryVo> responseList, PageInfo pageInfo) {
+        return ResponseHistoryListResponse.from(type, pageInfo, responseList);
     }
 }
