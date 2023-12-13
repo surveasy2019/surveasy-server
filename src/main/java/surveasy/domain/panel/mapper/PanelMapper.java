@@ -8,8 +8,8 @@ import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
 import surveasy.domain.panel.dto.response.PanelIdResponse;
-import surveasy.domain.panel.dto.response.PanelMyPageInfoResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
+import surveasy.domain.panel.vo.PanelInfoVo;
 
 @Component
 @RequiredArgsConstructor
@@ -31,8 +31,8 @@ public class PanelMapper {
         return PanelHomeInfoResponse.from(panel, count);
     }
 
-    public PanelMyPageInfoResponse toPanelMyPageInfoResponse(Panel panel) {
-        return PanelMyPageInfoResponse.from(panel);
+    public PanelInfoVo toPanelInfoVo(Panel panel) {
+        return PanelInfoVo.from(panel);
     }
 
     public PanelTokenResponse toPanelTokenResponse(Long panelId, String accessToken, String refreshToken) {

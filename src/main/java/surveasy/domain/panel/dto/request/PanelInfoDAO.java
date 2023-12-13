@@ -1,8 +1,15 @@
 package surveasy.domain.panel.dto.request;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import surveasy.domain.panel.domain.option.AccountType;
+import surveasy.domain.panel.domain.option.InflowPath;
+import surveasy.domain.panel.domain.option.PanelPlatform;
+import surveasy.domain.panel.domain.option.PanelStatus;
+import surveasy.domain.survey.domain.target.TargetGender;
 
 import java.util.Date;
 import java.util.Map;
@@ -11,10 +18,30 @@ import java.util.Map;
 @NoArgsConstructor
 public class PanelInfoDAO {
 
-    private Map<String, Integer> genderMap = Map.of("남", 0, "여", 1);
-    private Map<String, Integer> platformMap = Map.of("ios", 0, "android", 1);
+    private static final Map<String, TargetGender> GENDER_MAP = Map.of(
+            "남", TargetGender.MALE,
+            "여", TargetGender.FEMALE
+    );
+    private static final Map<String, AccountType> ACCOUNT_TYPE_MAP = Map.of(
+            "국민", AccountType.KB,
+            "하나", AccountType.HANA,
+            "우리", AccountType.WOORI,
+            "신한", AccountType.SHINHAN,
+            "농협", AccountType.NH,
+            "수협", AccountType.SH,
+            "IBK 기업", AccountType.IBK,
+            "새마을금고", AccountType.MG,
+            "카카오뱅크", AccountType.KAKAO,
+            "토스", AccountType.TOSS
+    );
+    private static final Map<String, InflowPath> INFLOW_PATH_MAP = Map.of(
+            "카카오톡", InflowPath.KAKAO,
+            "에브리타임", InflowPath.EVERYTIME,
+            "인스타그램", InflowPath.INSTAGRAM,
+            "지인 추천", InflowPath.ACQUAINTANCE,
+            "기타", InflowPath.ETC
+    );
 
-    String uid;
 
     String name;
 
@@ -22,73 +49,71 @@ public class PanelInfoDAO {
 
     String fcmToken;
 
-    Integer gender;
+    TargetGender gender;
 
     Date birth;
 
     String accountOwner;
 
-    String accountType;
+    AccountType accountType;
 
     String accountNumber;
 
-    Boolean didFirstSurvey;
+    PanelStatus status;
 
-    String inflowPath;
+    InflowPath inflowPath;
 
-    Date lastParticipatedAt;
-
-    Boolean marketingAgree;
+    String inflowPathEtc;
 
     String phoneNumber;
 
-    Integer platform;
+    PanelPlatform platform;
 
     Boolean pushOn;
 
-    Date signedUpAt;
+    Boolean marketingAgree;
+
 
     Integer rewardCurrent;
 
     Integer rewardTotal;
 
-    Boolean snsAuth;
+    Date signedUpAt;
 
-    String snsUid;
+    Date lastParticipatedAt;
 
 
     @Builder
-    public PanelInfoDAO(String uid, String name, String email,
-                        String fcmToken, String gender, Date birth,
+    public PanelInfoDAO(String name, String email, String fcmToken,
+                        String gender, Date birth,
                         String accountOwner, String accountType, String accountNumber,
-                        Boolean didFirstSurvey,
-                        String inflowPath, Date lastParticipatedAt,
-                        Boolean marketingAgree, String phoneNumber,
-                        Integer platform, Boolean pushOn,
-                        Date signedUpAt, Integer rewardCurrent,
-                        Integer rewardTotal, Boolean snsAuth,
-                        String snsUid
-    ) {
-        this.uid = uid;
+                        boolean didFirstSurvey, String inflowPath,
+                        String phoneNumber, PanelPlatform platform,
+                        Boolean pushOn,Boolean marketingAgree,
+                        Integer rewardCurrent, Integer rewardTotal,
+                        Date signedUpAt, Date lastParticipatedAt) {
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;
-        this.gender = genderMap.get(gender);
+        this.gender = GENDER_MAP.get(gender);
         this.birth = birth;
         this.accountOwner = accountOwner;
-        this.accountType = accountType;
+        this.accountType = ACCOUNT_TYPE_MAP.get(accountType);
         this.accountNumber = accountNumber;
-        this.didFirstSurvey = didFirstSurvey;
-        this.inflowPath = inflowPath;
-        this.lastParticipatedAt = lastParticipatedAt;
-        this.marketingAgree = marketingAgree;
+
+        if(didFirstSurvey) this.status = PanelStatus.FS_DONE;
+        else this.status = PanelStatus.FS_YET;
+
+        if(INFLOW_PATH_MAP.get(inflowPath) != null) this.inflowPath = INFLOW_PATH_MAP.get(inflowPath);
+        else this.inflowPathEtc = inflowPath;
+
         this.phoneNumber = phoneNumber;
         this.platform = platform;
         this.pushOn = pushOn;
-        this.signedUpAt = signedUpAt;
+        this.marketingAgree = marketingAgree;
         this.rewardCurrent = rewardCurrent;
         this.rewardTotal = rewardTotal;
-        this.snsAuth = snsAuth;
-        this.snsUid = snsUid;
+        this.lastParticipatedAt = lastParticipatedAt;
+        this.signedUpAt = signedUpAt;
     }
 }

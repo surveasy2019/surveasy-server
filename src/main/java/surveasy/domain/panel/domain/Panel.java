@@ -2,15 +2,18 @@ package surveasy.domain.panel.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import surveasy.domain.panel.domain.option.AccountType;
+import surveasy.domain.panel.domain.option.InflowPath;
+import surveasy.domain.panel.domain.option.PanelPlatform;
+import surveasy.domain.panel.domain.option.PanelStatus;
+import surveasy.domain.panel.domain.target.*;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
+import surveasy.domain.survey.domain.target.TargetGender;
 
 import java.util.Date;
 
@@ -25,12 +28,6 @@ public class Panel {
     Long id;
 
     @NotNull
-    String role;
-
-    @NotNull
-    String uid;
-
-    @NotNull
     String name;
 
     @NotNull
@@ -40,7 +37,8 @@ public class Panel {
     String fcmToken;
 
     @NotNull
-    Integer gender;
+    @Enumerated(EnumType.STRING)
+    TargetGender gender;
 
     @NotNull
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
@@ -50,34 +48,39 @@ public class Panel {
     String accountOwner;
 
     @NotNull
-    String accountType;
+    @Enumerated(EnumType.STRING)
+    AccountType accountType;
 
     @NotNull
     String accountNumber;
 
     @NotNull
-    Boolean didFirstSurvey;
-
-    @NotNull
-    String inflowPath;
+    @Enumerated(EnumType.STRING)
+    InflowPath inflowPath;
 
     @Nullable
-    Date lastParticipatedAt;
-
-    @NotNull
-    Boolean marketingAgree;
+    String inflowPathEtc;
 
     @NotNull
     String phoneNumber;
 
     @NotNull
-    Integer platform;
+    PanelPlatform platform;
 
     @NotNull
     Boolean pushOn;
 
-    @Nullable
-    Date signedUpAt;
+    @NotNull
+    Boolean marketingAgree;
+
+
+    // Default
+    @NotNull
+    String role;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    PanelStatus status;
 
     @NotNull
     Integer rewardCurrent;
@@ -86,63 +89,65 @@ public class Panel {
     Integer rewardTotal;
 
     @Nullable
-    Boolean snsAuth;
+    Date signedUpAt;
 
     @Nullable
-    String snsUid;
+    Date lastParticipatedAt;
 
 
     // First Survey
-
     @Nullable
     Boolean english;
 
     @Nullable
-    String city;
+    @Enumerated(EnumType.STRING)
+    TargetCity city;
 
     @Nullable
     String district;
 
     @Nullable
-    String family;
+    @Enumerated(EnumType.STRING)
+    TargetFamily family;
 
     @Nullable
-    String houseType;
+    @Enumerated(EnumType.STRING)
+    TargetHouseType houseType;
 
     @Nullable
-    String job;
-
-    @Nullable
-    String major;
-
-    @Nullable
-    Integer married;
-
-    @Nullable
-    Integer military;
-
-    @Nullable
-    String pet;
+    @Enumerated(EnumType.STRING)
+    TargetJob job;
 
     @Nullable
     String university;
 
+    @Nullable
+    @Enumerated(EnumType.STRING)
+    TargetMajor major;
+
+    @Nullable
+    @Enumerated(EnumType.STRING)
+    TargetMarriage marriage;
+
+    @Nullable
+    @Enumerated(EnumType.STRING)
+    TargetMilitary military;
+
+    @Nullable
+    @Enumerated(EnumType.STRING)
+    TargetPet pet;
+
 
     @Builder
-    public Panel(String uid, String name, String email, String fcmToken,
-                 Integer gender, Date birth,
-                 String accountOwner, String accountType, String accountNumber,
-                 Boolean didFirstSurvey,
-                 String inflowPath, Date lastParticipatedAt,
-                 Boolean marketingAgree, String phoneNumber,
-                 Integer platform, Boolean pushOn, Date signedUpAt,
-                 Integer rewardCurrent, Integer rewardTotal,
-                 Boolean snsAuth, String snsUid,
-                 Boolean english, String city, String district,
-                 String family, String houseType, String job,
-                 String major, Integer married, Integer military,
-                 String pet, String university) {
-        this.uid = uid;
+    private Panel(String name, String email, String fcmToken, TargetGender gender,
+                 Date birth, String accountOwner, AccountType accountType, String accountNumber,
+                 PanelStatus status, InflowPath inflowPath, String inflowPathEtc, String phoneNumber,
+                 PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
+                 Integer rewardCurrent, Integer rewardTotal, Date signedUpAt, Date lastParticipatedAt,
+                  Boolean english, TargetCity city, String district,
+                  TargetFamily family, TargetHouseType houseType, TargetJob job,
+                  String university, TargetMajor major,
+                  TargetMarriage marriage, TargetMilitary military, TargetPet pet) {
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;
@@ -151,29 +156,31 @@ public class Panel {
         this.accountOwner = accountOwner;
         this.accountType = accountType;
         this.accountNumber = accountNumber;
-        this.didFirstSurvey = didFirstSurvey;
+        this.status = status;
         this.inflowPath = inflowPath;
-        this.lastParticipatedAt = lastParticipatedAt;
-        this.marketingAgree = marketingAgree;
+        this.inflowPathEtc = inflowPathEtc;
         this.phoneNumber = phoneNumber;
         this.platform = platform;
         this.pushOn = pushOn;
-        this.signedUpAt = signedUpAt;
+        this.marketingAgree = marketingAgree;
+
         this.rewardCurrent = rewardCurrent;
         this.rewardTotal = rewardTotal;
-        this.snsAuth = snsAuth;
-        this.snsUid = snsUid;
+        this.signedUpAt = signedUpAt;
+        this.lastParticipatedAt = lastParticipatedAt;
+
+        /* First Survey */
         this.english = english;
         this.city = city;
         this.district = district;
         this.family = family;
         this.houseType = houseType;
         this.job = job;
+        this.university = university;
         this.major = major;
-        this.married = married;
+        this.marriage = marriage;
         this.military = military;
         this.pet = pet;
-        this.university = university;
 
         this.role = "ROLE_USER";
     }
@@ -181,7 +188,6 @@ public class Panel {
 
     public static Panel ofExisting(PanelInfoDAO panelInfoDAO, PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO) {
         return Panel.builder()
-                .uid(panelInfoDAO.getUid())
                 .name(panelInfoDAO.getName())
                 .email(panelInfoDAO.getEmail())
                 .fcmToken(panelInfoDAO.getFcmToken())
@@ -190,18 +196,18 @@ public class Panel {
                 .accountOwner(panelInfoDAO.getAccountOwner())
                 .accountType(panelInfoDAO.getAccountType())
                 .accountNumber(panelInfoDAO.getAccountNumber())
-                .didFirstSurvey(panelInfoDAO.getDidFirstSurvey())
+                .status(panelInfoDAO.getStatus())
                 .inflowPath(panelInfoDAO.getInflowPath())
-                .lastParticipatedAt(panelInfoDAO.getLastParticipatedAt())
-                .marketingAgree(panelInfoDAO.getMarketingAgree())
+                .inflowPathEtc(panelInfoDAO.getInflowPathEtc())
                 .phoneNumber(panelInfoDAO.getPhoneNumber())
                 .platform(panelInfoDAO.getPlatform())
                 .pushOn(panelInfoDAO.getPushOn())
-                .signedUpAt(panelInfoDAO.getSignedUpAt())
+                .marketingAgree(panelInfoDAO.getMarketingAgree())
+
                 .rewardCurrent(panelInfoDAO.getRewardCurrent())
                 .rewardTotal(panelInfoDAO.getRewardTotal())
-                .snsAuth(panelInfoDAO.getSnsAuth())
-                .snsUid(panelInfoDAO.getSnsUid())
+                .signedUpAt(panelInfoDAO.getSignedUpAt())
+                .lastParticipatedAt(panelInfoDAO.getLastParticipatedAt())
 
                 .english(panelInfoFirstSurveyDAO.getEnglish())
                 .city(panelInfoFirstSurveyDAO.getCity())
@@ -209,17 +215,16 @@ public class Panel {
                 .family(panelInfoFirstSurveyDAO.getFamily())
                 .houseType(panelInfoFirstSurveyDAO.getHouseType())
                 .job(panelInfoFirstSurveyDAO.getJob())
+                .university(panelInfoFirstSurveyDAO.getUniversity())
                 .major(panelInfoFirstSurveyDAO.getMajor())
-                .married(panelInfoFirstSurveyDAO.getMarried())
+                .marriage(panelInfoFirstSurveyDAO.getMarriage())
                 .military(panelInfoFirstSurveyDAO.getMilitary())
                 .pet(panelInfoFirstSurveyDAO.getPet())
-                .university(panelInfoFirstSurveyDAO.getUniversity())
                 .build();
     }
 
     public static Panel ofNew(PanelSignUpDTO panelSignUpDTO) {
         return Panel.builder()
-                .uid(panelSignUpDTO.getEmail())
                 .name(panelSignUpDTO.getName())
                 .email(panelSignUpDTO.getEmail())
                 .fcmToken(panelSignUpDTO.getFcmToken())
@@ -228,16 +233,16 @@ public class Panel {
                 .accountOwner(panelSignUpDTO.getAccountOwner())
                 .accountType(panelSignUpDTO.getAccountType())
                 .accountNumber(panelSignUpDTO.getAccountNumber())
-                .didFirstSurvey(false)
                 .inflowPath(panelSignUpDTO.getInflowPath())
-                .lastParticipatedAt(null)
-                .marketingAgree(panelSignUpDTO.getMarketingAgree())
+                .inflowPathEtc(panelSignUpDTO.getInflowPathEtc())
                 .phoneNumber(panelSignUpDTO.getPhoneNumber())
                 .platform(panelSignUpDTO.getPlatform())
                 .pushOn(panelSignUpDTO.getPushOn())
-                .signedUpAt(panelSignUpDTO.getSignedUpAt())
+                .marketingAgree(panelSignUpDTO.getMarketingAgree())
+
                 .rewardCurrent(0)
                 .rewardTotal(0)
+                .signedUpAt(new Date())
 
                 .english(null)
                 .city(null)
@@ -245,11 +250,11 @@ public class Panel {
                 .family(null)
                 .houseType(null)
                 .job(null)
+                .university(null)
                 .major(null)
-                .married(null)
+                .marriage(null)
                 .military(null)
                 .pet(null)
-                .university(null)
                 .build();
     }
 }

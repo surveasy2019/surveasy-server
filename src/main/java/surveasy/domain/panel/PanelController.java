@@ -7,15 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.request.PanelExistingDTO;
 import surveasy.domain.panel.dto.response.*;
-import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.service.PanelService;
+import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.global.config.user.PanelDetails;
 
 import java.text.ParseException;
@@ -30,14 +30,14 @@ public class PanelController {
 
     private final PanelService panelService;
 
-    @PostMapping("/auth/existing")
-    @Operation(summary = "App 기존 패널 정보 가져와서 가입시키기")
-    public PanelTokenResponse signUpExisting(@RequestBody @Valid PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
-        return panelService.signUpExisting(panelUidDTO);
+    @PostMapping("/signup/existing")
+    @Operation(summary = "App 기존 패널 회원 가입")
+    public PanelTokenResponse signUpExisting(@RequestBody @Valid PanelExistingDTO panelExistingDTO) throws ExecutionException, InterruptedException, ParseException {
+        return panelService.signUpExisting(panelExistingDTO);
     }
 
-    @PostMapping("/auth/new")
-    @Operation(summary = "App 새로운 패널 가입시키기")
+    @PostMapping("/signup")
+    @Operation(summary = "App 신규 패널 회원 가입")
     public PanelTokenResponse signUpNew(@RequestBody PanelSignUpDTO panelSignUpDTO) {
         return panelService.signUpNew(panelSignUpDTO);
     }
@@ -48,26 +48,27 @@ public class PanelController {
         return panelService.reissueAccessToken(panelId);
     }
 
-    @GetMapping("")
+    @GetMapping("/home")
     @Operation(summary = "App 홈화면 패널 정보 불러오기")
     public PanelHomeInfoResponse getPanelHomeInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
         return panelService.getPanelHomeInfo(panelDetails);
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("")
     @Operation(summary = "App 마이페이지 패널 정보 불러오기")
-    public PanelMyPageInfoResponse getPanelMyPageInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return panelService.getPanelMyPageInfo(panelDetails);
+    public ResponseEntity<PanelInfoVo> getPanelMyPageInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return ResponseEntity.ok(panelService.getPanelInfoVo(panelDetails));
     }
 
-    @PatchMapping("/mypage/update")
+    @PatchMapping("")
     @Operation(summary = "App 마이페이지 패널 정보 수정하기")
-    public PanelMyPageInfoResponse updatePanelInfo(@AuthenticationPrincipal PanelDetails panelDetails,
-                                           @RequestBody PanelInfoUpdateDTO panelInfoUpdateDTO) {
-        return panelService.updatePanelInfo(panelDetails, panelInfoUpdateDTO);
+    public ResponseEntity<PanelInfoVo> updatePanelInfo(
+            @AuthenticationPrincipal PanelDetails panelDetails,
+            @RequestBody PanelInfoUpdateDTO panelInfoUpdateDTO) {
+        return ResponseEntity.ok(panelService.updatePanelInfo(panelDetails, panelInfoUpdateDTO));
     }
 
-    @GetMapping("/admin/list")
+    @GetMapping("/admin")
     @Operation(summary = "Admin 패널 리스트")
     public PanelAdminListResponse getAdminPanelList(@PageableDefault(size = 50) Pageable pageable) {
         return panelService.getAdminPanelList(pageable);
