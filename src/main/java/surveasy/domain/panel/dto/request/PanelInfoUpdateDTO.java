@@ -10,6 +10,8 @@ public class PanelInfoUpdateDTO {
 
     String phoneNumber;
 
+    String accountOwner;
+
     AccountType accountType;
 
     String accountNumber;

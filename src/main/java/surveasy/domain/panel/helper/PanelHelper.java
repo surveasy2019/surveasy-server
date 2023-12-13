@@ -152,6 +152,10 @@ public class PanelHelper {
             panel.setPhoneNumber(panelInfoUpdateDTO.getPhoneNumber());
         }
 
+        if(panelInfoUpdateDTO.getAccountOwner() != null) {
+            panel.setAccountOwner(panelInfoUpdateDTO.getAccountOwner());
+        }
+
         if(panelInfoUpdateDTO.getAccountType() != null) {
             panel.setAccountType(panelInfoUpdateDTO.getAccountType());
         }
