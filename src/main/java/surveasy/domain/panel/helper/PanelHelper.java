@@ -11,12 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.domain.option.PanelPlatform;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
+import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
 import surveasy.global.common.util.DateAndStringUtil;
@@ -32,19 +34,19 @@ public class PanelHelper {
     private final PanelMapper panelMapper;
     private final PanelRepository panelRepository;
 
-    public static final String COLLECTION_NAME = "panelData";
-    public static final String COLLECTION_FS_NAME = "FirstSurvey";
+    private static final String COLLECTION_NAME = "panelData";
+    private static final String COLLECTION_FS_NAME = "FirstSurvey";
 
 
-    // [App] Firebase 기존 패널 정보 가져오기
-    private Panel createPanelFromFirestore(String uid) throws ExecutionException, InterruptedException, ParseException {
+    /* [App] Firebase 기존 패널 정보 가져오기 */
+    private Panel createPanelFromFirestore(String uid, PanelPlatform platform) throws ExecutionException, InterruptedException, ParseException {
         Firestore db = FirestoreClient.getFirestore();
 
-        // Fetch - Firebase Panel Info
+        // Firebase Panel Info
         ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(uid).get();
         DocumentSnapshot documentSnapshot = future.get();
 
-        // Fetch - Firebase Panel First Survey Info
+        // Firebase Panel First Survey Info
         ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(uid)
                 .collection(COLLECTION_FS_NAME).document(uid).get();
         DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
@@ -52,8 +54,10 @@ public class PanelHelper {
 
         if(documentSnapshot.exists()) {
             Date birth = DateAndStringUtil.stringToDateYMD(documentSnapshot.getString("birthDate"));
-            Date signedAt = DateAndStringUtil.stringToDateYMD(documentSnapshot.getString("registerDate"));
-            Boolean didFirstSurvey = false;
+            String signedUpAtStr = documentSnapshot.getString("registerDate");
+            Date signedUpAt = signedUpAtStr == null ? new Date() : DateAndStringUtil.stringToDateYMD(signedUpAtStr);
+
+            boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
 
             if (documentSnapshotFS.exists()) {
@@ -65,16 +69,15 @@ public class PanelHelper {
                         .family(documentSnapshotFS.getString("family"))
                         .houseType(documentSnapshotFS.getString("housingType"))
                         .job(documentSnapshotFS.getString("job"))
+                        .university(documentSnapshotFS.getString("university"))
                         .major(documentSnapshotFS.getString("major"))
-                        .married(documentSnapshotFS.getString("married"))
+                        .marriage(documentSnapshotFS.getString("married"))
                         .military(documentSnapshotFS.getString("military"))
                         .pet(documentSnapshotFS.getString("pet"))
-                        .university(documentSnapshotFS.getString("university"))
                         .build();
             }
 
             PanelInfoDAO panelInfoDAO = PanelInfoDAO.builder()
-                    .uid(documentSnapshot.getString("uid"))
                     .name(documentSnapshot.getString("name"))
                     .email(documentSnapshot.getString("email"))
                     .fcmToken(documentSnapshot.getString("fcmToken"))
@@ -85,21 +88,18 @@ public class PanelHelper {
                     .accountNumber(documentSnapshot.getString("accountNumber"))
                     .didFirstSurvey(didFirstSurvey)
                     .inflowPath(documentSnapshot.getString("inflowPath"))
-                    .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))
-                    .marketingAgree(documentSnapshot.getBoolean("marketingAgree"))
                     .phoneNumber(documentSnapshot.getString("phoneNumber"))
-                    .platform(0)
+                    .platform(platform)
                     .pushOn(documentSnapshot.getBoolean("pushOn"))
-                    .signedUpAt(signedAt)
+                    .marketingAgree(documentSnapshot.getBoolean("marketingAgree"))
                     .rewardCurrent(documentSnapshot.get("reward_current", Integer.class))
                     .rewardTotal(documentSnapshot.get("reward_total", Integer.class))
-                    .snsAuth(documentSnapshot.getBoolean("snsAuth"))
-                    .snsUid(documentSnapshot.getString("snsUid"))
+                    .signedUpAt(signedUpAt)
+                    .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))
                     .build();
 
 
-            Panel panel = panelMapper.toEntityExisting(panelInfoDAO, panelInfoFirstSurveyDAO);
-            return panel;
+            return panelMapper.toEntityExisting(panelInfoDAO, panelInfoFirstSurveyDAO);
 
         } else {
             throw PanelNotFoundFB.EXCEPTION;
@@ -107,40 +107,34 @@ public class PanelHelper {
     }
 
 
-    // [App] 기존 패널 가입 처리
-    public Panel addExistingPanelIfNeed(PanelUidDTO panelUidDTO) throws ExecutionException, InterruptedException, ParseException {
-        String uid = panelUidDTO.getUid();
-        Optional<Panel> panel = panelRepository.findByUid(uid);
-
-        if(panel.isEmpty()) {   // DB에 아직 없는 패널
-            Panel newPanel = createPanelFromFirestore(uid);
-            panelRepository.save(newPanel);
-        } else {                // DB에 이미 존재하는 패널
-            throw PanelDuplicateData.EXCEPTION;
+    /* [App] 패널 생성 - existing */
+    public Panel addExistingPanelIfNeed(PanelExistingDTO panelExistingDTO) throws ExecutionException, InterruptedException, ParseException {
+        Optional<Panel> panel = panelRepository.findByEmail(panelExistingDTO.getEmail());
+        if(panel.isPresent()) {
+            throw PanelDuplicateData.EXCEPTION;     // DB에 이미 존재하는 패널
         }
 
-        return panelRepository.findByUid(uid).get();
+        Panel newPanel = createPanelFromFirestore(panelExistingDTO.getUid(), panelExistingDTO.getPlatform());
+        return panelRepository.save(newPanel);
     }
 
 
-    // [App] 신규 회원 가입 처리
+    /* [App] 패널 생성 - new */
     public Panel addNewPanelIfNeed(PanelSignUpDTO panelSignUpDTO) {
         String email = panelSignUpDTO.getEmail();
         Optional<Panel> panel = panelRepository.findByEmail(email);
 
-        if(panel.isEmpty()) {   // DB에 아직 없는 패널
-            Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
-            panelRepository.save(newPanel);
-        } else {                // DB에 이미 존재하는 패널
-            throw PanelDuplicateData.EXCEPTION;
+        if(panel.isPresent()) {
+            throw PanelDuplicateData.EXCEPTION;     // DB에 이미 존재하는 패널
         }
 
-        return panelRepository.findByEmail(email).get();
+        Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
+        return panelRepository.save(newPanel);
     }
 
 
-    // [App] List - 설문 참여 완료 후 패널 정보 업데이트
-    /* rewardCurrent, lastParticipatedDate */
+    /* [App] 설문 참여 완료 후 패널 정보 업데이트
+    * rewardCurrent, lastParticipatedDate */
     public void updatePanelInfoAfterResponse(Panel panel, Integer reward) {
         Integer rewardCurrent = panel.getRewardCurrent();
 
@@ -151,11 +145,15 @@ public class PanelHelper {
     }
 
 
-    // [App] MyPage - 패널 정보 업데이트
-    /* phoneNumber, accountType, accountNumber, english */
+    /* [App] 마이페이지 패널 정보 업데이트
+    * phoneNumber, accountType, accountNumber, english */
     public Panel updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO) {
         if(panelInfoUpdateDTO.getPhoneNumber() != null) {
             panel.setPhoneNumber(panelInfoUpdateDTO.getPhoneNumber());
+        }
+
+        if(panelInfoUpdateDTO.getAccountOwner() != null) {
+            panel.setAccountOwner(panelInfoUpdateDTO.getAccountOwner());
         }
 
         if(panelInfoUpdateDTO.getAccountType() != null) {
@@ -174,20 +172,22 @@ public class PanelHelper {
     }
 
 
-    // [Web] 홈화면 전체 패널 수
+    /* [Web] 홈화면 전체 패널 수 */
     public Long getPanelCount() {
         return panelRepository.count();
     }
 
 
-    // [Web] Active Panel 목록
-    /* 성별로 구분 */
+    /* [Web] Active Panel 목록
+    * 성별로 구분 */
     public Activepanel getActivePanelList() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -7);
         Date aWeekAgo = cal.getTime();
 
-        String totalList = "", maleList = "", femaleList = "";
+        StringBuilder totalList = new StringBuilder();
+        StringBuilder maleList = new StringBuilder();
+        StringBuilder femaleList = new StringBuilder();
 
         for(int i=0 ; i<SurveyOptions.AGES.length-1 ; i++) {
             Calendar ageFrom = Calendar.getInstance();
@@ -195,25 +195,25 @@ public class PanelHelper {
             ageFrom.add(Calendar.YEAR, -SurveyOptions.AGES[i]);
             ageEnd.add(Calendar.YEAR, -SurveyOptions.AGES[i+1]);
 
-            long malePanel = panelRepository.countActivePanel(0, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
-            long femalePanel = panelRepository.countActivePanel(1, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
+            long malePanel = panelRepository.countActivePanel(TargetGender.MALE, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
+            long femalePanel = panelRepository.countActivePanel(TargetGender.FEMALE, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
 
-            totalList += (malePanel + femalePanel);
-            maleList += malePanel;
-            femaleList += femalePanel;
+            totalList.append(malePanel + femalePanel);
+            maleList.append(malePanel);
+            femaleList.append(femalePanel);
 
             if(i<SurveyOptions.AGES.length-2) {
-                totalList += ", ";
-                maleList += ", ";
-                femaleList += ", ";
+                totalList.append(", ");
+                maleList.append(", ");
+                femaleList.append(", ");
             }
         }
 
-        return Activepanel.of(totalList, maleList, femaleList);
+        return Activepanel.of(totalList.toString(), maleList.toString(), femaleList.toString());
     }
 
 
-    // [Web] Admin - 패널 전체 목록
+    /* [Web] Admin - 패널 전체 목록 */
     public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
         int pageNum = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();

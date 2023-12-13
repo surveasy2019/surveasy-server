@@ -9,11 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelUidDTO;
+import surveasy.domain.panel.dto.request.PanelExistingDTO;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
+import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.global.config.jwt.TokenProvider;
 import surveasy.global.config.user.PanelDetails;
@@ -35,8 +36,8 @@ public class PanelService {
     private final ResponseHelper responseHelper;
 
     @Transactional
-    public PanelTokenResponse signUpExisting(PanelUidDTO panelUidDTO) throws ParseException, ExecutionException, InterruptedException {
-        Panel panel = panelHelper.addExistingPanelIfNeed(panelUidDTO);
+    public PanelTokenResponse signUpExisting(PanelExistingDTO panelExistingDTO) throws ParseException, ExecutionException, InterruptedException {
+        Panel panel = panelHelper.addExistingPanelIfNeed(panelExistingDTO);
 
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
         final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
@@ -64,16 +65,16 @@ public class PanelService {
     }
 
     @Transactional
-    public PanelMyPageInfoResponse updatePanelInfo(PanelDetails panelDetails, PanelInfoUpdateDTO panelInfoUpdateDTO) {
+    public PanelInfoVo updatePanelInfo(PanelDetails panelDetails, PanelInfoUpdateDTO panelInfoUpdateDTO) {
         final Panel panel = panelDetails.getPanel();
-        return panelMapper.toPanelMyPageInfoResponse(panelHelper.updatePanelInfo(panel, panelInfoUpdateDTO));
+        return panelMapper.toPanelInfoVo(panelHelper.updatePanelInfo(panel, panelInfoUpdateDTO));
     }
 
 
     @Transactional(readOnly = true)
-    public PanelMyPageInfoResponse getPanelMyPageInfo(PanelDetails panelDetails) {
+    public PanelInfoVo getPanelInfoVo(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
-        return panelMapper.toPanelMyPageInfoResponse(panel);
+        return panelMapper.toPanelInfoVo(panel);
     }
 
     @Transactional(readOnly = true)
