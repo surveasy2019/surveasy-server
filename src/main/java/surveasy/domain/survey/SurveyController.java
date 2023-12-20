@@ -15,8 +15,10 @@ import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
+import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.service.SurveyService;
+import surveasy.domain.survey.vo.SurveyAppListDetailVo;
 import surveasy.global.config.user.PanelDetails;
 
 @Slf4j
@@ -76,12 +78,6 @@ public class SurveyController {
         return surveyService.deleteMyPageSurvey(surveyId);
     }
 
-    @Operation(summary = "App 홈화면 설문 리스트")
-    @GetMapping("/app/home")
-    public SurveyAppHomeListResponse getAppSurveyHomeList(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return surveyService.getSurveyAppHomeListResponse(panelDetails);
-    }
-
     @Operation(summary = "Admin 설문 리스트")
     @GetMapping("/admin/list")
     public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable) {
@@ -92,5 +88,23 @@ public class SurveyController {
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId, @RequestBody SurveyAdminDTO surveyAdminDTO) {
         return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
+    }
+
+    @Operation(summary = "App 홈화면 설문 리스트")
+    @GetMapping("/app/home")
+    public SurveyAppHomeListResponse getSurveyAppHomeList(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return surveyService.getSurveyAppHomeList(panelDetails);
+    }
+
+    @Operation(summary = "App 설문 리스트")
+    @GetMapping("/app")
+    public SurveyAppListResponse getSurveyAppList(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return surveyService.getSurveyAppList(panelDetails);
+    }
+
+    @Operation(summary = "App 설문 1개 상세 정보")
+    @GetMapping("/app/{surveyId}")
+    public ResponseEntity<SurveyAppListDetailVo> getSurveyAppListDetail(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(surveyService.getSurveyAppListDetail(surveyId));
     }
 }

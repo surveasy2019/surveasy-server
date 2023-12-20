@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
@@ -18,11 +19,14 @@ import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.vo.SurveyAppHomeVo;
+import surveasy.domain.survey.vo.SurveyAppListDetailVo;
+import surveasy.domain.survey.vo.SurveyAppListVo;
 import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
 import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -175,11 +179,9 @@ public class SurveyHelper {
         return surveyRepository.save(survey).getId();
     }
 
-    /* [App] 진행중인 설문 목록
-    * progress == 2 */
-    public List<SurveyAppHomeVo> getSurveyListProgressEq2(Long panelId) {
-        List<SurveyAppHomeVo> surveyList = surveyRepository.findAllSurveyAppHomeVos();
-        return surveyList;
+    /* [App] 진행중인 설문 목록 */
+    public List<SurveyAppHomeVo> getSurveyAppHomeList(Panel panel) {
+        return surveyRepository.findAllSurveyAppHomeVos(panel);
     }
 
 
@@ -193,8 +195,17 @@ public class SurveyHelper {
 
 
     /* [App] 설문 status 업데이트 (IN_PROGRESS -> DONE) */
-    public Long updateStatusToDone(Survey survey) {
+    public void updateStatusToDone(Survey survey) {
         survey.setStatus(SurveyStatus.DONE);
-        return surveyRepository.save(survey).getId();
+        surveyRepository.save(survey);
+    }
+
+    public List<SurveyAppListVo> getSurveyAppList(Panel panel) {
+        return surveyRepository.findAllSurveyAppListVos(panel);
+    }
+
+    public SurveyAppListDetailVo getSurveyAppListDetail(Long surveyId) {
+        return surveyRepository.findSurveyAppListDetailVo(surveyId)
+                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
     }
 }

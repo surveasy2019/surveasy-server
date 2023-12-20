@@ -10,18 +10,23 @@ public class SurveyAppHomeVo {
 
     private String title;
 
-    private Integer reward;
-
-    private String link;
+    private String targetInput;
 
     private String noticeToPanel;
 
+    private Integer reward;
+
+    private Integer responseCount;
+
+
     @Builder
-    public SurveyAppHomeVo(Long id, String title, Integer reward, String link, String noticeToPanel) {
+    public SurveyAppHomeVo(Long id, String title, String targetInput, String noticeToPanel,
+                           Integer reward, Integer responseCount) {
         this.id = id;
         this.title = title;
-        this.reward = reward;
-        this.link = link;
+        this.targetInput = targetInput;
         this.noticeToPanel = noticeToPanel;
+        this.reward = reward;
+        this.responseCount = responseCount;
     }
 }
