@@ -6,8 +6,10 @@ import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
+import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.vo.SurveyAppHomeVo;
+import surveasy.domain.survey.vo.SurveyAppListVo;
 import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
 
@@ -46,7 +48,11 @@ public class SurveyMapper {
         return SurveyMyPageOrderListResponse.from(surveyMyPageOrderVos);
     }
 
-    public SurveyAppHomeListResponse toSurveyAppHomeListResponse(Long panelId, List<SurveyAppHomeVo> surveyAppHomeVos) {
-        return null;
+    public SurveyAppHomeListResponse toSurveyAppHomeList(List<SurveyAppHomeVo> surveyAppHomeVos) {
+        return SurveyAppHomeListResponse.from(surveyAppHomeVos);
+    }
+
+    public SurveyAppListResponse toSurveyAppList(List<SurveyAppListVo> surveyAppList) {
+        return SurveyAppListResponse.from(surveyAppList);
     }
 }

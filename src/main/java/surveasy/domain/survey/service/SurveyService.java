@@ -12,10 +12,12 @@ import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
+import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
+import surveasy.domain.survey.vo.SurveyAppListDetailVo;
 import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.global.config.user.PanelDetails;
 
@@ -72,9 +74,9 @@ public class SurveyService {
     }
 
     @Transactional
-    public SurveyAppHomeListResponse getSurveyAppHomeListResponse(PanelDetails panelDetails) {
+    public SurveyAppHomeListResponse getSurveyAppHomeList(PanelDetails panelDetails) {
         final Panel panel = panelDetails.getPanel();
-        return surveyMapper.toSurveyAppHomeListResponse(panel.getId(), surveyHelper.getSurveyListProgressEq2(panel.getId()));
+        return surveyMapper.toSurveyAppHomeList(surveyHelper.getSurveyAppHomeList(panel));
     }
 
     @Transactional
@@ -85,5 +87,14 @@ public class SurveyService {
     @Transactional
     public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
         return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
+    }
+
+    public SurveyAppListResponse getSurveyAppList(PanelDetails panelDetails) {
+        final Panel panel = panelDetails.getPanel();
+        return surveyMapper.toSurveyAppList(surveyHelper.getSurveyAppList(panel));
+    }
+
+    public SurveyAppListDetailVo getSurveyAppListDetail(Long surveyId) {
+        return surveyHelper.getSurveyAppListDetail(surveyId);
     }
 }
