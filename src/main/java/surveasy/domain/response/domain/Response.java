@@ -29,6 +29,9 @@ public class Response {
     private String imgUrl;
 
     @NotNull
+    private Integer reward;
+
+    @NotNull
     private Date createdAt;
 
     @Nullable
@@ -49,6 +52,7 @@ public class Response {
         this.panel = panel;
         this.survey = survey;
         this.imgUrl = imgUrl;
+        this.reward = survey.getReward();
 
         this.status = ResponseStatus.CREATED;
         this.createdAt = new Date();
