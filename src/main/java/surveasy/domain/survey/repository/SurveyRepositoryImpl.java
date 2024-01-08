@@ -12,6 +12,7 @@ import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.vo.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -96,8 +97,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
         QSurvey qSurvey = QSurvey.survey;
         QResponse qResponse = QResponse.response;
 
-        Date now = new Date();
-        Date oneWeekBefore = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneWeekBefore = now.minusDays(8);
 
         return jpaQueryFactory
                 .select(Projections.constructor(SurveyAppHomeVo.class,
@@ -128,8 +129,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
         QSurvey qSurvey = QSurvey.survey;
         QResponse qResponse = QResponse.response;
 
-        Date now = new Date();
-        Date oneWeekBefore = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneWeekBefore = now.minusDays(8);
 
         return jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListVo.class,

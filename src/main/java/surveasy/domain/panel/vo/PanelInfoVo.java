@@ -7,7 +7,7 @@ import surveasy.domain.panel.domain.option.AccountType;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.util.DateAndStringUtil;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 public class PanelInfoVo {
@@ -31,11 +31,11 @@ public class PanelInfoVo {
     private final Boolean english;
 
     @Builder
-    public PanelInfoVo(String name, Date birth, TargetGender gender, String email,
+    public PanelInfoVo(String name, LocalDate birth, TargetGender gender, String email,
                        String phoneNumber, String accountOwner, AccountType accountType,
                        String accountNumber, Boolean english) {
         this.name = name;
-        this.birth = DateAndStringUtil.SDF_YYYY_MM_DD.format(birth);
+        this.birth = DateAndStringUtil.localDateToString(birth);
         this.gender = gender.getValue();
         this.email = email;
         this.phoneNumber = phoneNumber;

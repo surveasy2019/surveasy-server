@@ -8,6 +8,7 @@ import surveasy.domain.panel.domain.option.InflowPath;
 import surveasy.domain.panel.domain.option.PanelPlatform;
 import surveasy.domain.survey.domain.target.TargetGender;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class PanelSignUpDTO {
 
     TargetGender gender;
 
-    Date birth;
+    LocalDate birth;
 
     String accountOwner;
 
@@ -46,7 +47,7 @@ public class PanelSignUpDTO {
 
     @Builder
     public PanelSignUpDTO(String name, String email, String fcmToken,
-                          TargetGender gender, Date birth,
+                          TargetGender gender, LocalDate birth,
                           String accountOwner, AccountType accountType, String accountNumber,
                           InflowPath inflowPath, String inflowPathEtc,
                           String phoneNumber, PanelPlatform platform,

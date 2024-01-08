@@ -1,7 +1,5 @@
 package surveasy.domain.panel.dto.request;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +9,8 @@ import surveasy.domain.panel.domain.option.PanelPlatform;
 import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.survey.domain.target.TargetGender;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
@@ -51,7 +50,7 @@ public class PanelInfoDAO {
 
     TargetGender gender;
 
-    Date birth;
+    LocalDate birth;
 
     String accountOwner;
 
@@ -78,20 +77,20 @@ public class PanelInfoDAO {
 
     Integer rewardTotal;
 
-    Date signedUpAt;
+    LocalDate signedUpAt;
 
-    Date lastParticipatedAt;
+    LocalDateTime lastParticipatedAt;
 
 
     @Builder
     public PanelInfoDAO(String name, String email, String fcmToken,
-                        String gender, Date birth,
+                        String gender, LocalDate birth,
                         String accountOwner, String accountType, String accountNumber,
                         boolean didFirstSurvey, String inflowPath,
                         String phoneNumber, PanelPlatform platform,
                         Boolean pushOn,Boolean marketingAgree,
                         Integer rewardCurrent, Integer rewardTotal,
-                        Date signedUpAt, Date lastParticipatedAt) {
+                        LocalDate signedUpAt, LocalDateTime lastParticipatedAt) {
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;

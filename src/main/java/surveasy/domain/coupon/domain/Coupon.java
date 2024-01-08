@@ -9,6 +9,7 @@ import lombok.*;
 import surveasy.domain.coupon.dto.request.CouponCreateDTO;
 import surveasy.global.common.util.DateAndStringUtil;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -37,7 +38,7 @@ public class Coupon {
     private Coupon(String code, Integer discountPercent) {
         this.code = code;
         this.discountPercent = discountPercent;
-        this.createdAt = DateAndStringUtil.dateToStringYMD(new Date());
+        this.createdAt = DateAndStringUtil.localDateToString(LocalDate.now());
     }
 
     public static Coupon from(CouponCreateDTO couponCreateDTO) {

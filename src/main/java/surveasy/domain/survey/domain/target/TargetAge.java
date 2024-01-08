@@ -2,8 +2,7 @@ package surveasy.domain.survey.domain.target;
 
 import lombok.Getter;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 public enum TargetAge {
@@ -26,14 +25,9 @@ public enum TargetAge {
         this.value = value;
     }
 
-    public static TargetAge from(Date birth) {
-        Calendar nowCal = Calendar.getInstance();
-        nowCal.setTime(new Date());
-
-        Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(birth);
-
-        int age = nowCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
+    public static TargetAge from(LocalDate birth) {
+        LocalDate now = LocalDate.now();
+        int age = now.getYear() - birth.getYear();
 
         if(age >= 20 && age <= 24) return AGE_20_24;
         else if(age >= 25 && age <= 29) return AGE_25_29;

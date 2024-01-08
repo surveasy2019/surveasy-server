@@ -9,7 +9,8 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.survey.domain.Survey;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,10 +30,13 @@ public class Response {
     private String imgUrl;
 
     @NotNull
-    private Date createdAt;
+    private Integer reward;
+
+    @NotNull
+    private LocalDateTime createdAt;
 
     @Nullable
-    private Date sentAt;
+    private LocalDate sentAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -48,10 +52,11 @@ public class Response {
     private Response(Panel panel, Survey survey, String imgUrl) {
         this.panel = panel;
         this.survey = survey;
+        this.reward = survey.getReward();
         this.imgUrl = imgUrl;
 
         this.status = ResponseStatus.CREATED;
-        this.createdAt = new Date();
+        this.createdAt = LocalDateTime.now();
     }
 
     public static Response of(Panel panel, Survey survey, ResponseCreateRequestDTO responseCreateRequestDTO) {

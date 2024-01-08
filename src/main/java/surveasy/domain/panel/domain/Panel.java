@@ -15,7 +15,8 @@ import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.survey.domain.target.TargetGender;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -42,7 +43,7 @@ public class Panel {
 
     @NotNull
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-    Date birth;
+    LocalDate birth;
 
     @NotNull
     String accountOwner;
@@ -89,10 +90,10 @@ public class Panel {
     Integer rewardTotal;
 
     @Nullable
-    Date signedUpAt;
+    LocalDate signedUpAt;
 
     @Nullable
-    Date lastParticipatedAt;
+    LocalDateTime lastParticipatedAt;
 
 
     // First Survey
@@ -140,10 +141,10 @@ public class Panel {
 
     @Builder
     private Panel(String name, String email, String fcmToken, TargetGender gender,
-                 Date birth, String accountOwner, AccountType accountType, String accountNumber,
+                 LocalDate birth, String accountOwner, AccountType accountType, String accountNumber,
                  PanelStatus status, InflowPath inflowPath, String inflowPathEtc, String phoneNumber,
                  PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
-                 Integer rewardCurrent, Integer rewardTotal, Date signedUpAt, Date lastParticipatedAt,
+                 Integer rewardCurrent, Integer rewardTotal, LocalDate signedUpAt, LocalDateTime lastParticipatedAt,
                   Boolean english, TargetCity city, String district,
                   TargetFamily family, TargetHouseType houseType, TargetJob job,
                   String university, TargetMajor major,
@@ -242,7 +243,7 @@ public class Panel {
 
                 .rewardCurrent(0)
                 .rewardTotal(0)
-                .signedUpAt(new Date())
+                .signedUpAt(LocalDate.now())
 
                 .english(null)
                 .city(null)

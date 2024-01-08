@@ -24,6 +24,8 @@ import surveasy.global.common.dto.PageInfo;
 import surveasy.global.common.util.DateAndStringUtil;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -53,9 +55,9 @@ public class PanelHelper {
 
 
         if(documentSnapshot.exists()) {
-            Date birth = DateAndStringUtil.stringToDateYMD(documentSnapshot.getString("birthDate"));
+            LocalDate birth = DateAndStringUtil.stringToLocalDate(documentSnapshot.getString("birthDate"));
             String signedUpAtStr = documentSnapshot.getString("registerDate");
-            Date signedUpAt = signedUpAtStr == null ? new Date() : DateAndStringUtil.stringToDateYMD(signedUpAtStr);
+            LocalDate signedUpAt = signedUpAtStr == null ? LocalDate.now() : DateAndStringUtil.stringToLocalDate(signedUpAtStr);
 
             boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
@@ -95,7 +97,7 @@ public class PanelHelper {
                     .rewardCurrent(documentSnapshot.get("reward_current", Integer.class))
                     .rewardTotal(documentSnapshot.get("reward_total", Integer.class))
                     .signedUpAt(signedUpAt)
-                    .lastParticipatedAt(documentSnapshot.getDate("lastParticipatedDate"))
+                    .lastParticipatedAt(DateAndStringUtil.dateToLocalDateTime(documentSnapshot.getDate("lastParticipatedDate")))
                     .build();
 
 
@@ -139,7 +141,7 @@ public class PanelHelper {
         Integer rewardCurrent = panel.getRewardCurrent();
 
         panel.setRewardCurrent(rewardCurrent + reward);
-        panel.setLastParticipatedAt(new Date());
+        panel.setLastParticipatedAt(LocalDateTime.now());
 
         panelRepository.save(panel);
     }

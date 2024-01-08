@@ -4,7 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import surveasy.global.common.util.DateAndStringUtil;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 public class ResponseHistoryVo {
@@ -23,12 +24,12 @@ public class ResponseHistoryVo {
 
     @Builder
     public ResponseHistoryVo(Long id, String surveyTitle, Integer surveyReward, String imgUrl,
-                             Date createdAt, Date sentAt) {
+                             LocalDateTime createdAt, LocalDate sentAt) {
         this.id = id;
         this.surveyTitle = surveyTitle;
         this.surveyReward = surveyReward;
         this.imgUrl = imgUrl;
-        this.createdAt = DateAndStringUtil.SDF_YYYY_MM_DD.format(createdAt);
-        if(sentAt != null) this.sentAt = DateAndStringUtil.SDF_YYYY_MM_DD.format(sentAt);
+        this.createdAt = DateAndStringUtil.localDateTimeToString(createdAt);
+        if(sentAt != null) this.sentAt = DateAndStringUtil.localDateToString(sentAt);
     }
 }
