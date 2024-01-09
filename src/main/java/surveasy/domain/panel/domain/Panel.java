@@ -5,6 +5,8 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import surveasy.domain.panel.domain.option.AccountType;
 import surveasy.domain.panel.domain.option.InflowPath;
 import surveasy.domain.panel.domain.option.PanelPlatform;
@@ -19,9 +21,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE panel SET deleted_at = CURRENT_TIMESTAMP where id = ?")
 public class Panel {
 
     @Id
@@ -94,6 +97,10 @@ public class Panel {
 
     @Nullable
     LocalDateTime lastParticipatedAt;
+
+    @Nullable
+    @Column(length = 10)
+    LocalDate deletedAt;
 
 
     // First Survey

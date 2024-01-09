@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelExistingDTO;
+import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.domain.panel.vo.PanelInfoVo;
@@ -42,10 +43,22 @@ public class PanelController {
         return panelService.signUpNew(panelSignUpDTO);
     }
 
-    @GetMapping("/auth/token/{panelId}")
-    @Operation(summary = "임시 - accessToken 재발행")
-    public String reissueAccessToken(@PathVariable Long panelId) {
-        return panelService.reissueAccessToken(panelId);
+    @PostMapping("/reissue")
+    @Operation(summary = "App 엑세스 토큰 재발급")
+    public PanelTokenResponse reissueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        return panelService.reissueToken(refreshTokenRequestDTO);
+    }
+
+    @GetMapping("/signout")
+    @Operation(summary = "App 패널 로그아웃")
+    public void signOut(@AuthenticationPrincipal PanelDetails panelDetails) {
+        panelService.signOut(panelDetails);
+    }
+
+    @DeleteMapping ("/withdraw")
+    @Operation(summary = "App 패널 탈퇴")
+    public void withdraw(@AuthenticationPrincipal PanelDetails panelDetails) {
+        panelService.withdraw(panelDetails);
     }
 
     @GetMapping("/home")

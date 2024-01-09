@@ -13,7 +13,7 @@ import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,7 +30,7 @@ public class SurveyServiceDTO {
     private SurveySpendTime spendTime;
 
     @NotNull
-    private Date dueDate;
+    private LocalDateTime dueDate;
 
     @NotNull
     private TargetGender targetGender;

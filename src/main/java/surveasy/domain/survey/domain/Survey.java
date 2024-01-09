@@ -15,6 +15,7 @@ import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.global.common.util.ListAndStringUtil;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class Survey {
     private SurveySpendTime spendTime;
 
     @NotNull
-    private Date dueDate;
+    private LocalDateTime dueDate;
 
     @NotNull
     private TargetGender targetGender;
@@ -101,7 +102,7 @@ public class Survey {
     private SurveyStatus status = SurveyStatus.CREATED;
 
     @NotNull
-    private Date uploadedAt;
+    private LocalDateTime uploadedAt;
 
     @Nullable
     private String noticeToPanel;
@@ -122,7 +123,7 @@ public class Survey {
     private List<Response> responseList;
 
     @Builder
-    private Survey(SurveyHeadcount headCount, SurveySpendTime spendTime, Date dueDate,
+    private Survey(SurveyHeadcount headCount, SurveySpendTime spendTime, LocalDateTime dueDate,
                   TargetGender targetGender, List<TargetAge> targetAgeList,
                   SurveyLanguage language, SurveyIdentity identity,
                   String title, String targetInput, String institute,
@@ -151,7 +152,7 @@ public class Survey {
         this.username = username;
 
         this.sid = 0L;
-        this.uploadedAt = new Date();
+        this.uploadedAt = LocalDateTime.now();
         this.reward = 0;
         this.responseCount = 0;
     }
