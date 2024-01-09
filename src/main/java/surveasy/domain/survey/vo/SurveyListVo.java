@@ -5,7 +5,8 @@ import lombok.Getter;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.domain.option.SurveyHeadcount;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 public class SurveyListVo {
@@ -31,7 +32,7 @@ public class SurveyListVo {
     private final String username;
 
     @Builder
-    public SurveyListVo(Long sid, String title, String link, SurveyStatus status, Date dueDate,
+    public SurveyListVo(Long sid, String title, String link, SurveyStatus status, LocalDateTime dueDate,
                         String tarInput, SurveyHeadcount headCount, Integer responseCount, String username) {
         this.sid = sid;
         this.title = title;
@@ -55,17 +56,15 @@ public class SurveyListVo {
         }
     }
 
-    private static int calculateDDay(Date dueDate) {
-        Date now = new Date();
-        long diffSec = (dueDate.getTime() - now.getTime()) / 1000;
-        long diffDays = diffSec / (24 * 60 * 60);
+    private static int calculateDDay(LocalDateTime dueDate) {
+        LocalDateTime now = LocalDateTime.now();
+        long diffDays = ChronoUnit.DAYS.between(now, dueDate);
         return (int) diffDays;
     }
 
-    private static int calculateDTime(Date dueDate) {
-        Date now = new Date();
-        long diffSec = (dueDate.getTime() - now.getTime()) / 1000;
-        long diffHours = diffSec / (60 * 60);
+    private static int calculateDTime(LocalDateTime dueDate) {
+        LocalDateTime now = LocalDateTime.now();
+        long diffHours = ChronoUnit.HOURS.between(now, dueDate);
         return (int) diffHours;
     }
 }

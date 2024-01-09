@@ -8,9 +8,10 @@ import surveasy.domain.survey.domain.option.SurveyIdentity;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
+import surveasy.global.common.util.DateAndStringUtil;
 import surveasy.global.common.util.ListAndStringUtil;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -49,7 +50,7 @@ public class SurveyMyPageOrderVo {
     public SurveyMyPageOrderVo(Long id, Long sid, String title, SurveyHeadcount headCount, Integer responseCount,
                                SurveySpendTime spendTime, String targetAgeListStr, TargetGender targetGender, SurveyStatus status,
                                Integer price, SurveyIdentity identity, String link,
-                               Date uploadedAt, Date dueDate) {
+                               LocalDateTime uploadedAt, LocalDateTime dueDate) {
         this.id = id;
         this.sid = sid;
         this.title = title;
@@ -63,7 +64,7 @@ public class SurveyMyPageOrderVo {
         this.price = price;
         this.identity = identity;
         this.link = link;
-        this.uploadedAt = uploadedAt.toString().substring(0, 10);
-        this.dueDate = dueDate.toString().substring(0, 10);
+        this.uploadedAt = DateAndStringUtil.localDateTimeToString(uploadedAt);
+        this.dueDate = DateAndStringUtil.localDateTimeToString(dueDate);
     }
 }

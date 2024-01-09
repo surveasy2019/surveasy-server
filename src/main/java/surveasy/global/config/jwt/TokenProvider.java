@@ -3,6 +3,8 @@ package surveasy.global.config.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -14,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.util.RedisUtil;
+import surveasy.global.config.user.PanelDetails;
 import surveasy.global.config.user.PanelDetailsService;
 
 import java.nio.charset.StandardCharsets;
@@ -27,7 +31,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
-    private final PanelDetailsService userDetailsService;
+    private final PanelDetailsService panelDetailsService;
+    private final RedisUtil redisUtil;
+
+    private static final String AUTHORITIES_KEY = "auth";
+    private static final String ACCESS_KEY = "access";
+    private static final String REFRESH_KEY = "refresh";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${spring.jwt.secret}")
     private String secret;
@@ -47,17 +58,14 @@ public class TokenProvider implements InitializingBean {
     }
 
     public String createAccessToken(Long id, Authentication authentication) {
-        return createToken(id, accessTokenExpirationTime, authentication);
+        return createToken(ACCESS_KEY, id, accessTokenExpirationTime, authentication);
     }
 
     public String createRefreshToken(Long id, Authentication authentication) {
-        String refreshToken = createToken(id, refreshTokenExpirationTIme, authentication);
-        // redisUtil.setRedisRefreshToken(id, refreshToken);
-
-        return refreshToken;
+        return createToken(REFRESH_KEY, id, refreshTokenExpirationTIme, authentication);
     }
 
-    private String createToken(Long id, int expirationTime, Authentication authentication) {
+    private String createToken(String type, Long id, int expirationTime, Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -68,14 +76,25 @@ public class TokenProvider implements InitializingBean {
         final Date issuedAt = new Date();
         final Date validity = new Date(calendar.getTimeInMillis());
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject(id.toString())
-                .claim("auth", authorities)
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("type", type)
                 .setIssuedAt(issuedAt)
                 .setExpiration(validity)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+
+        if(type.equals(REFRESH_KEY)) {
+            redisUtil.setRefreshToken(id, token, expirationTime);
+        }
+
+        return token;
+    }
+
+    public void deleteRefreshToken(Long id) {
+        redisUtil.delete(id.toString());
     }
 
     public String getTokenPanelId(String token) {
@@ -85,6 +104,11 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public Authentication getAuthentication(String token) {
+        PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadUserByUserId(Long.parseLong(getTokenPanelId(token)));
+        return new UsernamePasswordAuthenticationToken(panelDetails, token, panelDetails.getAuthorities());
     }
 
     public boolean validateToken(String token) {
@@ -107,23 +131,23 @@ public class TokenProvider implements InitializingBean {
 
 
     public Authentication panelAuthorizationInput(Panel panel) {
-        UserDetails userDetails = userDetailsService.loadUserByUserId(panel.getId());
-
+        PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadUserByUserId(panel.getId());
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userDetails,
+                panelDetails,
                 "",
-                userDetails.getAuthorities()
+                panelDetails.getAuthorities()
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return authentication;
     }
 
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if(StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUserId(Long.parseLong(getTokenPanelId(token)));
-        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+        return null;
     }
-
 }
