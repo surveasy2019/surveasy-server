@@ -15,9 +15,12 @@ import surveasy.domain.panel.domain.option.PanelPlatform;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
+import surveasy.domain.panel.exception.PanelNotFound;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
+import surveasy.domain.panel.exception.RefreshTokenNotFound;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
+import surveasy.domain.panel.util.RedisUtil;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
@@ -36,9 +39,15 @@ public class PanelHelper {
     private final PanelMapper panelMapper;
     private final PanelRepository panelRepository;
 
+    private final RedisUtil redisUtil;
+
     private static final String COLLECTION_NAME = "panelData";
     private static final String COLLECTION_FS_NAME = "FirstSurvey";
 
+    public Panel findPanel(Long panelId) {
+        return panelRepository.findById(panelId)
+                .orElseThrow(() -> PanelNotFound.EXCEPTION);
+    }
 
     /* [App] Firebase 기존 패널 정보 가져오기 */
     private Panel createPanelFromFirestore(String uid, PanelPlatform platform) throws ExecutionException, InterruptedException, ParseException {
@@ -132,6 +141,15 @@ public class PanelHelper {
 
         Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
         return panelRepository.save(newPanel);
+    }
+
+
+    /* [App] 리프레쉬 토큰 검증 */
+    public void matchesRefreshToken(String refreshToken, Panel panel) {
+        String savedToken = redisUtil.getRefreshToken(panel.getId().toString());
+        if(savedToken == null || !savedToken.equals(refreshToken)) {
+            throw RefreshTokenNotFound.EXCEPTION;
+        }
     }
 
 

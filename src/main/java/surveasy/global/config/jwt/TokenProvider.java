@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.exception.NotRefreshToken;
 import surveasy.domain.panel.util.RedisUtil;
 import surveasy.global.config.user.PanelDetails;
 import surveasy.global.config.user.PanelDetailsService;
@@ -127,6 +128,15 @@ public class TokenProvider implements InitializingBean {
         }
 
         return false;
+    }
+
+    public void validateRefreshToken(String refreshToken) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken).getBody();
+        String type = claims.get("type", String.class);
+
+        if(!type.equals("refresh")) {
+            throw NotRefreshToken.EXCEPTION;
+        }
     }
 
 

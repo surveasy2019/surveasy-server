@@ -35,7 +35,7 @@ public class PanelMapper {
         return PanelInfoVo.from(panel);
     }
 
-    public PanelTokenResponse toPanelTokenResponse(Long panelId, String accessToken, String refreshToken) {
-        return PanelTokenResponse.of(panelId, accessToken, refreshToken);
+    public PanelTokenResponse toPanelTokenResponse(String accessToken, String refreshToken) {
+        return PanelTokenResponse.of(accessToken, refreshToken);
     }
 }

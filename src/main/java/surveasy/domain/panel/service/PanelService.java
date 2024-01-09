@@ -10,6 +10,7 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelExistingDTO;
+import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
@@ -43,7 +44,7 @@ public class PanelService {
         final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
         final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
-        return panelMapper.toPanelTokenResponse(panel.getId(), accessToken, refreshToken);
+        return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
     }
 
     @Transactional
@@ -54,7 +55,7 @@ public class PanelService {
         final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
         final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
-        return panelMapper.toPanelTokenResponse(panel.getId(), accessToken, refreshToken);
+        return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
     }
 
     @Transactional(readOnly = true)
@@ -82,17 +83,17 @@ public class PanelService {
         return panelHelper.getAdminPanelList(pageable);
     }
 
-
-
     @Transactional
-    public String reissueAccessToken(Long panelId) {
-        Panel panel = panelRepository.findById(panelId).orElse(null);
-        if (panel == null) return null;
-
+    public PanelTokenResponse reissueToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        final String refreshToken = refreshTokenRequestDTO.getRefreshToken();
+        final Panel panel = panelHelper.findPanel(Long.parseLong(tokenProvider.getTokenPanelId(refreshToken)));
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
 
-        return accessToken;
+        tokenProvider.validateRefreshToken(refreshToken);
+        panelHelper.matchesRefreshToken(refreshToken, panel);
+
+        final String newAccessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        return panelMapper.toPanelTokenResponse(newAccessToken, refreshToken);
     }
 
     public void signOut(PanelDetails panelDetails) {
