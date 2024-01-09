@@ -95,4 +95,15 @@ public class PanelService {
         return accessToken;
     }
 
+    public void signOut(PanelDetails panelDetails) {
+        final Panel panel = panelDetails.getPanel();
+        tokenProvider.deleteRefreshToken(panel.getId());
+    }
+
+    @Transactional
+    public void withdraw(PanelDetails panelDetails) {
+        signOut(panelDetails);
+        Panel panel = panelDetails.getPanel();
+        panelRepository.delete(panel);
+    }
 }

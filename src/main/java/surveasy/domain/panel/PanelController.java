@@ -48,6 +48,18 @@ public class PanelController {
         return panelService.reissueAccessToken(panelId);
     }
 
+    @GetMapping("/signout")
+    @Operation(summary = "App 패널 로그아웃")
+    public void signOut(@AuthenticationPrincipal PanelDetails panelDetails) {
+        panelService.signOut(panelDetails);
+    }
+
+    @GetMapping("/withdraw")
+    @Operation(summary = "App 패널 탈퇴")
+    public void withdraw(@AuthenticationPrincipal PanelDetails panelDetails) {
+        panelService.withdraw(panelDetails);
+    }
+
     @GetMapping("/home")
     @Operation(summary = "App 홈화면 패널 정보 불러오기")
     public PanelHomeInfoResponse getPanelHomeInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
