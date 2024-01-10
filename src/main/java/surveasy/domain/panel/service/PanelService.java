@@ -12,6 +12,7 @@ import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelExistingDTO;
 import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
 import surveasy.domain.panel.dto.response.*;
+import surveasy.domain.panel.exception.PanelNotFound;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
@@ -106,5 +107,11 @@ public class PanelService {
         signOut(panelDetails);
         Panel panel = panelDetails.getPanel();
         panelRepository.delete(panel);
+    }
+
+    public String reissueAccessToken(Long panelId) {
+        final Panel panel = panelRepository.findById(panelId)
+                .orElseThrow(() -> PanelNotFound.EXCEPTION);
+        return tokenProvider.createAccessToken(panelId, tokenProvider.panelAuthorizationInput(panel));
     }
 }

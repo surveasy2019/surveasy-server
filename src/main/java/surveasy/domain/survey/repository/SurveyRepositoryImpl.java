@@ -105,7 +105,6 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.id,
                         qSurvey.title,
                         qSurvey.targetInput,
-                        qSurvey.noticeToPanel,
                         qSurvey.reward,
                         qSurvey.responseCount))
                 .from(qSurvey)
@@ -137,6 +136,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                     qSurvey.id,
                     qSurvey.title,
                     qSurvey.reward,
+                    qSurvey.headCount,
                     qSurvey.spendTime,
                     qSurvey.targetInput,
                     qSurvey.status,
@@ -166,10 +166,12 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.id,
                         qSurvey.title,
                         qSurvey.reward,
+                        qSurvey.headCount,
                         qSurvey.spendTime,
                         qSurvey.responseCount,
                         qSurvey.targetInput,
-                        qSurvey.noticeToPanel))
+                        qSurvey.noticeToPanel,
+                        qSurvey.link))
                 .from(qSurvey)
                 .where(qSurvey.id.eq(surveyId))
                 .fetchFirst());
