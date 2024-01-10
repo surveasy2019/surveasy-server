@@ -2,6 +2,7 @@ package surveasy.domain.survey.vo;
 
 import lombok.Builder;
 import lombok.Getter;
+import surveasy.domain.survey.domain.option.SurveyHeadcount;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 
 @Getter
@@ -13,6 +14,8 @@ public class SurveyAppListDetailVo {
 
     private final Integer reward;
 
+    private final Integer headCount;
+
     private final String spendTime;
 
     private final Integer responseCount;
@@ -21,15 +24,19 @@ public class SurveyAppListDetailVo {
 
     private final String noticeToPanel;
 
+    private final String link;
+
     @Builder
-    public SurveyAppListDetailVo(Long id, String title, Integer reward, SurveySpendTime spendTime,
-                                 Integer responseCount, String targetInput, String noticeToPanel) {
+    public SurveyAppListDetailVo(Long id, String title, Integer reward, SurveyHeadcount headCount, SurveySpendTime spendTime,
+                                 Integer responseCount, String targetInput, String noticeToPanel, String link) {
         this.id = id;
         this.title = title;
         this.reward = reward;
+        this.headCount = headCount.getValue();
         this.spendTime = spendTime.getValue();
         this.responseCount = responseCount;
         this.targetInput = targetInput;
         this.noticeToPanel = noticeToPanel;
+        this.link = link;
     }
 }
