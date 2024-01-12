@@ -9,9 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.PanelPlatform;
+import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
@@ -24,7 +26,7 @@ import surveasy.domain.panel.util.RedisUtil;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
-import surveasy.global.common.util.DateAndStringUtil;
+import surveasy.global.common.util.DateAndStringUtils;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -64,9 +66,9 @@ public class PanelHelper {
 
 
         if(documentSnapshot.exists()) {
-            LocalDate birth = DateAndStringUtil.stringToLocalDate(documentSnapshot.getString("birthDate"));
+            LocalDate birth = DateAndStringUtils.stringToLocalDate(documentSnapshot.getString("birthDate"));
             String signedUpAtStr = documentSnapshot.getString("registerDate");
-            LocalDate signedUpAt = signedUpAtStr == null ? LocalDate.now() : DateAndStringUtil.stringToLocalDate(signedUpAtStr);
+            LocalDate signedUpAt = signedUpAtStr == null ? LocalDate.now() : DateAndStringUtils.stringToLocalDate(signedUpAtStr);
 
             boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
@@ -106,7 +108,7 @@ public class PanelHelper {
                     .rewardCurrent(documentSnapshot.get("reward_current", Integer.class))
                     .rewardTotal(documentSnapshot.get("reward_total", Integer.class))
                     .signedUpAt(signedUpAt)
-                    .lastParticipatedAt(DateAndStringUtil.dateToLocalDateTime(documentSnapshot.getDate("lastParticipatedDate")))
+                    .lastParticipatedAt(DateAndStringUtils.dateToLocalDateTime(documentSnapshot.getDate("lastParticipatedDate")))
                     .build();
 
 
@@ -130,17 +132,20 @@ public class PanelHelper {
     }
 
 
-    /* [App] 패널 생성 - new */
-    public Panel addNewPanelIfNeed(PanelSignUpDTO panelSignUpDTO) {
-        String email = panelSignUpDTO.getEmail();
-        Optional<Panel> panel = panelRepository.findByEmail(email);
+    /* [App] 패널 추가 정보 입력 */
+    public Long signUp(Panel panel, PanelSignUpDTO panelSignUpDTO) {
+        panel.setPlatform(panelSignUpDTO.getPlatform());
+        panel.setFcmToken("Temp_FCM");
+        panel.setAccountOwner(panelSignUpDTO.getAccountOwner());
+        panel.setAccountType(panelSignUpDTO.getAccountType());
+        panel.setAccountNumber(panelSignUpDTO.getAccountNumber());
+        panel.setInflowPath(panelSignUpDTO.getInflowPath());
+        if(panelSignUpDTO.getInflowPathEtc() != null) panel.setInflowPathEtc(panelSignUpDTO.getInflowPathEtc());
+        panel.setPushOn(panelSignUpDTO.getPushOn());
+        panel.setMarketingAgree(panelSignUpDTO.getMarketingAgree());
+        panel.setRole("ROLE_USER");
 
-        if(panel.isPresent()) {
-            throw PanelDuplicateData.EXCEPTION;     // DB에 이미 존재하는 패널
-        }
-
-        Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
-        return panelRepository.save(newPanel);
+        return panelRepository.save(panel).getId();
     }
 
 
@@ -150,6 +155,25 @@ public class PanelHelper {
         if(savedToken == null || !savedToken.equals(refreshToken)) {
             throw RefreshTokenNotFound.EXCEPTION;
         }
+    }
+
+
+    /* [App] First Survey */
+    public Long doFirstSurvey(Panel panel, PanelFirstSurveyDTO panelFirstSurveyDTO) {
+        panel.setEnglish(panelFirstSurveyDTO.getEnglish());
+        panel.setCity(panelFirstSurveyDTO.getCity());
+        panel.setDistrict(panelFirstSurveyDTO.getDistrict());
+        panel.setFamily(panelFirstSurveyDTO.getFamily());
+        panel.setHouseType(panelFirstSurveyDTO.getHouseType());
+        panel.setJob(panelFirstSurveyDTO.getJob());
+        panel.setUniversity(panelFirstSurveyDTO.getUniversity());
+        panel.setMajor(panelFirstSurveyDTO.getMajor());
+        panel.setMarriage(panelFirstSurveyDTO.getMarriage());
+        panel.setMilitary(panelFirstSurveyDTO.getMilitary());
+        panel.setPet(panelFirstSurveyDTO.getPet());
+        panel.setStatus(PanelStatus.FS_DONE);
+
+        return panelRepository.save(panel).getId();
     }
 
 
@@ -243,7 +267,7 @@ public class PanelHelper {
 
         List<Panel> panelList = new ArrayList<>();
 
-        if(panels != null && panels.hasContent()) {
+        if (panels != null && panels.hasContent()) {
             panelList = panels.getContent();
         }
 

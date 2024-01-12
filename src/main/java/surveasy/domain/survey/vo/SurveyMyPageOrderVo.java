@@ -8,8 +8,8 @@ import surveasy.domain.survey.domain.option.SurveyIdentity;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
-import surveasy.global.common.util.DateAndStringUtil;
-import surveasy.global.common.util.ListAndStringUtil;
+import surveasy.global.common.util.DateAndStringUtils;
+import surveasy.global.common.util.ListAndStringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,13 +58,13 @@ public class SurveyMyPageOrderVo {
         this.headCount = headCount;
         this.responseCount = responseCount;
         this.spendTime = spendTime;
-        this.targetAgeList = ListAndStringUtil.strToTargetAgeList(targetAgeListStr);
+        this.targetAgeList = ListAndStringUtils.strToTargetAgeList(targetAgeListStr);
         this.targetGender = targetGender;
         this.status = status;
         this.price = price;
         this.identity = identity;
         this.link = link;
-        this.uploadedAt = DateAndStringUtil.localDateTimeToString(uploadedAt);
-        this.dueDate = DateAndStringUtil.localDateTimeToString(dueDate);
+        this.uploadedAt = DateAndStringUtils.localDateTimeToString(uploadedAt);
+        this.dueDate = DateAndStringUtils.localDateTimeToString(dueDate);
     }
 }

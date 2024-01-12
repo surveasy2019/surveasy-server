@@ -19,10 +19,6 @@ public class PanelMapper {
         return Panel.ofExisting(panelInfoDAO, panelInfoFirstSurveyDAO);
     }
 
-    public Panel toEntityNew(PanelSignUpDTO panelSignUpDTO) {
-        return Panel.ofNew(panelSignUpDTO);
-    }
-
     public PanelIdResponse toPanelIdResponse(Long panelId) {
         return PanelIdResponse.from(panelId);
     }

@@ -1,5 +1,8 @@
 package surveasy.domain.panel;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -7,18 +10,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
-import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelExistingDTO;
-import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
+import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
+import surveasy.domain.panel.exception.Oauth2DuplicateUser;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.domain.panel.vo.PanelInfoVo;
+import surveasy.global.common.dto.ErrorReason;
 import surveasy.global.config.user.PanelDetails;
+import surveasy.global.error.BaseErrorException;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.concurrent.ExecutionException;
 
@@ -30,6 +35,14 @@ import java.util.concurrent.ExecutionException;
 public class PanelController {
 
     private final PanelService panelService;
+    private final ObjectMapper objectMapper;
+
+    @GetMapping("/oauth2")
+    public ResponseEntity<?> oauth2(@RequestParam(name = "result", required = false) String result,
+                                    @RequestParam(name = "error", required = false) String error) throws IOException {
+        if(result != null) return ResponseEntity.ok(objectMapper.readValue(result, PanelTokenResponse.class));
+        else return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
     @PostMapping("/signup/existing")
     @Operation(summary = "App 기존 패널 회원 가입")
@@ -38,9 +51,17 @@ public class PanelController {
     }
 
     @PostMapping("/signup")
-    @Operation(summary = "App 신규 패널 회원 가입")
-    public PanelTokenResponse signUpNew(@RequestBody PanelSignUpDTO panelSignUpDTO) {
-        return panelService.signUpNew(panelSignUpDTO);
+    @Operation(summary = "App 신규 패널 추가 정보 입력")
+    public PanelIdResponse signUp(@AuthenticationPrincipal PanelDetails panelDetails,
+                                  @RequestBody @Valid PanelSignUpDTO panelSignUpDTO) {
+        return panelService.signUp(panelDetails, panelSignUpDTO);
+    }
+
+    @PostMapping("/first-survey")
+    @Operation(summary = "App 패널 First Survey")
+    public PanelIdResponse doFirstSurvey(@AuthenticationPrincipal PanelDetails panelDetails,
+                                         @RequestBody @Valid PanelFirstSurveyDTO panelFirstSurveyDTO) {
+        return panelService.doFirstSurvey(panelDetails, panelFirstSurveyDTO);
     }
 
     @PostMapping("/reissue")

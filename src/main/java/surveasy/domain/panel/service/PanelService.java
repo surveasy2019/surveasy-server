@@ -1,16 +1,15 @@
 package surveasy.domain.panel.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
-import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelExistingDTO;
-import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
+import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.exception.PanelNotFound;
 import surveasy.domain.panel.helper.PanelHelper;
@@ -49,14 +48,15 @@ public class PanelService {
     }
 
     @Transactional
-    public PanelTokenResponse signUpNew(PanelSignUpDTO panelSignUpDTO) {
-        Panel panel = panelHelper.addNewPanelIfNeed(panelSignUpDTO);
+    public PanelIdResponse signUp(PanelDetails panelDetails, PanelSignUpDTO panelSignUpDTO) {
+        final Panel panel = panelDetails.getPanel();
+        return panelMapper.toPanelIdResponse(panelHelper.signUp(panel, panelSignUpDTO));
+    }
 
-        final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
-
-        return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
+    @Transactional
+    public PanelIdResponse doFirstSurvey(PanelDetails panelDetails, PanelFirstSurveyDTO panelFirstSurveyDTO) {
+        final Panel panel = panelDetails.getPanel();
+        return panelMapper.toPanelIdResponse(panelHelper.doFirstSurvey(panel, panelFirstSurveyDTO));
     }
 
     @Transactional(readOnly = true)

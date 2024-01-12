@@ -5,7 +5,7 @@ import lombok.Getter;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.AccountType;
 import surveasy.domain.survey.domain.target.TargetGender;
-import surveasy.global.common.util.DateAndStringUtil;
+import surveasy.global.common.util.DateAndStringUtils;
 
 import java.time.LocalDate;
 
@@ -35,7 +35,7 @@ public class PanelInfoVo {
                        String phoneNumber, String accountOwner, AccountType accountType,
                        String accountNumber, Boolean english) {
         this.name = name;
-        this.birth = DateAndStringUtil.localDateToString(birth);
+        this.birth = DateAndStringUtils.localDateToString(birth);
         this.gender = gender.getValue();
         this.email = email;
         this.phoneNumber = phoneNumber;
