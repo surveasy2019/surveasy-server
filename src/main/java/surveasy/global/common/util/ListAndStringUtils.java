@@ -5,7 +5,7 @@ import surveasy.domain.survey.domain.target.TargetAge;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListAndStringUtil {
+public class ListAndStringUtils {
 
     public static String listToStr(List<?> intList) {
         String str = intList.toString();

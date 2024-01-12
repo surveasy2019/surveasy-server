@@ -9,6 +9,10 @@ public class PanelTokenResponse {
     private String accessToken;
     private String refreshToken;
 
+    public PanelTokenResponse() {
+
+    }
+
     @Builder
     public PanelTokenResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;

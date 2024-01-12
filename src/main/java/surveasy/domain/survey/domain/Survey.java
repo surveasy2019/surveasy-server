@@ -13,10 +13,9 @@ import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
-import surveasy.global.common.util.ListAndStringUtil;
+import surveasy.global.common.util.ListAndStringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -134,7 +133,7 @@ public class Survey {
         this.spendTime = spendTime;
         this.dueDate = dueDate;
         this.targetGender = targetGender;
-        this.targetAgeListStr = ListAndStringUtil.listToStr(targetAgeList);
+        this.targetAgeListStr = ListAndStringUtils.listToStr(targetAgeList);
         this.language = language;
         this.identity = identity;
 

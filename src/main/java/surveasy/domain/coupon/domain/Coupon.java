@@ -7,10 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import surveasy.domain.coupon.dto.request.CouponCreateDTO;
-import surveasy.global.common.util.DateAndStringUtil;
+import surveasy.global.common.util.DateAndStringUtils;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -38,7 +37,7 @@ public class Coupon {
     private Coupon(String code, Integer discountPercent) {
         this.code = code;
         this.discountPercent = discountPercent;
-        this.createdAt = DateAndStringUtil.localDateToString(LocalDate.now());
+        this.createdAt = DateAndStringUtils.localDateToString(LocalDate.now());
     }
 
     public static Coupon from(CouponCreateDTO couponCreateDTO) {

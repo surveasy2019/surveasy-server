@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.exception.NotRefreshToken;
@@ -64,6 +63,14 @@ public class TokenProvider implements InitializingBean {
 
     public String createRefreshToken(Long id, Authentication authentication) {
         return createToken(REFRESH_KEY, id, refreshTokenExpirationTIme, authentication);
+    }
+
+    public String createOAuth2AccessToken(Authentication authentication) {
+        return createToken(ACCESS_KEY, ((PanelDetails) authentication.getPrincipal()).getId(), accessTokenExpirationTime, authentication);
+    }
+
+    public String createOAuth2RefreshToken(Authentication authentication) {
+        return createToken(REFRESH_KEY, ((PanelDetails) authentication.getPrincipal()).getId(), refreshTokenExpirationTIme, authentication);
     }
 
     private String createToken(String type, Long id, int expirationTime, Authentication authentication) {

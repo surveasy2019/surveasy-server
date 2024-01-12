@@ -15,6 +15,8 @@ import surveasy.domain.panel.domain.target.*;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
+import surveasy.domain.panel.oauth2.AuthProvider;
+import surveasy.domain.panel.oauth2.user.OAuth2UserInfo;
 import surveasy.domain.survey.domain.target.TargetGender;
 
 import java.time.LocalDate;
@@ -81,6 +83,10 @@ public class Panel {
     // Default
     @NotNull
     String role;
+
+    @Nullable
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -155,7 +161,8 @@ public class Panel {
                   Boolean english, TargetCity city, String district,
                   TargetFamily family, TargetHouseType houseType, TargetJob job,
                   String university, TargetMajor major,
-                  TargetMarriage marriage, TargetMilitary military, TargetPet pet) {
+                  TargetMarriage marriage, TargetMilitary military, TargetPet pet,
+                  String role, AuthProvider authProvider) {
         this.name = name;
         this.email = email;
         this.fcmToken = fcmToken;
@@ -190,7 +197,8 @@ public class Panel {
         this.military = military;
         this.pet = pet;
 
-        this.role = "ROLE_USER";
+        this.role = role;
+        this.authProvider = authProvider;
     }
 
 
@@ -228,6 +236,7 @@ public class Panel {
                 .marriage(panelInfoFirstSurveyDAO.getMarriage())
                 .military(panelInfoFirstSurveyDAO.getMilitary())
                 .pet(panelInfoFirstSurveyDAO.getPet())
+                .role("ROLE_USER")
                 .build();
     }
 
@@ -241,6 +250,7 @@ public class Panel {
                 .accountOwner(panelSignUpDTO.getAccountOwner())
                 .accountType(panelSignUpDTO.getAccountType())
                 .accountNumber(panelSignUpDTO.getAccountNumber())
+                .status(PanelStatus.FS_YET)
                 .inflowPath(panelSignUpDTO.getInflowPath())
                 .inflowPathEtc(panelSignUpDTO.getInflowPathEtc())
                 .phoneNumber(panelSignUpDTO.getPhoneNumber())
@@ -263,7 +273,55 @@ public class Panel {
                 .marriage(null)
                 .military(null)
                 .pet(null)
+                .role("ROLE_USER")
                 .build();
+    }
+
+    public static Panel ofOAuth(OAuth2UserInfo oAuth2UserInfo, AuthProvider authProvider) {
+        return Panel.builder()
+                .name(oAuth2UserInfo.getName())
+                .email(oAuth2UserInfo.getEmail())
+                .fcmToken("")
+                .gender(oAuth2UserInfo.getGender())
+                .birth(oAuth2UserInfo.getBirth())
+                .accountOwner("")
+                .accountType(AccountType.KB)
+                .accountNumber("")
+                .status(PanelStatus.FS_YET)
+                .inflowPath(InflowPath.ETC)
+                .phoneNumber(oAuth2UserInfo.getPhoneNumber())
+                .platform(PanelPlatform.ANDROID)
+                .pushOn(false)
+                .marketingAgree(false)
+
+                .rewardCurrent(0)
+                .rewardTotal(0)
+                .signedUpAt(LocalDate.now())
+
+                .english(null)
+                .city(null)
+                .district(null)
+                .family(null)
+                .houseType(null)
+                .job(null)
+                .university(null)
+                .major(null)
+                .marriage(null)
+                .military(null)
+                .pet(null)
+                .role("ROLE_ANONYMOUS")
+                .authProvider(authProvider)
+                .build();
+
+    }
+
+    public Panel updateFrom(OAuth2UserInfo oAuth2UserInfo) {
+        this.name = oAuth2UserInfo.getName();
+        this.email = oAuth2UserInfo.getEmail();
+        this.phoneNumber = oAuth2UserInfo.getPhoneNumber();
+        this.gender = oAuth2UserInfo.getGender();
+        this.birth = oAuth2UserInfo.getBirth();
+        return this;
     }
 }
 

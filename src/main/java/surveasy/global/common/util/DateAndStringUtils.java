@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class DateAndStringUtil {
+public class DateAndStringUtils {
 
     public static final DateTimeFormatter DTF_YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final DateTimeFormatter DTF_DOT_YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy.MM.dd");

@@ -24,7 +24,7 @@ import surveasy.domain.panel.util.RedisUtil;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
-import surveasy.global.common.util.DateAndStringUtil;
+import surveasy.global.common.util.DateAndStringUtils;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -64,9 +64,9 @@ public class PanelHelper {
 
 
         if(documentSnapshot.exists()) {
-            LocalDate birth = DateAndStringUtil.stringToLocalDate(documentSnapshot.getString("birthDate"));
+            LocalDate birth = DateAndStringUtils.stringToLocalDate(documentSnapshot.getString("birthDate"));
             String signedUpAtStr = documentSnapshot.getString("registerDate");
-            LocalDate signedUpAt = signedUpAtStr == null ? LocalDate.now() : DateAndStringUtil.stringToLocalDate(signedUpAtStr);
+            LocalDate signedUpAt = signedUpAtStr == null ? LocalDate.now() : DateAndStringUtils.stringToLocalDate(signedUpAtStr);
 
             boolean didFirstSurvey = false;
             PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO = null;
@@ -106,7 +106,7 @@ public class PanelHelper {
                     .rewardCurrent(documentSnapshot.get("reward_current", Integer.class))
                     .rewardTotal(documentSnapshot.get("reward_total", Integer.class))
                     .signedUpAt(signedUpAt)
-                    .lastParticipatedAt(DateAndStringUtil.dateToLocalDateTime(documentSnapshot.getDate("lastParticipatedDate")))
+                    .lastParticipatedAt(DateAndStringUtils.dateToLocalDateTime(documentSnapshot.getDate("lastParticipatedDate")))
                     .build();
 
 
