@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
-import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelExistingDTO;
-import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
+import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.exception.Oauth2DuplicateUser;
 import surveasy.domain.panel.service.PanelService;
@@ -58,6 +55,13 @@ public class PanelController {
     public PanelIdResponse signUp(@AuthenticationPrincipal PanelDetails panelDetails,
                                   @RequestBody @Valid PanelSignUpDTO panelSignUpDTO) {
         return panelService.signUp(panelDetails, panelSignUpDTO);
+    }
+
+    @PostMapping("/first-survey")
+    @Operation(summary = "App 패널 First Survey")
+    public PanelIdResponse doFirstSurvey(@AuthenticationPrincipal PanelDetails panelDetails,
+                                         @RequestBody @Valid PanelFirstSurveyDTO panelFirstSurveyDTO) {
+        return panelService.doFirstSurvey(panelDetails, panelFirstSurveyDTO);
     }
 
     @PostMapping("/reissue")

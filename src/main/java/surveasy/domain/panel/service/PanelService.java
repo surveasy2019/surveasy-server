@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.dto.request.PanelInfoUpdateDTO;
-import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.dto.request.PanelExistingDTO;
-import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
+import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.exception.PanelNotFound;
 import surveasy.domain.panel.helper.PanelHelper;
@@ -54,6 +51,12 @@ public class PanelService {
     public PanelIdResponse signUp(PanelDetails panelDetails, PanelSignUpDTO panelSignUpDTO) {
         final Panel panel = panelDetails.getPanel();
         return panelMapper.toPanelIdResponse(panelHelper.signUp(panel, panelSignUpDTO));
+    }
+
+    @Transactional
+    public PanelIdResponse doFirstSurvey(PanelDetails panelDetails, PanelFirstSurveyDTO panelFirstSurveyDTO) {
+        final Panel panel = panelDetails.getPanel();
+        return panelMapper.toPanelIdResponse(panelHelper.doFirstSurvey(panel, panelFirstSurveyDTO));
     }
 
     @Transactional(readOnly = true)

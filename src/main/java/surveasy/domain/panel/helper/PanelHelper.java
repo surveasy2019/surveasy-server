@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.PanelPlatform;
+import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
@@ -157,6 +158,25 @@ public class PanelHelper {
     }
 
 
+    /* [App] First Survey */
+    public Long doFirstSurvey(Panel panel, PanelFirstSurveyDTO panelFirstSurveyDTO) {
+        panel.setEnglish(panelFirstSurveyDTO.getEnglish());
+        panel.setCity(panelFirstSurveyDTO.getCity());
+        panel.setDistrict(panelFirstSurveyDTO.getDistrict());
+        panel.setFamily(panelFirstSurveyDTO.getFamily());
+        panel.setHouseType(panelFirstSurveyDTO.getHouseType());
+        panel.setJob(panelFirstSurveyDTO.getJob());
+        panel.setUniversity(panelFirstSurveyDTO.getUniversity());
+        panel.setMajor(panelFirstSurveyDTO.getMajor());
+        panel.setMarriage(panelFirstSurveyDTO.getMarriage());
+        panel.setMilitary(panelFirstSurveyDTO.getMilitary());
+        panel.setPet(panelFirstSurveyDTO.getPet());
+        panel.setStatus(PanelStatus.FS_DONE);
+
+        return panelRepository.save(panel).getId();
+    }
+
+
     /* [App] 설문 참여 완료 후 패널 정보 업데이트
     * rewardCurrent, lastParticipatedDate */
     public void updatePanelInfoAfterResponse(Panel panel, Integer reward) {
@@ -247,7 +267,7 @@ public class PanelHelper {
 
         List<Panel> panelList = new ArrayList<>();
 
-        if(panels != null && panels.hasContent()) {
+        if (panels != null && panels.hasContent()) {
             panelList = panels.getContent();
         }
 
