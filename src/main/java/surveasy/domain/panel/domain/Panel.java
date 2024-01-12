@@ -240,43 +240,6 @@ public class Panel {
                 .build();
     }
 
-    public static Panel ofNew(PanelSignUpDTO panelSignUpDTO) {
-        return Panel.builder()
-                .name(panelSignUpDTO.getName())
-                .email(panelSignUpDTO.getEmail())
-                .fcmToken(panelSignUpDTO.getFcmToken())
-                .gender(panelSignUpDTO.getGender())
-                .birth(panelSignUpDTO.getBirth())
-                .accountOwner(panelSignUpDTO.getAccountOwner())
-                .accountType(panelSignUpDTO.getAccountType())
-                .accountNumber(panelSignUpDTO.getAccountNumber())
-                .status(PanelStatus.FS_YET)
-                .inflowPath(panelSignUpDTO.getInflowPath())
-                .inflowPathEtc(panelSignUpDTO.getInflowPathEtc())
-                .phoneNumber(panelSignUpDTO.getPhoneNumber())
-                .platform(panelSignUpDTO.getPlatform())
-                .pushOn(panelSignUpDTO.getPushOn())
-                .marketingAgree(panelSignUpDTO.getMarketingAgree())
-
-                .rewardCurrent(0)
-                .rewardTotal(0)
-                .signedUpAt(LocalDate.now())
-
-                .english(null)
-                .city(null)
-                .district(null)
-                .family(null)
-                .houseType(null)
-                .job(null)
-                .university(null)
-                .major(null)
-                .marriage(null)
-                .military(null)
-                .pet(null)
-                .role("ROLE_USER")
-                .build();
-    }
-
     public static Panel ofOAuth(OAuth2UserInfo oAuth2UserInfo, AuthProvider authProvider) {
         return Panel.builder()
                 .name(oAuth2UserInfo.getName())

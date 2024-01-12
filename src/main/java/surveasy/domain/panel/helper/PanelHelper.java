@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.PanelPlatform;
@@ -130,17 +131,20 @@ public class PanelHelper {
     }
 
 
-    /* [App] 패널 생성 - new */
-    public Panel addNewPanelIfNeed(PanelSignUpDTO panelSignUpDTO) {
-        String email = panelSignUpDTO.getEmail();
-        Optional<Panel> panel = panelRepository.findByEmail(email);
+    /* [App] 패널 추가 정보 입력 */
+    public Long signUp(Panel panel, PanelSignUpDTO panelSignUpDTO) {
+        panel.setPlatform(panelSignUpDTO.getPlatform());
+        panel.setFcmToken("Temp_FCM");
+        panel.setAccountOwner(panelSignUpDTO.getAccountOwner());
+        panel.setAccountType(panelSignUpDTO.getAccountType());
+        panel.setAccountNumber(panelSignUpDTO.getAccountNumber());
+        panel.setInflowPath(panelSignUpDTO.getInflowPath());
+        if(panelSignUpDTO.getInflowPathEtc() != null) panel.setInflowPathEtc(panelSignUpDTO.getInflowPathEtc());
+        panel.setPushOn(panelSignUpDTO.getPushOn());
+        panel.setMarketingAgree(panelSignUpDTO.getMarketingAgree());
+        panel.setRole("ROLE_USER");
 
-        if(panel.isPresent()) {
-            throw PanelDuplicateData.EXCEPTION;     // DB에 이미 존재하는 패널
-        }
-
-        Panel newPanel = panelMapper.toEntityNew(panelSignUpDTO);
-        return panelRepository.save(newPanel);
+        return panelRepository.save(panel).getId();
     }
 
 

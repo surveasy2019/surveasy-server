@@ -54,9 +54,10 @@ public class PanelController {
     }
 
     @PostMapping("/signup")
-    @Operation(summary = "App 신규 패널 회원 가입")
-    public PanelTokenResponse signUpNew(@RequestBody PanelSignUpDTO panelSignUpDTO) {
-        return panelService.signUpNew(panelSignUpDTO);
+    @Operation(summary = "App 신규 패널 추가 정보 입력")
+    public PanelIdResponse signUp(@AuthenticationPrincipal PanelDetails panelDetails,
+                                  @RequestBody @Valid PanelSignUpDTO panelSignUpDTO) {
+        return panelService.signUp(panelDetails, panelSignUpDTO);
     }
 
     @PostMapping("/reissue")
