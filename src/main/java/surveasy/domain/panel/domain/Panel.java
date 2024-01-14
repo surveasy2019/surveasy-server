@@ -7,16 +7,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import surveasy.domain.panel.domain.option.AccountType;
-import surveasy.domain.panel.domain.option.InflowPath;
-import surveasy.domain.panel.domain.option.PanelPlatform;
-import surveasy.domain.panel.domain.option.PanelStatus;
+import surveasy.domain.panel.domain.option.*;
 import surveasy.domain.panel.domain.target.*;
+import surveasy.domain.panel.dto.request.OAuth2UserInfo;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
-import surveasy.domain.panel.dto.request.PanelSignUpDTO;
-import surveasy.domain.panel.oauth2.AuthProvider;
-import surveasy.domain.panel.oauth2.user.OAuth2UserInfo;
 import surveasy.domain.survey.domain.target.TargetGender;
 
 import java.time.LocalDate;
@@ -240,7 +235,7 @@ public class Panel {
                 .build();
     }
 
-    public static Panel ofOAuth(OAuth2UserInfo oAuth2UserInfo, AuthProvider authProvider) {
+    public static Panel ofOAuth2(OAuth2UserInfo oAuth2UserInfo) {
         return Panel.builder()
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
@@ -250,7 +245,7 @@ public class Panel {
                 .accountOwner("")
                 .accountType(AccountType.KB)
                 .accountNumber("")
-                .status(PanelStatus.FS_YET)
+                .status(PanelStatus.INFO_YET)
                 .inflowPath(InflowPath.ETC)
                 .phoneNumber(oAuth2UserInfo.getPhoneNumber())
                 .platform(PanelPlatform.ANDROID)
@@ -273,7 +268,7 @@ public class Panel {
                 .military(null)
                 .pet(null)
                 .role("ROLE_ANONYMOUS")
-                .authProvider(authProvider)
+                .authProvider(oAuth2UserInfo.getAuthProvider())
                 .build();
 
     }

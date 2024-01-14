@@ -3,9 +3,11 @@ package surveasy.domain.panel.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.dto.request.OAuth2UserInfo;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
+import surveasy.domain.panel.dto.response.OAuth2Response;
 import surveasy.domain.panel.dto.response.PanelHomeInfoResponse;
 import surveasy.domain.panel.dto.response.PanelIdResponse;
 import surveasy.domain.panel.dto.response.PanelTokenResponse;
@@ -17,6 +19,14 @@ public class PanelMapper {
 
     public Panel toEntityExisting(PanelInfoDAO panelInfoDAO, PanelInfoFirstSurveyDAO panelInfoFirstSurveyDAO) {
         return Panel.ofExisting(panelInfoDAO, panelInfoFirstSurveyDAO);
+    }
+
+    public Panel toEntityNew(OAuth2UserInfo oAuth2UserInfo) {
+        return Panel.ofOAuth2(oAuth2UserInfo);
+    }
+
+    public OAuth2Response toOAuth2Response(boolean existingPanel, boolean additionalInfo, String accessToken, String refreshToken) {
+        return OAuth2Response.of(existingPanel, additionalInfo, accessToken, refreshToken);
     }
 
     public PanelIdResponse toPanelIdResponse(Long panelId) {

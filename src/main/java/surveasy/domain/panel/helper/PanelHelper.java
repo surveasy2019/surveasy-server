@@ -8,13 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.domain.option.AuthProvider;
 import surveasy.domain.panel.domain.option.PanelPlatform;
 import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
+import surveasy.domain.panel.dto.response.OAuth2Response;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
 import surveasy.domain.panel.exception.PanelDuplicateData;
 import surveasy.domain.panel.exception.PanelNotFound;
@@ -27,8 +29,8 @@ import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
 import surveasy.global.common.util.DateAndStringUtils;
+import surveasy.global.config.jwt.TokenProvider;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -41,18 +43,24 @@ public class PanelHelper {
     private final PanelMapper panelMapper;
     private final PanelRepository panelRepository;
 
+    private final TokenProvider tokenProvider;
+
     private final RedisUtil redisUtil;
 
     private static final String COLLECTION_NAME = "panelData";
     private static final String COLLECTION_FS_NAME = "FirstSurvey";
 
-    public Panel findPanel(Long panelId) {
+    public Panel findPanelById(Long panelId) {
         return panelRepository.findById(panelId)
                 .orElseThrow(() -> PanelNotFound.EXCEPTION);
     }
 
+    public Panel findPanelByEmailAndAuthProvider(String email, AuthProvider authProvider) {
+        return panelRepository.findByEmailAndAuthProvider(email, authProvider).orElse(null);
+    }
+
     /* [App] Firebase 기존 패널 정보 가져오기 */
-    private Panel createPanelFromFirestore(String uid, PanelPlatform platform) throws ExecutionException, InterruptedException, ParseException {
+    private Panel createPanelFromFirestore(String uid, PanelPlatform platform) throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
 
         // Firebase Panel Info
@@ -121,7 +129,7 @@ public class PanelHelper {
 
 
     /* [App] 패널 생성 - existing */
-    public Panel addExistingPanelIfNeed(PanelExistingDTO panelExistingDTO) throws ExecutionException, InterruptedException, ParseException {
+    public Panel addExistingPanelIfNeed(PanelExistingDTO panelExistingDTO) throws ExecutionException, InterruptedException {
         Optional<Panel> panel = panelRepository.findByEmail(panelExistingDTO.getEmail());
         if(panel.isPresent()) {
             throw PanelDuplicateData.EXCEPTION;     // DB에 이미 존재하는 패널
@@ -129,6 +137,43 @@ public class PanelHelper {
 
         Panel newPanel = createPanelFromFirestore(panelExistingDTO.getUid(), panelExistingDTO.getPlatform());
         return panelRepository.save(newPanel);
+    }
+
+    private Panel addNewPanel(OAuth2UserInfo oAuth2UserInfo) {
+        Panel newPanel = panelMapper.toEntityNew(oAuth2UserInfo);
+        return panelRepository.save(newPanel);
+    }
+
+
+    public OAuth2Response createOAuth2Response(OAuth2UserInfo oAuth2UserInfo) {
+        Panel panel = findPanelByEmailAndAuthProvider(oAuth2UserInfo.getEmail(), oAuth2UserInfo.getAuthProvider());
+        boolean existingPanel, additionalInfo;
+
+        // 신규 가입 패널
+        if(panel == null) {
+            panel = addNewPanel(oAuth2UserInfo);
+            existingPanel = false;
+            additionalInfo = false;
+        }
+
+        // 추가정보 미입력 패널
+        else if(panel.getStatus().equals(PanelStatus.INFO_YET)) {
+            existingPanel = true;
+            additionalInfo = false;
+        }
+
+        // 기존에 가입된 패널
+        else {
+            panel = panel.updateFrom(oAuth2UserInfo);   // OAuth2 Server 최신 정보로 업데이트
+            existingPanel = true;
+            additionalInfo = true;
+        }
+
+        final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
+        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+
+        return panelMapper.toOAuth2Response(existingPanel, additionalInfo, accessToken, refreshToken);
     }
 
 
@@ -143,6 +188,7 @@ public class PanelHelper {
         if(panelSignUpDTO.getInflowPathEtc() != null) panel.setInflowPathEtc(panelSignUpDTO.getInflowPathEtc());
         panel.setPushOn(panelSignUpDTO.getPushOn());
         panel.setMarketingAgree(panelSignUpDTO.getMarketingAgree());
+        panel.setStatus(PanelStatus.FS_YET);
         panel.setRole("ROLE_USER");
 
         return panelRepository.save(panel).getId();

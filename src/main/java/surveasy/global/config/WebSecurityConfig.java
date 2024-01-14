@@ -15,14 +15,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import surveasy.domain.panel.oauth2.CookieAuthorizationRequestRepository;
-import surveasy.domain.panel.oauth2.CustomOAuth2UserService;
 import surveasy.global.config.jwt.JwtAccessDeniedHandler;
 import surveasy.global.config.jwt.JwtAuthenticationEntryPoint;
 import surveasy.global.config.jwt.JwtAuthenticationFilter;
 import surveasy.global.config.jwt.JwtExceptionHandlerFilter;
-import surveasy.global.config.oauth2.OAuth2AuthenticationFailureHandler;
-import surveasy.global.config.oauth2.OAuth2AuthenticationSuccessHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,11 +39,6 @@ public class WebSecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     private final String[] SwaggerPatterns = {
             "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
@@ -83,18 +74,7 @@ public class WebSecurityConfig {
 //                .requestMatchers("/survey/admin/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository)
-                .and()
-                .redirectionEndpoint().baseUri("/oauth2/callback/*")
-                .and()
-                .userInfoEndpoint().userService(customOAuth2UserService)
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler);
-                //.headers().frameOptions().disable();
+                .headers().frameOptions().disable();
 
 
         http.exceptionHandling()
