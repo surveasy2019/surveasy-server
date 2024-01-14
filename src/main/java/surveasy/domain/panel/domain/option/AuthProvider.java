@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum AuthProvider {
     KAKAO("카카오"),
-    NAVER("네이버");
+    APPPLE("애플");
 
     private final String value;
 

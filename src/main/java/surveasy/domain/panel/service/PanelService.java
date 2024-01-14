@@ -1,14 +1,14 @@
 package surveasy.domain.panel.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.domain.option.AuthProvider;
+import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.exception.PanelNotFound;
@@ -45,6 +45,11 @@ public class PanelService {
         final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
         return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public OAuth2Response oauth2(OAuth2UserInfo oAuth2UserInfo) {
+        return panelHelper.createOAuth2Response(oAuth2UserInfo);
     }
 
     @Transactional
@@ -87,7 +92,7 @@ public class PanelService {
     @Transactional
     public PanelTokenResponse reissueToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         final String refreshToken = refreshTokenRequestDTO.getRefreshToken();
-        final Panel panel = panelHelper.findPanel(Long.parseLong(tokenProvider.getTokenPanelId(refreshToken)));
+        final Panel panel = panelHelper.findPanelById(Long.parseLong(tokenProvider.getTokenPanelId(refreshToken)));
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
 
         tokenProvider.validateRefreshToken(refreshToken);
