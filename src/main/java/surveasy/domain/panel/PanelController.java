@@ -33,7 +33,7 @@ public class PanelController {
         return panelService.signUpExisting(panelExistingDTO);
     }
 
-    @GetMapping("/oauth2")
+    @PostMapping("/oauth2")
     @Operation(summary = "App 소셜 로그인 후 회원가입 여부 판단 & 토큰 발급")
     public OAuth2Response oauth2(@RequestBody @Valid OAuth2UserInfo oAuth2UserInfo) {
         return panelService.oauth2(oAuth2UserInfo);
