@@ -55,9 +55,6 @@ public class PanelHelper {
     private static final String COLLECTION_NAME = "panelData";
     private static final String COLLECTION_FS_NAME = "FirstSurvey";
 
-    @Value("${firebase.auth.base64-singer-key}")
-    String firebaseBase64Key;
-
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
