@@ -1,9 +1,11 @@
 package surveasy.domain.panel.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -33,6 +35,11 @@ public class Panel {
 
     @NotNull
     String email;
+
+    @NotNull
+    @Size(max = 128)
+    @JsonIgnore
+    String password;
 
     @NotNull
     String fcmToken;
@@ -148,7 +155,7 @@ public class Panel {
 
 
     @Builder
-    private Panel(String name, String email, String fcmToken, TargetGender gender,
+    private Panel(String name, String email, String password, String fcmToken, TargetGender gender,
                  LocalDate birth, String accountOwner, AccountType accountType, String accountNumber,
                  PanelStatus status, InflowPath inflowPath, String inflowPathEtc, String phoneNumber,
                  PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
@@ -160,6 +167,7 @@ public class Panel {
                   String role, AuthProvider authProvider) {
         this.name = name;
         this.email = email;
+        this.password = password;
         this.fcmToken = fcmToken;
         this.gender = gender;
         this.birth = birth;
@@ -201,6 +209,7 @@ public class Panel {
         return Panel.builder()
                 .name(panelInfoDAO.getName())
                 .email(panelInfoDAO.getEmail())
+                .password(panelInfoDAO.getPassword())
                 .fcmToken(panelInfoDAO.getFcmToken())
                 .gender(panelInfoDAO.getGender())
                 .birth(panelInfoDAO.getBirth())
@@ -239,6 +248,7 @@ public class Panel {
         return Panel.builder()
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
+                .password("")
                 .fcmToken("")
                 .gender(oAuth2UserInfo.getGender())
                 .birth(oAuth2UserInfo.getBirth())

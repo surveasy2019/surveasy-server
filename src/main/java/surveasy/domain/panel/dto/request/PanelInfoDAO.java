@@ -46,6 +46,8 @@ public class PanelInfoDAO {
 
     String email;
 
+    String password;
+
     String fcmToken;
 
     TargetGender gender;
@@ -83,7 +85,7 @@ public class PanelInfoDAO {
 
 
     @Builder
-    public PanelInfoDAO(String name, String email, String fcmToken,
+    public PanelInfoDAO(String name, String email, String password, String fcmToken,
                         String gender, LocalDate birth,
                         String accountOwner, String accountType, String accountNumber,
                         boolean didFirstSurvey, String inflowPath,
@@ -93,6 +95,7 @@ public class PanelInfoDAO {
                         LocalDate signedUpAt, LocalDateTime lastParticipatedAt) {
         this.name = name;
         this.email = email;
+        this.password = password;
         this.fcmToken = fcmToken;
         this.gender = GENDER_MAP.get(gender);
         this.birth = birth;
@@ -104,7 +107,10 @@ public class PanelInfoDAO {
         else this.status = PanelStatus.FS_YET;
 
         if(INFLOW_PATH_MAP.get(inflowPath) != null) this.inflowPath = INFLOW_PATH_MAP.get(inflowPath);
-        else this.inflowPathEtc = inflowPath;
+        else {
+            this.inflowPath = InflowPath.ETC;
+            this.inflowPathEtc = inflowPath;
+        }
 
         this.phoneNumber = phoneNumber;
         this.platform = platform;
