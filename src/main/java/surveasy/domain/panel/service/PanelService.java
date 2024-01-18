@@ -7,8 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.domain.option.AuthProvider;
-import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.exception.PanelNotFound;
@@ -20,7 +18,6 @@ import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.global.config.jwt.TokenProvider;
 import surveasy.global.config.user.PanelDetails;
 
-import java.text.ParseException;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -37,8 +34,8 @@ public class PanelService {
     private final ResponseHelper responseHelper;
 
     @Transactional
-    public PanelTokenResponse signUpExisting(PanelExistingDTO panelExistingDTO) throws ParseException, ExecutionException, InterruptedException {
-        Panel panel = panelHelper.addExistingPanelIfNeed(panelExistingDTO);
+    public PanelTokenResponse signInEmail(PanelEmailSignInDTO panelEmailSignInDTO) throws ExecutionException, InterruptedException {
+        Panel panel = panelHelper.addExistingPanelIfNeed(panelEmailSignInDTO);
 
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
         final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
@@ -119,4 +116,5 @@ public class PanelService {
                 .orElseThrow(() -> PanelNotFound.EXCEPTION);
         return tokenProvider.createAccessToken(panelId, tokenProvider.panelAuthorizationInput(panel));
     }
+
 }

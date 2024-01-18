@@ -14,7 +14,7 @@ public class PanelTokenResponse {
     }
 
     @Builder
-    public PanelTokenResponse(String accessToken, String refreshToken) {
+    private PanelTokenResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

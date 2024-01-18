@@ -15,7 +15,6 @@ import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.global.config.user.PanelDetails;
-import java.text.ParseException;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -27,10 +26,10 @@ public class PanelController {
 
     private final PanelService panelService;
 
-    @PostMapping("/signup/existing")
-    @Operation(summary = "App 기존 패널 회원 가입")
-    public PanelTokenResponse signUpExisting(@RequestBody @Valid PanelExistingDTO panelExistingDTO) throws ExecutionException, InterruptedException, ParseException {
-        return panelService.signUpExisting(panelExistingDTO);
+    @PostMapping("/signin")
+    @Operation(summary = "App 기존 패널 email 로그인")
+    public PanelTokenResponse signInEmail(@RequestBody @Valid PanelEmailSignInDTO panelEmailSignInDTO) throws ExecutionException, InterruptedException {
+        return panelService.signInEmail(panelEmailSignInDTO);
     }
 
     @PostMapping("/oauth2")
