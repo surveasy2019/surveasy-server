@@ -5,23 +5,19 @@ import lombok.Getter;
 @Getter
 public enum TargetJob {
 
+    MIDDLE_HIGH("중/고등학생"),
     UNDERGRADUATE("대학생"),
-    GRADUATE("대학원생");
-
-    /*
-    * <item>대학생</item>
-        <item>대학원생</item>
-        <item>사무직</item>
-        <item>경영 관리직</item>
-        <item>판매/서비스직</item>
-        <item>자영업</item>
-        <item>기능/생산직</item>
-        <item>전문직</item>
-        <item>농림어업</item>
-        <item>전업주부</item>
-        <item>무직</item>
-        <item>기타</item>
-    * */
+    GRADUATE("대학원생"),
+    OFFICE("사무직"),
+    MANAGEMENT("경영 관리직"),
+    SALES("판매/서비스직"),
+    BUSINESS("자영업"),
+    PRODUCTION("기능/생산직"),
+    SPECIALIZED("전문직"),
+    FARMING_FISHING("농림어업"),
+    HOMEMAKER("전업주부"),
+    NONE("무직"),
+    ETC("기타");
 
     private final String value;
 

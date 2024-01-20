@@ -6,18 +6,13 @@ import lombok.Getter;
 public enum TargetMajor {
 
     SOCIAL("사회계열"),
-    ENGINEERING("공학계열");
-
-    /*
-    * <item>사회계열</item>
-        <item>공학계열</item>
-        <item>인문계열</item>
-        <item>자연계열</item>
-        <item>예체능계열</item>
-        <item>의약계열</item>
-        <item>교육계열</item>
-        <item>기타</item>
-    * */
+    ENGINEERING("공학계열"),
+    HUMAN("인문계열"),
+    NATURE("자연계열"),
+    ART_PHYSICAL("예체능계열"),
+    MEDICAL("의약계열"),
+    EDUCATION("교육계열"),
+    ETC("기타");
 
     private final String value;
 
