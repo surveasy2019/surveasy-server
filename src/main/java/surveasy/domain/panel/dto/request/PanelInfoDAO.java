@@ -41,6 +41,17 @@ public class PanelInfoDAO {
             "기타", InflowPath.ETC
     );
 
+    private static final Map<String, InflowPath> INFLOW_PATH_IDX_MAP = Map.of(
+            "0", InflowPath.ETC,
+            "1", InflowPath.KAKAO,
+            "2", InflowPath.INSTAGRAM,
+            "3", InflowPath.ACQUAINTANCE,
+            "4", InflowPath.SEARCH_NAVER,
+            "5", InflowPath.SEARCH_GOOGLE,
+            "6", InflowPath.OFFLINE,
+            "7", InflowPath.COMMUNITY
+    );
+
 
     String name;
 
@@ -107,6 +118,7 @@ public class PanelInfoDAO {
         else this.status = PanelStatus.FS_YET;
 
         if(INFLOW_PATH_MAP.get(inflowPath) != null) this.inflowPath = INFLOW_PATH_MAP.get(inflowPath);
+        else if(INFLOW_PATH_IDX_MAP.get(inflowPath) != null) this.inflowPath = INFLOW_PATH_IDX_MAP.get(inflowPath);
         else {
             this.inflowPath = InflowPath.ETC;
             this.inflowPathEtc = inflowPath;

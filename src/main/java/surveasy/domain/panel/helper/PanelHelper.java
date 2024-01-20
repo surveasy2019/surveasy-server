@@ -101,10 +101,8 @@ public class PanelHelper {
         DocumentSnapshot documentSnapshot = future.get();
 
         // Firebase Panel First Survey Info
-        ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(uid)
-                .collection(COLLECTION_FS_NAME).document(uid).get();
+        ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(uid).collection(COLLECTION_FS_NAME).document(uid).get();
         DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
-
 
         if(documentSnapshot.exists()) {
             LocalDate birth = DateAndStringUtils.stringToLocalDate(documentSnapshot.getString("birthDate"));
@@ -120,8 +118,8 @@ public class PanelHelper {
                         .english(documentSnapshotFS.getBoolean("EngSurvey"))
                         .city(documentSnapshotFS.getString("city"))
                         .district(documentSnapshotFS.getString("district"))
-                        .family(documentSnapshotFS.getString("family"))
-                        .houseType(documentSnapshotFS.getString("housingType"))
+                        .family((panelEmailSignInDTO.getPlatform().equals(PanelPlatform.ANDROID)) ? documentSnapshotFS.getString("family") : documentSnapshotFS.getString("housingType"))
+                        .houseType((panelEmailSignInDTO.getPlatform().equals(PanelPlatform.ANDROID)) ? documentSnapshotFS.getString("housingType") : "기타")
                         .job(documentSnapshotFS.getString("job"))
                         .university(documentSnapshotFS.getString("university"))
                         .major(documentSnapshotFS.getString("major"))
@@ -142,7 +140,7 @@ public class PanelHelper {
                     .accountType(documentSnapshot.getString("accountType"))
                     .accountNumber(documentSnapshot.getString("accountNumber"))
                     .didFirstSurvey(didFirstSurvey)
-                    .inflowPath(documentSnapshot.getString("inflowPath"))
+                    .inflowPath(String.valueOf(documentSnapshot.get("inflowPath")))
                     .phoneNumber(documentSnapshot.getString("phoneNumber"))
                     .platform(panelEmailSignInDTO.getPlatform())
                     .pushOn(documentSnapshot.getBoolean("pushOn"))
@@ -240,6 +238,7 @@ public class PanelHelper {
         panel.setMarriage(panelFirstSurveyDTO.getMarriage());
         panel.setMilitary(panelFirstSurveyDTO.getMilitary());
         panel.setPet(panelFirstSurveyDTO.getPet());
+        panel.setLastParticipatedAt(LocalDateTime.now());
         panel.setStatus(PanelStatus.FS_DONE);
 
         return panelRepository.save(panel).getId();
