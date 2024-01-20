@@ -4,6 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum AuthProvider {
+
+    EMAIL("이메일"),
     KAKAO("카카오"),
     APPPLE("애플");
 

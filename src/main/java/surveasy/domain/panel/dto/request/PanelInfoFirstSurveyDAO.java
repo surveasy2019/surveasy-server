@@ -50,7 +50,7 @@ public class PanelInfoFirstSurveyDAO {
     );
 
     private static final Map<String, TargetJob> JOB_MAP = Map.ofEntries(
-            Map.entry("중/고등학생", TargetJob.MIDDLE_HIGH),
+            Map.entry("중/고등학생", TargetJob.MID_HIGH),
             Map.entry("대학생", TargetJob.UNDERGRADUATE),
             Map.entry("대학원생", TargetJob.GRADUATE),
             Map.entry("사무직", TargetJob.OFFICE),

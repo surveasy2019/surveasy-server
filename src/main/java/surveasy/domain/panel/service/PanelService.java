@@ -105,10 +105,11 @@ public class PanelService {
     }
 
     @Transactional
-    public void withdraw(PanelDetails panelDetails) {
+    public PanelAuthProviderResponse withdraw(PanelDetails panelDetails) {
         signOut(panelDetails);
-        Panel panel = panelDetails.getPanel();
+        final Panel panel = panelDetails.getPanel();
         panelRepository.delete(panel);
+        return panelMapper.toPanelAuthProviderResponse(panel.getAuthProvider());
     }
 
     public String reissueAccessToken(Long panelId) {
