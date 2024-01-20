@@ -1,8 +1,12 @@
 package surveasy.domain.survey.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.domain.QResponse;
@@ -46,10 +50,12 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
 
 
     @Override
-    public List<SurveyListVo> findAllSurveyListVos() {
+    public Page<SurveyListVo> findAllSurveyListVos(Pageable pageable) {
         QSurvey qSurvey = QSurvey.survey;
+        List<SurveyListVo> surveyListVos;
+        JPAQuery<Long> count;
 
-        return jpaQueryFactory
+        surveyListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyListVo.class,
                         qSurvey.sid,
                         qSurvey.title,
@@ -63,7 +69,15 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .from(qSurvey)
                 .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE))
                 .orderBy(qSurvey.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        count = jpaQueryFactory.select(qSurvey.count())
+                .from(qSurvey)
+                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE));
+
+        return PageableExecutionUtils.getPage(surveyListVos, pageable, count::fetchOne);
     }
 
     @Override
@@ -120,18 +134,22 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.targetAgeListStr.eq("ALL")
                                 .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
                 .orderBy(qSurvey.dueDate.asc())
+                .limit(3)
                 .fetch();
     }
 
     @Override
-    public List<SurveyAppListVo> findAllSurveyAppListVos(Panel panel) {
+    public Page<SurveyAppListVo> findAllSurveyAppListVos(Panel panel, Pageable pageable) {
         QSurvey qSurvey = QSurvey.survey;
         QResponse qResponse = QResponse.response;
+
+        List<SurveyAppListVo> surveyAppListVos;
+        JPAQuery<Long> count;
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekBefore = now.minusDays(8);
 
-        return jpaQueryFactory
+        surveyAppListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListVo.class,
                     qSurvey.id,
                     qSurvey.title,
@@ -154,7 +172,25 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.targetAgeListStr.eq("ALL")
                                 .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
                 .orderBy(qSurvey.dueDate.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        count = jpaQueryFactory.select(qSurvey.count())
+                .from(qSurvey)
+                .leftJoin(qResponse)
+                .on(
+                        qResponse.survey.eq(qSurvey),
+                        qResponse.panel.eq(panel),
+                        qResponse.createdAt.between(oneWeekBefore, now))
+                .where(
+                        qSurvey.status.eq(SurveyStatus.IN_PROGRESS),
+                        qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
+                        qSurvey.targetAgeListStr.eq("ALL")
+                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
+                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE));
+
+        return PageableExecutionUtils.getPage(surveyAppListVos, pageable, count::fetchOne);
     }
 
     @Override

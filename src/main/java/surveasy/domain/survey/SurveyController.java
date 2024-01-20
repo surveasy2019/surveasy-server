@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
@@ -50,8 +51,8 @@ public class SurveyController {
 
     @Operation(summary = "Web 설문 리스트 불러오기")
     @GetMapping("/list")
-    public SurveyListResponse getSurveyList() {
-        return surveyService.getSurveyList();
+    public SurveyListResponse getSurveyList(@PageableDefault(size = 10) Pageable pageable) {
+        return surveyService.getSurveyList(pageable);
     }
 
     @Operation(summary = "Web 마이페이지 진행중 / 완료 설문 개수")
@@ -79,9 +80,15 @@ public class SurveyController {
     }
 
     @Operation(summary = "Admin 설문 리스트")
-    @GetMapping("/admin/list")
+    @GetMapping("/admin")
     public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable) {
         return surveyService.getAdminSurveyList(pageable);
+    }
+
+    @Operation(summary = "Admin 설문 1개 상세 정보")
+    @GetMapping("/admin/{surveyId}")
+    public ResponseEntity<Survey> getAdminSurvey(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(surveyService.getAdminSurvey(surveyId));
     }
 
     @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link")
@@ -98,8 +105,9 @@ public class SurveyController {
 
     @Operation(summary = "App 설문 리스트")
     @GetMapping("/app")
-    public SurveyAppListResponse getSurveyAppList(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return surveyService.getSurveyAppList(panelDetails);
+    public SurveyAppListResponse getSurveyAppList(@AuthenticationPrincipal PanelDetails panelDetails,
+                                                  @PageableDefault(size = 10) Pageable pageable) {
+        return surveyService.getSurveyAppList(panelDetails, pageable);
     }
 
     @Operation(summary = "App 설문 1개 상세 정보")

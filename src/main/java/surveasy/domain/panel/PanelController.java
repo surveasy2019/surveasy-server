@@ -72,8 +72,8 @@ public class PanelController {
 
     @DeleteMapping ("/withdraw")
     @Operation(summary = "App 패널 탈퇴")
-    public void withdraw(@AuthenticationPrincipal PanelDetails panelDetails) {
-        panelService.withdraw(panelDetails);
+    public PanelAuthProviderResponse withdraw(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return panelService.withdraw(panelDetails);
     }
 
     @GetMapping("/home")

@@ -1,8 +1,9 @@
 package surveasy.domain.survey.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import surveasy.domain.response.repository.ResponseRepository;
+import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
@@ -22,8 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SurveyMapper {
 
-    private final ResponseRepository responseRepository;
-
     public Survey toEntity(SurveyServiceDTO surveyServiceDTO) {
         return Survey.from(surveyServiceDTO);
     }
@@ -32,7 +31,7 @@ public class SurveyMapper {
         return SurveyIdResponse.from(surveyId);
     }
 
-    public SurveyListResponse toSurveyListResponse(List<SurveyListVo> surveyListVos) {
+    public SurveyListResponse toSurveyListResponse(Page<SurveyListVo> surveyListVos) {
         return SurveyListResponse.from(surveyListVos);
     }
 
@@ -48,11 +47,11 @@ public class SurveyMapper {
         return SurveyMyPageOrderListResponse.from(surveyMyPageOrderVos);
     }
 
-    public SurveyAppHomeListResponse toSurveyAppHomeList(List<SurveyAppHomeVo> surveyAppHomeVos) {
-        return SurveyAppHomeListResponse.from(surveyAppHomeVos);
+    public SurveyAppHomeListResponse toSurveyAppHomeList(List<SurveyAppHomeVo> surveyAppHomeVos, PanelStatus status) {
+        return SurveyAppHomeListResponse.of(surveyAppHomeVos, status);
     }
 
-    public SurveyAppListResponse toSurveyAppList(List<SurveyAppListVo> surveyAppList) {
-        return SurveyAppListResponse.from(surveyAppList);
+    public SurveyAppListResponse toSurveyAppList(Page<SurveyAppListVo> surveyAppList, PanelStatus status) {
+        return SurveyAppListResponse.of(surveyAppList, status);
     }
 }

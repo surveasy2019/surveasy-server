@@ -1,5 +1,7 @@
 package surveasy.domain.survey.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.vo.*;
@@ -13,13 +15,13 @@ public interface SurveyRepositoryCustom {
 
     Long countByEmailAndStatus(String email, SurveyStatus status);
 
-    List<SurveyListVo> findAllSurveyListVos();
+    Page<SurveyListVo> findAllSurveyListVos(Pageable pageable);
 
     List<SurveyMyPageOrderVo> findAllSurveyMyPageVosByEmail(String email);
 
     List<SurveyAppHomeVo> findAllSurveyAppHomeVos(Panel panel);
 
-    List<SurveyAppListVo> findAllSurveyAppListVos(Panel panel);
+    Page<SurveyAppListVo> findAllSurveyAppListVos(Panel panel, Pageable pageable);
 
     Optional<SurveyAppListDetailVo> findSurveyAppListDetailVo(Long surveyId);
 }

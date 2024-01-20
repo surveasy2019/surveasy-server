@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum TargetJob {
 
-    MIDDLE_HIGH("중/고등학생"),
+    MID_HIGH("중/고등학생"),
     UNDERGRADUATE("대학생"),
     GRADUATE("대학원생"),
     OFFICE("사무직"),

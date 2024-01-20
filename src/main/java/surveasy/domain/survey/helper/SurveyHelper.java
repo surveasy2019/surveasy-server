@@ -142,6 +142,9 @@ public class SurveyHelper {
         return SurveyAdminListResponse.of(surveyList, pageInfo);
     }
 
+    public Survey getAdminSurvey(Long surveyId) {
+        return surveyRepository.findById(surveyId).orElseThrow(() -> SurveyNotFound.EXCEPTION);
+    }
 
     /* [Web] 현재 sid 최댓값 가져오기
     * 검수 후 progress == 2로 업데이트 하려는 경우, 현재 sid == 0이면 sid를 (최댓값 + 1)으로 부여 */
@@ -200,8 +203,8 @@ public class SurveyHelper {
         surveyRepository.save(survey);
     }
 
-    public List<SurveyAppListVo> getSurveyAppList(Panel panel) {
-        return surveyRepository.findAllSurveyAppListVos(panel);
+    public Page<SurveyAppListVo> getSurveyAppList(Panel panel, Pageable pageable) {
+        return surveyRepository.findAllSurveyAppListVos(panel, pageable);
     }
 
     public SurveyAppListDetailVo getSurveyAppListDetail(Long surveyId) {
