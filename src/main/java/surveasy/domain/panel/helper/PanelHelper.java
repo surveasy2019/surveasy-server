@@ -199,7 +199,7 @@ public class PanelHelper {
 
 
     /* [App] 패널 추가 정보 입력 */
-    public Long signUp(Panel panel, PanelSignUpDTO panelSignUpDTO) {
+    public Panel signUp(Panel panel, PanelSignUpDTO panelSignUpDTO) {
         panel.setPlatform(panelSignUpDTO.getPlatform());
         panel.setFcmToken("Temp_FCM");
         panel.setAccountOwner(panelSignUpDTO.getAccountOwner());
@@ -212,7 +212,7 @@ public class PanelHelper {
         panel.setStatus(PanelStatus.FS_YET);
         panel.setRole("ROLE_USER");
 
-        return panelRepository.save(panel).getId();
+        return panelRepository.save(panel);
     }
 
 

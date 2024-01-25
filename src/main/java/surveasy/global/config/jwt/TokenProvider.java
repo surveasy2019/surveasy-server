@@ -65,14 +65,6 @@ public class TokenProvider implements InitializingBean {
         return createToken(REFRESH_KEY, id, refreshTokenExpirationTIme, authentication);
     }
 
-    public String createOAuth2AccessToken(Authentication authentication) {
-        return createToken(ACCESS_KEY, ((PanelDetails) authentication.getPrincipal()).getId(), accessTokenExpirationTime, authentication);
-    }
-
-    public String createOAuth2RefreshToken(Authentication authentication) {
-        return createToken(REFRESH_KEY, ((PanelDetails) authentication.getPrincipal()).getId(), refreshTokenExpirationTIme, authentication);
-    }
-
     private String createToken(String type, Long id, int expirationTime, Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -99,6 +91,10 @@ public class TokenProvider implements InitializingBean {
         }
 
         return token;
+    }
+
+    public String getRefreshToken(Long id) {
+        return redisUtil.getRefreshToken(id.toString());
     }
 
     public void deleteRefreshToken(Long id) {

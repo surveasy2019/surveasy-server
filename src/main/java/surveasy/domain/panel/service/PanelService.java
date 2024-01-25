@@ -50,9 +50,15 @@ public class PanelService {
     }
 
     @Transactional
-    public PanelIdResponse signUp(PanelDetails panelDetails, PanelSignUpDTO panelSignUpDTO) {
-        final Panel panel = panelDetails.getPanel();
-        return panelMapper.toPanelIdResponse(panelHelper.signUp(panel, panelSignUpDTO));
+    public PanelTokenResponse signUp(PanelDetails panelDetails, PanelSignUpDTO panelSignUpDTO) {
+        Panel panel = panelDetails.getPanel();
+        panel = panelHelper.signUp(panel, panelSignUpDTO);
+
+        final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
+        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        final String refreshToken = tokenProvider.getRefreshToken(panel.getId());
+
+        return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
     }
 
     @Transactional
