@@ -32,6 +32,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// batch
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+
 	// firebase
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
 
