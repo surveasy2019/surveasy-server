@@ -10,6 +10,7 @@ import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.panel.dto.request.PanelSignUpDTO;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.vo.PanelInfoVo;
+import surveasy.domain.panel.vo.PanelResponseInfoVo;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +34,10 @@ public class PanelMapper {
 
     public PanelHomeInfoResponse toPanelHomeInfoResponse(Panel panel, Long count) {
         return PanelHomeInfoResponse.from(panel, count);
+    }
+
+    public PanelResponseInfoVo toPanelResponseInfoVo(Panel panel) {
+        return PanelResponseInfoVo.from(panel);
     }
 
     public PanelInfoVo toPanelInfoVo(Panel panel) {

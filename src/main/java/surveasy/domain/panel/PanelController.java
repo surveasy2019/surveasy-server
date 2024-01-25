@@ -14,6 +14,7 @@ import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.domain.panel.vo.PanelInfoVo;
+import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.global.config.user.PanelDetails;
 import java.util.concurrent.ExecutionException;
 
@@ -81,6 +82,13 @@ public class PanelController {
     public PanelHomeInfoResponse getPanelHomeInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
         return panelService.getPanelHomeInfo(panelDetails);
     }
+
+    @GetMapping("/response")
+    @Operation(summary = "App 마이페이지 정산 예정 금액 & 계좌 정보")
+    public ResponseEntity<PanelResponseInfoVo> getPanelMyPageResponseInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
+        return ResponseEntity.ok(panelService.getPanelResponseInfoVo(panelDetails));
+    }
+
 
     @GetMapping("")
     @Operation(summary = "App 마이페이지 패널 정보 불러오기")

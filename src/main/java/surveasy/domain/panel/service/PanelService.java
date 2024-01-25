@@ -14,6 +14,7 @@ import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.domain.panel.vo.PanelInfoVo;
+import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.global.config.jwt.TokenProvider;
 import surveasy.global.config.user.PanelDetails;
@@ -56,7 +57,8 @@ public class PanelService {
 
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
         final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.getRefreshToken(panel.getId());
+        tokenProvider.deleteRefreshToken(panel.getId());
+        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
         return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
     }
@@ -72,6 +74,12 @@ public class PanelService {
         final Panel panel = panelDetails.getPanel();
         long count = responseHelper.getPanelResponseCount(panel.getId());
         return panelMapper.toPanelHomeInfoResponse(panel, count);
+    }
+
+    @Transactional(readOnly = true)
+    public PanelResponseInfoVo getPanelResponseInfoVo(PanelDetails panelDetails) {
+        final Panel panel = panelDetails.getPanel();
+        return panelMapper.toPanelResponseInfoVo(panel);
     }
 
     @Transactional
@@ -123,5 +131,4 @@ public class PanelService {
                 .orElseThrow(() -> PanelNotFound.EXCEPTION);
         return tokenProvider.createAccessToken(panelId, tokenProvider.panelAuthorizationInput(panel));
     }
-
 }

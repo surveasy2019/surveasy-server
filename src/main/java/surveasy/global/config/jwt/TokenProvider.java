@@ -93,10 +93,6 @@ public class TokenProvider implements InitializingBean {
         return token;
     }
 
-    public String getRefreshToken(Long id) {
-        return redisUtil.getRefreshToken(id.toString());
-    }
-
     public void deleteRefreshToken(Long id) {
         redisUtil.delete(id.toString());
     }
