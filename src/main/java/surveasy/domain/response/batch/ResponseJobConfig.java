@@ -14,6 +14,10 @@ import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+import surveasy.domain.response.batch.reader.QuerydslNoOffsetPagingItemReader;
+import surveasy.domain.response.batch.reader.QuerydslPagingItemReader;
+import surveasy.domain.response.batch.reader.expression.Expression;
+import surveasy.domain.response.batch.reader.options.QuerydslNoOffsetNumberOptions;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.vo.ResponseBatchVo;
@@ -47,7 +51,7 @@ public class ResponseJobConfig {
     protected Step step1() {
         return new StepBuilder("step1", jobRepository)
                 .<Response, ResponseBatchVo>chunk(CHUNK_SIZE, transactionManager)
-                .reader(myReader())
+                .reader(querydslNoOffsetPagingItemReader())
                 .processor(jpaPagingResponseProcessor())
                 .writer(jpaPagingResponseWriter())
                 .build();
@@ -64,12 +68,28 @@ public class ResponseJobConfig {
     }
 
     @Bean
-    public QuerydslPagingItemReader<Response> myReader() {
+    public QuerydslPagingItemReader<Response> querydslPagingItemReader() {
         System.out.println(now.minusDays(SENT_CYCLE).atTime(0, 0) + "      " + now.atTime(0, 0));
 
         return new QuerydslPagingItemReader<>(
                 entityManagerFactory,
                 CHUNK_SIZE,
+                jpaQueryFactory -> jpaQueryFactory
+                        .selectFrom(qResponse)
+                        .where(qResponse.status.in(ResponseStatus.CREATED, ResponseStatus.UPDATED)
+                                .and(qResponse.createdAt.between(
+                                        now.minusDays(SENT_CYCLE).atTime(0, 0),
+                                        now.atTime(0, 0))))
+        );
+    }
+
+    @Bean
+    public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingItemReader() {
+        QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
+        return new QuerydslNoOffsetPagingItemReader<>(
+                entityManagerFactory,
+                CHUNK_SIZE,
+                options,
                 jpaQueryFactory -> jpaQueryFactory
                         .selectFrom(qResponse)
                         .where(qResponse.status.in(ResponseStatus.CREATED, ResponseStatus.UPDATED)

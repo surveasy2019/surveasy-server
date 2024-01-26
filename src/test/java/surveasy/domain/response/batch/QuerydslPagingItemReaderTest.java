@@ -8,6 +8,7 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import surveasy.domain.response.batch.reader.QuerydslPagingItemReader;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.domain.QResponse;
