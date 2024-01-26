@@ -15,6 +15,7 @@ spring:
   data:
     - secret
 
+
 springdoc:
   version: 0.0.1
   default-consumes-media-type: application/json

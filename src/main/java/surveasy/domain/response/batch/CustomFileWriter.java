@@ -6,14 +6,14 @@ import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 import org.springframework.stereotype.Component;
-import surveasy.domain.response.vo.ResponseFileVo;
+import surveasy.domain.panel.vo.PanelFileVo;
 
 @Component
 public class CustomFileWriter {
 
     @StepScope
-    public FlatFileItemWriter<ResponseFileVo> CustomFileWriter(Resource fileResource) {
-        return new FlatFileItemWriterBuilder<ResponseFileVo>()
+    public FlatFileItemWriter<PanelFileVo> CustomFileWriter(Resource fileResource) {
+        return new FlatFileItemWriterBuilder<PanelFileVo>()
                 .name("customFileWriter")
                 .resource((WritableResource) fileResource)
                 .formatted()
