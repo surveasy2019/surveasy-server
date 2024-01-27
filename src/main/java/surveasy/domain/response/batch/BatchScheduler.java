@@ -1,7 +1,6 @@
 package surveasy.domain.response.batch;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -18,11 +17,11 @@ import java.util.Date;
 public class BatchScheduler {
 
     private final JobLauncher jobLauncher;
-    private final ResponseJobConfig responseJobConfig;
+    private final AggregationJobConfig aggregationJobConfig;
 
     @Scheduled(fixedDelay = 10000000)
-    public void batchScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        jobLauncher.run(responseJobConfig.aggregateResponseJob(),
+    public void batchScheduler() throws Exception {
+        jobLauncher.run(aggregationJobConfig.aggregateResponseJob(),
                 new JobParametersBuilder()
                         .addLong("time", new Date().getTime())
                         .toJobParameters()
