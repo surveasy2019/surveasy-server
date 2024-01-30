@@ -3,6 +3,8 @@ package surveasy.domain.response.batch;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
@@ -31,9 +33,11 @@ import surveasy.domain.response.batch.reader.options.QuerydslNoOffsetNumberOptio
 import surveasy.domain.response.batch.reader.options.QuerydslNoOffsetOptions;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
+import surveasy.domain.response.service.FileService;
 import surveasy.domain.response.vo.ResponseBatchVo;
 import surveasy.domain.response.domain.QResponse;
 import surveasy.domain.panel.domain.QPanel;
+import surveasy.global.common.util.EmailUtils;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;

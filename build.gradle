@@ -37,6 +37,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	testImplementation 'org.springframework.batch:spring-batch-test'
 
+	// mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// firebase
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
 
