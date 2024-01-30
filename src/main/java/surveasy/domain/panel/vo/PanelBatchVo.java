@@ -13,6 +13,8 @@ public class PanelBatchVo {
     private final String accountNumber;
     private final Integer rewardTemp;
 
+    private final String sender = "서베이지";
+
     @Builder
     private PanelBatchVo(String accountOwner, AccountType accountType, String accountNumber, Integer rewardTemp) {
         this.accountOwner = accountOwner;

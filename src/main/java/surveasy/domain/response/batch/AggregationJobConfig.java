@@ -55,6 +55,7 @@ public class AggregationJobConfig {
     private static final int SENT_CYCLE = (now.getDayOfMonth() == 1) ? 11 : 10;
     private static final int RESPONSE_CHUNK_SIZE = 5;
     private static final int PANEL_CHUNK_SIZE = 2;
+    private static final String CSV_FILE_PATH = "output/" + LocalDate.now() + ".csv";
 
     @Bean
     public Job aggregateResponseJob() throws Exception {
@@ -158,7 +159,7 @@ public class AggregationJobConfig {
     @Bean
     public FlatFileItemWriter<PanelBatchVo> csvFileWriter() throws Exception {
         BeanWrapperFieldExtractor<PanelBatchVo> extractor = new BeanWrapperFieldExtractor<>();
-        extractor.setNames(new String[] {"accountType", "accountNumber", "rewardTemp", "accountOwner"});
+        extractor.setNames(new String[] {"accountType", "accountNumber", "rewardTemp", "accountOwner", "sender"});    // of PanelBatchVo
 
         DelimitedLineAggregator<PanelBatchVo> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter(",");
@@ -167,9 +168,9 @@ public class AggregationJobConfig {
         FlatFileItemWriter<PanelBatchVo> writer = new FlatFileItemWriterBuilder<PanelBatchVo>()
                 .name("csvFileWriter")
                 .encoding("UTF-8")
-                .resource(new FileSystemResource("output/" + LocalDate.now() + ".csv"))
+                .resource(new FileSystemResource(CSV_FILE_PATH))
                 .lineAggregator(lineAggregator)
-                .headerCallback(writer1 -> writer1.write("입금은행,입금계좌번호,입금액,예상예금주"))
+                .headerCallback(writer1 -> writer1.write("입금은행,입금계좌번호,입금액,예상예금주,입금통장표시"))
                 .append(true)
                 .build();
 

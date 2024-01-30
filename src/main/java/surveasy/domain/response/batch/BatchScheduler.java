@@ -19,12 +19,12 @@ public class BatchScheduler {
     private final JobLauncher jobLauncher;
     private final AggregationJobConfig aggregationJobConfig;
 
-    @Scheduled(fixedDelay = 10000000)
-    public void batchScheduler() throws Exception {
-        jobLauncher.run(aggregationJobConfig.aggregateResponseJob(),
-                new JobParametersBuilder()
-                        .addLong("time", new Date().getTime())
-                        .toJobParameters()
-        );
-    }
+//    @Scheduled(fixedDelay = 10000000)
+//    public void batchScheduler() throws Exception {
+//        jobLauncher.run(aggregationJobConfig.aggregateResponseJob(),
+//                new JobParametersBuilder()
+//                        .addLong("time", new Date().getTime())
+//                        .toJobParameters()
+//        );
+//    }
 }
