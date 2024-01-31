@@ -73,7 +73,7 @@ public class AggregationDoneResponseJobConfig {
     public JdbcBatchItemWriter<Response> jdbcBatchResponseWriter2() {
         return new JdbcBatchItemWriterBuilder<Response>()
                 .dataSource(dataSource)
-                .sql("UPDATE response SET status = 'DONE' WHERE id = :id")
+                .sql("UPDATE response SET status = 'DONE', sent_at = \'" + now + "\' WHERE id = :id")
                 .beanMapped()
                 .build();
     }

@@ -7,6 +7,8 @@ import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.domain.option.SurveyHeadcount;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class SurveyAppListVo {
 
@@ -28,9 +30,11 @@ public class SurveyAppListVo {
 
     private final boolean participated;
 
+    private final boolean overdue;
+
     @Builder
     public SurveyAppListVo(Long id, String title, Integer reward, SurveyHeadcount headCount, SurveySpendTime spendTime, String targetInput,
-                           SurveyStatus status, Integer responseCount, Response response) {
+                           SurveyStatus status, Integer responseCount, boolean overdue, Response response) {
         this.id = id;
         this.title = title;
         this.reward = reward;
@@ -39,6 +43,7 @@ public class SurveyAppListVo {
         this.targetInput = targetInput;
         this.status = status;
         this.responseCount = responseCount;
+        this.overdue = overdue;
         this.participated = (response != null);
     }
 }
