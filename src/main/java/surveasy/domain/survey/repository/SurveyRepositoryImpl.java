@@ -167,11 +167,11 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qResponse.panel.eq(panel),
                         qResponse.createdAt.between(oneWeekBefore, now))
                 .where(
-                        qSurvey.status.eq(SurveyStatus.IN_PROGRESS),
+                        qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
                                 .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
-                .orderBy(qSurvey.dueDate.asc())
+                .orderBy(qResponse.id.asc(), qSurvey.dueDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
