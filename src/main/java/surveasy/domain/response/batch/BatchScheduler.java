@@ -19,10 +19,10 @@ public class BatchScheduler {
     private final FileService fileService;
     private final EmailUtils emailUtils;
 
-    @Scheduled(fixedDelay = 10000000)
+    @Scheduled(cron = "0 10 4 1,11,21 * ?")
     public void batchScheduler() throws Exception {
         fileService.deleteAllFiles();
-        jobLauncher.run(aggregationJobConfig.aggregateResponseJob(),
+        jobLauncher.run(aggregationJobConfig.aggregationJob(),
                 new JobParametersBuilder()
                         .addLong("time", new Date().getTime())
                         .toJobParameters()

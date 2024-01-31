@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
+import surveasy.domain.response.batch.JobLauncherService;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
@@ -41,6 +42,7 @@ public class ResponseHelper {
 
     private final PanelHelper panelHelper;
     private final ResponseMapper responseMapper;
+    private final JobLauncherService jobLauncherService;
 
     public PageInfo getPageInfo(int pageNum, int pageSize, Page<?> responses) {
         return PageInfo.builder()
@@ -157,5 +159,11 @@ public class ResponseHelper {
                 .orElseThrow(() -> SurveyNotFound.EXCEPTION);
 
         return responseRepository.findAllBySurveyIdOrderByIdDesc(surveyId);
+    }
+
+    /* [Admin] 어드민 송금 후 정산 완료 처리 */
+    public void doneAggregation() {
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~ ResponseHelper.doneAggregation");
+        jobLauncherService.runJobs();
     }
 }

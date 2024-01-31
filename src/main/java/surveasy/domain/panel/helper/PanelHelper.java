@@ -239,7 +239,9 @@ public class PanelHelper {
         panel.setMilitary(panelFirstSurveyDTO.getMilitary());
         panel.setPet(panelFirstSurveyDTO.getPet());
         panel.setLastParticipatedAt(LocalDateTime.now());
-        panel.setStatus(PanelStatus.FS_DONE);
+        panel.setRewardCurrent(200);
+        panel.setRewardTemp(200);
+        panel.setStatus(PanelStatus.FS_ONLY_DONE);
 
         return panelRepository.save(panel).getId();
     }
@@ -252,6 +254,7 @@ public class PanelHelper {
 
         panel.setRewardCurrent(rewardCurrent + reward);
         panel.setLastParticipatedAt(LocalDateTime.now());
+        if(panel.getStatus().equals(PanelStatus.FS_ONLY_DONE)) panel.setStatus(PanelStatus.FS_DONE);
 
         panelRepository.save(panel);
     }

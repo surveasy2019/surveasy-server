@@ -55,4 +55,8 @@ public class ResponseService {
     public AdminSurveyResponseListResponse getAdminSurveyResponseList(Long surveyId) {
         return responseMapper.toAdminSurveyResponseListResponse(responseHelper.getAdminSurveyResponseList(surveyId));
     }
+
+    public void doneAggregation() {
+        responseHelper.doneAggregation();
+    }
 }

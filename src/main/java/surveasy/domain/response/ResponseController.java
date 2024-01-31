@@ -2,12 +2,10 @@ package surveasy.domain.response;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -23,8 +21,6 @@ import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.service.FileService;
 import surveasy.domain.response.service.ResponseService;
 import surveasy.global.config.user.PanelDetails;
-
-import java.io.FileNotFoundException;
 
 @Slf4j
 @RestController
@@ -82,5 +78,11 @@ public class ResponseController {
                 .contentType(MediaType.valueOf("text/csv; charset=UTF-8"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(resource);
+    }
+
+    @Operation(summary = "어드민 송금 후 정산 완료 처리")
+    @GetMapping("/admin/done")
+    public void doneAggregation() {
+        responseService.doneAggregation();
     }
 }

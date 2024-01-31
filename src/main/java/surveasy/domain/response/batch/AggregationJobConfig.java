@@ -62,7 +62,7 @@ public class AggregationJobConfig {
     private static final String CSV_FILE_PATH = "output/" + LocalDate.now() + ".csv";
 
     @Bean
-    public Job aggregateResponseJob() throws Exception {
+    public Job aggregationJob() throws Exception {
         return new JobBuilder("aggregationJob", jobRepository)
                 .start(step1())
                 .next(step2())
