@@ -34,7 +34,7 @@ public class SurveyAppListVo {
 
     @Builder
     public SurveyAppListVo(Long id, String title, Integer reward, SurveyHeadcount headCount, SurveySpendTime spendTime, String targetInput,
-                           SurveyStatus status, Integer responseCount, boolean overdue, Response response) {
+                           SurveyStatus status, Integer responseCount, LocalDateTime dueDate, Response response) {
         this.id = id;
         this.title = title;
         this.reward = reward;
@@ -43,7 +43,7 @@ public class SurveyAppListVo {
         this.targetInput = targetInput;
         this.status = status;
         this.responseCount = responseCount;
-        this.overdue = overdue;
+        this.overdue = (LocalDateTime.now().isAfter(dueDate));
         this.participated = (response != null);
     }
 }
