@@ -163,7 +163,6 @@ public class ResponseHelper {
 
     /* [Admin] 어드민 송금 후 정산 완료 처리 */
     public void doneAggregation() {
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~ ResponseHelper.doneAggregation");
         jobLauncherService.runJobs();
     }
 }
