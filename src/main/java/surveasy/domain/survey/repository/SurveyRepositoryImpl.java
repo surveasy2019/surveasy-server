@@ -159,6 +159,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                     qSurvey.targetInput,
                     qSurvey.status,
                     qSurvey.responseCount,
+                    qSurvey.dueDate,
                     qResponse))
                 .from(qSurvey)
                 .leftJoin(qResponse)
@@ -184,11 +185,10 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qResponse.panel.eq(panel),
                         qResponse.createdAt.between(oneWeekBefore, now))
                 .where(
-                        qSurvey.status.eq(SurveyStatus.IN_PROGRESS),
+                        qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
-                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE));
+                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())));
 
         return PageableExecutionUtils.getPage(surveyAppListVos, pageable, count::fetchOne);
     }
