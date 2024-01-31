@@ -5,8 +5,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
@@ -14,6 +18,7 @@ import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
 import surveasy.domain.response.dto.response.AdminSurveyResponseListResponse;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
+import surveasy.domain.response.service.FileService;
 import surveasy.domain.response.service.ResponseService;
 import surveasy.global.config.user.PanelDetails;
 
@@ -25,6 +30,7 @@ import surveasy.global.config.user.PanelDetails;
 public class ResponseController {
 
     private final ResponseService responseService;
+    private final FileService fileService;
 
     @Operation(summary = "App 설문 응답 생성하기")
     @PostMapping("/{surveyId}")
@@ -61,5 +67,22 @@ public class ResponseController {
     @GetMapping("/admin/{surveyId}")
     public AdminSurveyResponseListResponse getAdminSurveyResponseList(@PathVariable Long surveyId) {
         return responseService.getAdminSurveyResponseList(surveyId);
+    }
+
+    @Operation(summary = "어드민 정산 결과 csv 파일 다운로드")
+    @GetMapping("/admin/download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+        Resource resource = fileService.loadFileAsResource(fileName);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/csv; charset=UTF-8"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .body(resource);
+    }
+
+    @Operation(summary = "어드민 송금 후 정산 완료 처리")
+    @GetMapping("/admin/done")
+    public void doneAggregation() {
+        responseService.doneAggregation();
     }
 }

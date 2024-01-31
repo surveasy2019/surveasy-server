@@ -2,6 +2,8 @@ package surveasy.domain.response.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,10 @@ import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.domain.response.mapper.ResponseMapper;
 import surveasy.global.config.user.PanelDetails;
+
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 
 @Slf4j
 @Service
@@ -48,5 +54,9 @@ public class ResponseService {
     @Transactional(readOnly = true)
     public AdminSurveyResponseListResponse getAdminSurveyResponseList(Long surveyId) {
         return responseMapper.toAdminSurveyResponseListResponse(responseHelper.getAdminSurveyResponseList(surveyId));
+    }
+
+    public void doneAggregation() {
+        responseHelper.doneAggregation();
     }
 }

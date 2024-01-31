@@ -4,5 +4,6 @@ public enum PanelStatus {
 
     INFO_YET,
     FS_YET,
+    FS_ONLY_DONE,
     FS_DONE;
 }

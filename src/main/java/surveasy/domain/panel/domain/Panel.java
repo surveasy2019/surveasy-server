@@ -100,6 +100,9 @@ public class Panel {
     @NotNull
     Integer rewardTotal;
 
+    @NotNull
+    Integer rewardTemp = 0;
+
     @Nullable
     LocalDate signedUpAt;
 

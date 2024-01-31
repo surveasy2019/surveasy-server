@@ -20,7 +20,7 @@ public class SurveyAppListResponse {
     private SurveyAppListResponse(Page<SurveyAppListVo> surveyAppList, PanelStatus status) {
         this.surveyAppList = surveyAppList.getContent();
 
-        if(status.equals(PanelStatus.FS_DONE))
+        if(status.equals(PanelStatus.FS_ONLY_DONE) || status.equals(PanelStatus.FS_DONE))
             this.didFirstSurvey = true;
         else
             this.didFirstSurvey = false;
