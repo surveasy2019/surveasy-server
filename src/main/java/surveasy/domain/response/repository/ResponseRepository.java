@@ -16,4 +16,6 @@ public interface ResponseRepository extends JpaRepository<Response, Long>, Pagin
 
     List<Response> findAllBySurveyIdOrderByIdDesc(Long surveyId);
 
+    void deleteAllByPanelId(Long panelId);
+
 }

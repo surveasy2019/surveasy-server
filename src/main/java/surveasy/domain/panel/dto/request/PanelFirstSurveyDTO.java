@@ -14,28 +14,13 @@ public class PanelFirstSurveyDTO {
     private TargetCity city;
 
     @NotNull
-    private String district;
-
-    @NotNull
     private TargetFamily family;
-
-    @NotNull
-    private TargetHouseType houseType;
 
     @NotNull
     private TargetJob job;
 
     @NotNull
-    private String university;
-
-    @NotNull
     private TargetMajor major;
-
-    @NotNull
-    private TargetMarriage marriage;
-
-    @NotNull
-    private TargetMilitary military;
 
     @NotNull
     private TargetPet pet;

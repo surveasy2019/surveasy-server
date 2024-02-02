@@ -123,34 +123,16 @@ public class Panel {
     TargetCity city;
 
     @Nullable
-    String district;
-
-    @Nullable
     @Enumerated(EnumType.STRING)
     TargetFamily family;
-
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    TargetHouseType houseType;
 
     @Nullable
     @Enumerated(EnumType.STRING)
     TargetJob job;
 
     @Nullable
-    String university;
-
-    @Nullable
     @Enumerated(EnumType.STRING)
     TargetMajor major;
-
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    TargetMarriage marriage;
-
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    TargetMilitary military;
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -163,11 +145,8 @@ public class Panel {
                  PanelStatus status, InflowPath inflowPath, String inflowPathEtc, String phoneNumber,
                  PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
                  Integer rewardCurrent, Integer rewardTotal, LocalDate signedUpAt, LocalDateTime lastParticipatedAt,
-                  Boolean english, TargetCity city, String district,
-                  TargetFamily family, TargetHouseType houseType, TargetJob job,
-                  String university, TargetMajor major,
-                  TargetMarriage marriage, TargetMilitary military, TargetPet pet,
-                  String role, AuthProvider authProvider) {
+                  Boolean english, TargetCity city, TargetFamily family, TargetJob job,
+                  TargetMajor major, TargetPet pet, String role, AuthProvider authProvider) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -193,14 +172,9 @@ public class Panel {
         /* First Survey */
         this.english = english;
         this.city = city;
-        this.district = district;
         this.family = family;
-        this.houseType = houseType;
         this.job = job;
-        this.university = university;
         this.major = major;
-        this.marriage = marriage;
-        this.military = military;
         this.pet = pet;
 
         this.role = role;
@@ -234,14 +208,9 @@ public class Panel {
 
                 .english(panelInfoFirstSurveyDAO.getEnglish())
                 .city(panelInfoFirstSurveyDAO.getCity())
-                .district(panelInfoFirstSurveyDAO.getDistrict())
                 .family(panelInfoFirstSurveyDAO.getFamily())
-                .houseType(panelInfoFirstSurveyDAO.getHouseType())
                 .job(panelInfoFirstSurveyDAO.getJob())
-                .university(panelInfoFirstSurveyDAO.getUniversity())
                 .major(panelInfoFirstSurveyDAO.getMajor())
-                .marriage(panelInfoFirstSurveyDAO.getMarriage())
-                .military(panelInfoFirstSurveyDAO.getMilitary())
                 .pet(panelInfoFirstSurveyDAO.getPet())
                 .role("ROLE_USER")
                 .build();
@@ -271,14 +240,9 @@ public class Panel {
 
                 .english(null)
                 .city(null)
-                .district(null)
                 .family(null)
-                .houseType(null)
                 .job(null)
-                .university(null)
                 .major(null)
-                .marriage(null)
-                .military(null)
                 .pet(null)
                 .role("ROLE_ANONYMOUS")
                 .authProvider(oAuth2UserInfo.getAuthProvider())

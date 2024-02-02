@@ -5,7 +5,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -117,14 +116,9 @@ public class PanelHelper {
                 panelInfoFirstSurveyDAO = PanelInfoFirstSurveyDAO.builder()
                         .english(documentSnapshotFS.getBoolean("EngSurvey"))
                         .city(documentSnapshotFS.getString("city"))
-                        .district(documentSnapshotFS.getString("district"))
                         .family((panelEmailSignInDTO.getPlatform().equals(PanelPlatform.ANDROID)) ? documentSnapshotFS.getString("family") : documentSnapshotFS.getString("housingType"))
-                        .houseType((panelEmailSignInDTO.getPlatform().equals(PanelPlatform.ANDROID)) ? documentSnapshotFS.getString("housingType") : "기타")
                         .job(documentSnapshotFS.getString("job"))
-                        .university(documentSnapshotFS.getString("university"))
                         .major(documentSnapshotFS.getString("major"))
-                        .marriage(documentSnapshotFS.getString("married"))
-                        .military(documentSnapshotFS.getString("military"))
                         .pet(documentSnapshotFS.getString("pet"))
                         .build();
             }
@@ -229,14 +223,9 @@ public class PanelHelper {
     public Long doFirstSurvey(Panel panel, PanelFirstSurveyDTO panelFirstSurveyDTO) {
         panel.setEnglish(panelFirstSurveyDTO.getEnglish());
         panel.setCity(panelFirstSurveyDTO.getCity());
-        panel.setDistrict(panelFirstSurveyDTO.getDistrict());
         panel.setFamily(panelFirstSurveyDTO.getFamily());
-        panel.setHouseType(panelFirstSurveyDTO.getHouseType());
         panel.setJob(panelFirstSurveyDTO.getJob());
-        panel.setUniversity(panelFirstSurveyDTO.getUniversity());
         panel.setMajor(panelFirstSurveyDTO.getMajor());
-        panel.setMarriage(panelFirstSurveyDTO.getMarriage());
-        panel.setMilitary(panelFirstSurveyDTO.getMilitary());
         panel.setPet(panelFirstSurveyDTO.getPet());
         panel.setLastParticipatedAt(LocalDateTime.now());
         panel.setRewardCurrent(200);

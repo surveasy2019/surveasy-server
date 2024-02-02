@@ -16,6 +16,7 @@ import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.domain.response.helper.ResponseHelper;
+import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.global.config.jwt.TokenProvider;
 import surveasy.global.config.user.PanelDetails;
 
@@ -31,6 +32,7 @@ public class PanelService {
     private final PanelMapper panelMapper;
 
     private final PanelRepository panelRepository;
+    private final ResponseRepository responseRepository;
 
     private final ResponseHelper responseHelper;
 
@@ -122,6 +124,7 @@ public class PanelService {
     public PanelAuthProviderResponse withdraw(PanelDetails panelDetails) {
         signOut(panelDetails);
         final Panel panel = panelDetails.getPanel();
+        responseRepository.deleteAllByPanelId(panel.getId());
         panelRepository.delete(panel);
         return panelMapper.toPanelAuthProviderResponse(panel.getAuthProvider());
     }
