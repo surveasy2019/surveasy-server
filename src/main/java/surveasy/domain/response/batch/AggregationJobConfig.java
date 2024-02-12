@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.vo.PanelBatchVo;
 import surveasy.domain.response.batch.reader.QuerydslNoOffsetPagingItemReader;
 import surveasy.domain.response.batch.reader.QuerydslPagingItemReader;
@@ -144,7 +145,7 @@ public class AggregationJobConfig {
                 options,
                 jpaQueryFactory -> jpaQueryFactory
                         .selectFrom(qPanel)
-                        .where(qPanel.rewardTemp.gt(0).and(qPanel.deletedAt.isNull()))
+                        .where(qPanel.rewardTemp.gt(0).and(qPanel.deletedAt.isNull()).and(qPanel.status.eq(PanelStatus.FS_DONE)))
         );
     }
 
