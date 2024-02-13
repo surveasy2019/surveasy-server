@@ -53,46 +53,46 @@ public class PanelInfoDAO {
     );
 
 
-    String name;
+    private String name;
 
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
-    String fcmToken;
+    private String fcmToken;
 
-    TargetGender gender;
+    private TargetGender gender;
 
-    LocalDate birth;
+    private LocalDate birth;
 
-    String accountOwner;
+    private String accountOwner;
 
-    AccountType accountType;
+    private AccountType accountType;
 
-    String accountNumber;
+    private String accountNumber;
 
-    PanelStatus status;
+    private PanelStatus status;
 
-    InflowPath inflowPath;
+    private InflowPath inflowPath;
 
-    String inflowPathEtc;
+    private String inflowPathEtc;
 
-    String phoneNumber;
+    private String phoneNumber;
 
-    PanelPlatform platform;
+    private PanelPlatform platform;
 
-    Boolean pushOn;
+    private Boolean pushOn;
 
-    Boolean marketingAgree;
+    private Boolean marketingAgree;
 
 
-    Integer rewardCurrent;
+    private Integer rewardCurrent;
 
-    Integer rewardTotal;
+    private Integer rewardTotal;
 
-    LocalDate signedUpAt;
+    private LocalDate signedUpAt;
 
-    LocalDateTime lastParticipatedAt;
+    private LocalDateTime lastParticipatedAt;
 
 
     @Builder

@@ -28,63 +28,63 @@ public class Panel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotNull
-    String name;
+    private String name;
 
     @NotNull
-    String email;
+    private String email;
 
     @NotNull
     @Size(max = 128)
     @JsonIgnore
-    String password;
+    private String password;
 
     @NotNull
-    String fcmToken;
+    private String fcmToken;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    TargetGender gender;
+    private TargetGender gender;
 
     @NotNull
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-    LocalDate birth;
+    private LocalDate birth;
 
     @NotNull
-    String accountOwner;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    AccountType accountType;
-
-    @NotNull
-    String accountNumber;
+    private String accountOwner;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    InflowPath inflowPath;
+    private AccountType accountType;
+
+    @NotNull
+    private String accountNumber;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private InflowPath inflowPath;
 
     @Nullable
-    String inflowPathEtc;
+    private String inflowPathEtc;
 
     @NotNull
-    String phoneNumber;
+    private String phoneNumber;
 
     @NotNull
-    PanelPlatform platform;
+    private PanelPlatform platform;
 
     @NotNull
-    Boolean pushOn;
+    private Boolean pushOn;
 
     @NotNull
-    Boolean marketingAgree;
+    private Boolean marketingAgree;
 
 
     // Default
     @NotNull
-    String role;
+    private String role;
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -92,51 +92,51 @@ public class Panel {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    PanelStatus status;
+    private PanelStatus status;
 
     @NotNull
-    Integer rewardCurrent;
+    private Integer rewardCurrent;
 
     @NotNull
-    Integer rewardTotal;
+    private Integer rewardTotal;
 
     @NotNull
-    Integer rewardTemp = 0;
+    private Integer rewardTemp = 0;
 
     @Nullable
-    LocalDate signedUpAt;
+    private LocalDate signedUpAt;
 
     @Nullable
-    LocalDateTime lastParticipatedAt;
+    private LocalDateTime lastParticipatedAt;
 
     @Nullable
     @Column(length = 10)
-    LocalDate deletedAt;
+    private LocalDate deletedAt;
 
 
     // First Survey
     @Nullable
-    Boolean english;
+    private Boolean english;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    TargetCity city;
+    private TargetCity city;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    TargetFamily family;
+    private TargetFamily family;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    TargetJob job;
+    private TargetJob job;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    TargetMajor major;
+    private TargetMajor major;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    TargetPet pet;
+    private TargetPet pet;
 
 
     @Builder

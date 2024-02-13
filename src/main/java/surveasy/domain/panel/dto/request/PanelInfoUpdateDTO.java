@@ -8,13 +8,13 @@ import surveasy.domain.panel.domain.option.AccountType;
 @NoArgsConstructor
 public class PanelInfoUpdateDTO {
 
-    String phoneNumber;
+    private String phoneNumber;
 
-    String accountOwner;
+    private String accountOwner;
 
-    AccountType accountType;
+    private AccountType accountType;
 
-    String accountNumber;
+    private String accountNumber;
 
-    Boolean english;
+    private Boolean english;
 }

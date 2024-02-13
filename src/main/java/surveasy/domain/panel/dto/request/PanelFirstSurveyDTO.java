@@ -1,5 +1,6 @@
 package surveasy.domain.panel.dto.request;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import surveasy.domain.panel.domain.target.*;
@@ -19,7 +20,7 @@ public class PanelFirstSurveyDTO {
     @NotNull
     private TargetJob job;
 
-    @NotNull
+    @Nullable
     private TargetMajor major;
 
     @NotNull

@@ -74,17 +74,17 @@ public class PanelInfoFirstSurveyDAO {
             "없음", TargetPet.NONE
     );
 
-    Boolean english;
+    private Boolean english;
 
-    TargetCity city;
+    private TargetCity city;
 
-    TargetFamily family;
+    private TargetFamily family;
 
-    TargetJob job;
+    private TargetJob job;
 
-    TargetMajor major;
+    private TargetMajor major;
 
-    TargetPet pet;
+    private TargetPet pet;
 
     @Builder
     public PanelInfoFirstSurveyDAO(Boolean english,
