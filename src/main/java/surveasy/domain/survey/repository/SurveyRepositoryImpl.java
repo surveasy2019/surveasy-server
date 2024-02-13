@@ -130,6 +130,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .where(
                         qResponse.isNull(),
                         qSurvey.status.eq(SurveyStatus.IN_PROGRESS),
+                        qSurvey.dueDate.after(LocalDateTime.now()),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
                                 .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
