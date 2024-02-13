@@ -225,7 +225,7 @@ public class PanelHelper {
         panel.setCity(panelFirstSurveyDTO.getCity());
         panel.setFamily(panelFirstSurveyDTO.getFamily());
         panel.setJob(panelFirstSurveyDTO.getJob());
-        panel.setMajor(panelFirstSurveyDTO.getMajor());
+        if(panelFirstSurveyDTO.getMajor() != null) panel.setMajor(panelFirstSurveyDTO.getMajor());
         panel.setPet(panelFirstSurveyDTO.getPet());
         panel.setLastParticipatedAt(LocalDateTime.now());
         panel.setRewardCurrent(200);
