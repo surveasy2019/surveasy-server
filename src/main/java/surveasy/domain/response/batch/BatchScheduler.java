@@ -21,7 +21,7 @@ public class BatchScheduler {
 
     // @Scheduled(cron = "0 10 4 1,11,21 * ?")
     //@Scheduled(cron = "0 10 4 * * ?")
-    @Scheduled(cron = "10 * * * * ?")
+    @Scheduled(cron = "0 0 23 * * ?")
     public void batchScheduler() throws Exception {
         fileService.deleteAllFiles();
         jobLauncher.run(aggregationJobConfig.aggregationJob(),

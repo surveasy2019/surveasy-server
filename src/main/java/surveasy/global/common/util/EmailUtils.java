@@ -19,7 +19,7 @@ public class EmailUtils {
 
     private final JavaMailSender javaMailSender;
     private final static LocalDate NOW = LocalDate.now();
-    private final static String FILE_LOCATION = "output\\";
+    private final static String FILE_LOCATION = "output" + File.separator;
     private final static String TITLE_CSV = "[" + NOW + "] 정산 CSV 파일";
 
     public void sendCsvMail() {
