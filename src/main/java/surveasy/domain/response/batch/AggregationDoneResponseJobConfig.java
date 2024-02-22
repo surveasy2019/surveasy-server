@@ -30,11 +30,8 @@ public class AggregationDoneResponseJobConfig {
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
-
     private static final QResponse qResponse = QResponse.response;
-
-    private static final LocalDate now = LocalDate.now();
-    private static final int SENT_CYCLE = (now.getDayOfMonth() == 1) ? 11 : 10;
+    private static final int SENT_CYCLE = (LocalDate.now().getDayOfMonth() == 1) ? 11 : 10;
     private static final int RESPONSE_CHUNK_SIZE = 5;
 
     @Bean
@@ -55,6 +52,7 @@ public class AggregationDoneResponseJobConfig {
 
     @Bean
     public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader2() {
+        LocalDate now = LocalDate.now();
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
@@ -71,6 +69,7 @@ public class AggregationDoneResponseJobConfig {
 
     @Bean
     public JdbcBatchItemWriter<Response> jdbcBatchResponseWriter2() {
+        LocalDate now = LocalDate.now();
         return new JdbcBatchItemWriterBuilder<Response>()
                 .dataSource(dataSource)
                 .sql("UPDATE response SET status = 'DONE', sent_at = \'" + now + "\' WHERE id = :id")

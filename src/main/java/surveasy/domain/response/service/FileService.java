@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class FileService {
 
-    private static final String FILE_LOCATION = "output\\";
+    private static final String FILE_LOCATION = "output" + File.separator;
     private static final String FOLDER = "output";
 
     public Resource loadFileAsResource(String fileName) {

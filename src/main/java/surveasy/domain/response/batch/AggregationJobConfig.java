@@ -41,6 +41,7 @@ import surveasy.domain.panel.domain.QPanel;
 import surveasy.global.common.util.EmailUtils;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -55,12 +56,10 @@ public class AggregationJobConfig {
 
     private static final QResponse qResponse = QResponse.response;
     private static final QPanel qPanel = QPanel.panel;
-
-    private static final LocalDate now = LocalDate.now();
-    private static final int SENT_CYCLE = (now.getDayOfMonth() == 1) ? 11 : 10;
+    private static final int SENT_CYCLE = (LocalDate.now().getDayOfMonth() == 1) ? 11 : 10;
     private static final int RESPONSE_CHUNK_SIZE = 5;
     private static final int PANEL_CHUNK_SIZE = 2;
-    private static final String CSV_FILE_PATH = "output/" + LocalDate.now() + ".csv";
+    private static final String CSV_FILE_PATH = "output" + File.separator + LocalDate.now() + ".csv";
 
     @Bean
     public Job aggregationJob() throws Exception {
@@ -82,6 +81,7 @@ public class AggregationJobConfig {
 
     @Bean
     public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader() {
+        LocalDate now = LocalDate.now();
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
