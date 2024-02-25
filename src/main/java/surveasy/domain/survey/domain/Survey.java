@@ -117,7 +117,7 @@ public class Survey {
 
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "response_id")
+    @JoinColumn(name = "id")
     @JsonIgnore
     private List<Response> responseList;
 
