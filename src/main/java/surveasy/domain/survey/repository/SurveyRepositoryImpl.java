@@ -1,6 +1,8 @@
 package surveasy.domain.survey.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -150,6 +152,10 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekBefore = now.minusDays(8);
 
+        NumberExpression<Integer> overDueOrder = new CaseBuilder()
+                .when(qSurvey.dueDate.after(now)).then(0)
+                .otherwise(1);
+
         surveyAppListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListVo.class,
                     qSurvey.id,
@@ -173,7 +179,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
                                 .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
-                .orderBy(qResponse.id.asc(), qSurvey.dueDate.asc())
+                .orderBy(overDueOrder.asc(), qResponse.id.asc(), qSurvey.dueDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
