@@ -36,7 +36,7 @@ public class ResponseRepositoryImpl implements ResponseRepositoryCustom {
                             qResponse.sentAt))
                     .from(qResponse)
                     .where(qResponse.panel.id.eq(panelId))
-                    .where(qResponse.status.eq(ResponseStatus.CREATED).or(qResponse.status.eq(ResponseStatus.WAITING)))
+                    .where(qResponse.status.eq(ResponseStatus.CREATED).or(qResponse.status.eq(ResponseStatus.WAITING)).or(qResponse.status.eq(ResponseStatus.UPDATED)))
                     .orderBy(qResponse.id.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -45,7 +45,7 @@ public class ResponseRepositoryImpl implements ResponseRepositoryCustom {
             count = jpaQueryFactory.select(qResponse.count())
                     .from(qResponse)
                     .where(qResponse.panel.id.eq(panelId))
-                    .where(qResponse.status.eq(ResponseStatus.CREATED).or(qResponse.status.eq(ResponseStatus.WAITING)));
+                    .where(qResponse.status.eq(ResponseStatus.CREATED).or(qResponse.status.eq(ResponseStatus.WAITING)).or(qResponse.status.eq(ResponseStatus.UPDATED)));
         }
 
         else {

@@ -27,6 +27,7 @@ import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.global.common.dto.PageInfo;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -133,11 +134,13 @@ public class ResponseHelper {
         }
 
         // 이미 종료된 설문의 응답을 수정하려는 경우
-        if(response.getSurvey().getStatus().equals(SurveyStatus.DONE)) {
+        if(response.getSurvey().getStatus().equals(SurveyStatus.DONE) || response.getSurvey().getDueDate().isBefore(LocalDateTime.now())) {
             throw SurveyExpired.EXCEPTION;
         }
 
         response.setImgUrl(responseUpdateRequestDTO.getImgUrl());
+        response.setStatus(ResponseStatus.UPDATED);
+        panelHelper.updatePanelInfoAfterResponse(panel, response.getReward());
         return responseRepository.save(response).getId();
     }
 
@@ -147,6 +150,10 @@ public class ResponseHelper {
                 .orElseThrow(() -> ResponseNotFound.EXCEPTION);
 
         if(responseUpdateRequestDTO.getStatus() != null) {
+            if((response.getStatus().equals(ResponseStatus.CREATED) || response.getStatus().equals(ResponseStatus.UPDATED)) && responseUpdateRequestDTO.getStatus().equals(ResponseStatus.WRONG)) {
+                Panel panel = response.getPanel();
+                panel.setRewardCurrent(panel.getRewardCurrent() - response.getReward());
+            }
             response.setStatus(responseUpdateRequestDTO.getStatus());
         }
 

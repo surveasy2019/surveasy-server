@@ -97,6 +97,12 @@ public class SurveyController {
         return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
     }
 
+    @Operation(summary = "어드민 설문 삭제")
+    @DeleteMapping("/admin/{surveyId}")
+    public void deleteAdminSurvey(@PathVariable Long surveyId) {
+        surveyService.deleteAdminSurvey(surveyId);
+    }
+
     @Operation(summary = "App 홈화면 설문 리스트")
     @GetMapping("/app/home")
     public SurveyAppHomeListResponse getSurveyAppHomeList(@AuthenticationPrincipal PanelDetails panelDetails) {

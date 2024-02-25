@@ -1,6 +1,9 @@
 package surveasy.domain.survey.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.response.domain.QResponse;
 import surveasy.domain.survey.domain.QSurvey;
 import surveasy.domain.survey.domain.SurveyStatus;
+import surveasy.domain.survey.domain.option.SurveyLanguage;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.vo.*;
@@ -106,6 +110,17 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .fetch();
     }
 
+    private BooleanBuilder getLanguageBuilder(Boolean english) {
+        QSurvey qSurvey = QSurvey.survey;
+        BooleanBuilder languageBuilder = new BooleanBuilder();
+        if(english)
+            languageBuilder.and(qSurvey.language.in(SurveyLanguage.KOR, SurveyLanguage.ENG));
+        else
+            languageBuilder.and(qSurvey.language.eq(SurveyLanguage.KOR));
+
+        return languageBuilder;
+    }
+
     @Override
     public List<SurveyAppHomeVo> findAllSurveyAppHomeVos(Panel panel) {
         QSurvey qSurvey = QSurvey.survey;
@@ -133,7 +148,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.dueDate.after(LocalDateTime.now()),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
+                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
+                        getLanguageBuilder(panel.getEnglish()))
                 .orderBy(qSurvey.dueDate.asc())
                 .limit(3)
                 .fetch();
@@ -149,6 +165,12 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekBefore = now.minusDays(8);
+
+        BooleanBuilder languageBuilder = getLanguageBuilder(panel.getEnglish());
+
+        NumberExpression<Integer> overDueOrder = new CaseBuilder()
+                .when(qSurvey.dueDate.after(now)).then(0)
+                .otherwise(1);
 
         surveyAppListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListVo.class,
@@ -172,8 +194,9 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())))
-                .orderBy(qResponse.id.asc(), qSurvey.dueDate.asc())
+                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
+                        languageBuilder)
+                .orderBy(overDueOrder.asc(), qResponse.id.asc(), qSurvey.dueDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -189,7 +212,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())));
+                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
+                        languageBuilder);
 
         return PageableExecutionUtils.getPage(surveyAppListVos, pageable, count::fetchOne);
     }
