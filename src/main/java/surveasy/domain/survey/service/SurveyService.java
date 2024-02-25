@@ -107,4 +107,8 @@ public class SurveyService {
         return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
     }
 
+    @Transactional
+    public void deleteAdminSurvey(Long surveyId) {
+        surveyHelper.deleteAdminSurvey(surveyId);
+    }
 }

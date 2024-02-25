@@ -211,4 +211,9 @@ public class SurveyHelper {
         return surveyRepository.findSurveyAppListDetailVo(surveyId)
                 .orElseThrow(() -> SurveyNotFound.EXCEPTION);
     }
+
+    public void deleteAdminSurvey(Long surveyId) {
+        Survey survey = surveyRepository.findById(surveyId).orElseThrow(() -> SurveyNotFound.EXCEPTION);
+        surveyRepository.delete(survey);
+    }
 }

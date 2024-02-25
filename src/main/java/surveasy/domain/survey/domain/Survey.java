@@ -116,8 +116,7 @@ public class Survey {
     private Long reviewId;
 
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @OneToMany(mappedBy = "survey", orphanRemoval = true)
     @JsonIgnore
     private List<Response> responseList;
 
