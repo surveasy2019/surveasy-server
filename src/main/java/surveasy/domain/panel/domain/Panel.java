@@ -238,7 +238,7 @@ public class Panel {
                 .rewardTotal(0)
                 .signedUpAt(LocalDate.now())
 
-                .english(null)
+                .english(true)
                 .city(null)
                 .family(null)
                 .job(null)
