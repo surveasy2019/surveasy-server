@@ -26,9 +26,11 @@ public class SurveyAppListDetailVo {
 
     private final String link;
 
+    private final String description;
+
     @Builder
     public SurveyAppListDetailVo(Long id, String title, Integer reward, SurveyHeadcount headCount, SurveySpendTime spendTime,
-                                 Integer responseCount, String targetInput, String noticeToPanel, String link) {
+                                 Integer responseCount, String targetInput, String noticeToPanel, String link, String description) {
         this.id = id;
         this.title = title;
         this.reward = reward;
@@ -38,5 +40,6 @@ public class SurveyAppListDetailVo {
         this.targetInput = targetInput;
         this.noticeToPanel = noticeToPanel;
         this.link = link;
+        this.description = description;
     }
 }

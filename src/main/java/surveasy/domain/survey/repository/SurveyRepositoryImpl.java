@@ -232,7 +232,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.responseCount,
                         qSurvey.targetInput,
                         qSurvey.noticeToPanel,
-                        qSurvey.link))
+                        qSurvey.link,
+                        qSurvey.description))
                 .from(qSurvey)
                 .where(qSurvey.id.eq(surveyId))
                 .fetchFirst());

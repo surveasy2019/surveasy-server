@@ -68,6 +68,9 @@ public class Survey {
     @NotNull
     private String link;
 
+    @NotNull
+    private String description;
+
     @Nullable
     private String notice;
 
@@ -125,7 +128,7 @@ public class Survey {
                   TargetGender targetGender, List<TargetAge> targetAgeList,
                   SurveyLanguage language, SurveyIdentity identity,
                   String title, String targetInput, String institute,
-                  String link, String notice, String accountName,
+                  String link, String description, String notice, String accountName,
                   Integer price, Integer priceDiscounted, Integer pointAdd,
                   String email, String username) {
         this.headCount = headCount;
@@ -140,6 +143,7 @@ public class Survey {
         this.targetInput = targetInput;
         this.institute = institute;
         this.link = link;
+        this.description = description;
         this.notice = notice;
         this.accountName = accountName;
         this.price = price;
@@ -168,6 +172,7 @@ public class Survey {
                 .targetInput(surveyServiceDTO.getTargetInput())
                 .institute(surveyServiceDTO.getInstitute())
                 .link(surveyServiceDTO.getLink())
+                .description(surveyServiceDTO.getDescription())
                 .notice(surveyServiceDTO.getNotice())
                 .accountName(surveyServiceDTO.getAccountName())
                 .price(surveyServiceDTO.getPrice())

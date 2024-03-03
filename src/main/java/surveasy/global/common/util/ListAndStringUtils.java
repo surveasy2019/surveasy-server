@@ -28,7 +28,7 @@ public class ListAndStringUtils {
         List<TargetAge> convertedList = new ArrayList<>();
 
         for(String strTargetAge : convertedArray) {
-            convertedList.add(TargetAge.valueOf(strTargetAge));
+            if(!strTargetAge.equals("")) convertedList.add(TargetAge.valueOf(strTargetAge));
         }
 
         return convertedList;
