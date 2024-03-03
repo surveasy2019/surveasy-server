@@ -58,6 +58,9 @@ public class SurveyServiceDTO {
     @NotNull
     private String link;
 
+    @NotNull
+    private String description;
+
     @Nullable
     private String notice;
 
