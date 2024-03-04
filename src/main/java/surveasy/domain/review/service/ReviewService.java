@@ -1,10 +1,12 @@
 package surveasy.domain.review.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.review.dto.request.ReviewCreateRequestDTO;
 import surveasy.domain.review.dto.request.ReviewUpdateRequestDTO;
+import surveasy.domain.review.dto.response.AdminReviewListResponse;
 import surveasy.domain.review.dto.response.HomeReviewVoListResponse;
 import surveasy.domain.review.dto.response.ReviewIdResponse;
 import surveasy.domain.review.helper.ReviewHelper;
@@ -34,5 +36,9 @@ public class ReviewService {
     @Transactional
     public ReviewIdResponse updateReview(Long reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO) {
         return reviewMapper.toReviewIdResponse(reviewHelper.updateReview(reviewId, reviewUpdateRequestDTO));
+    }
+
+    public AdminReviewListResponse getAdminReviewList(Pageable pageable) {
+        return reviewMapper.toAdminReviewListResponse(reviewHelper.getAdminReviewList(pageable));
     }
 }

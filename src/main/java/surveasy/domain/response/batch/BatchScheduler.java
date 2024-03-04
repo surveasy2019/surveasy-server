@@ -29,4 +29,14 @@ public class BatchScheduler {
         );
         emailUtils.sendCsvMail();
     }
+
+    public void batchSchedulerTest() throws Exception {
+        fileService.deleteAllFiles();
+        jobLauncher.run(aggregationJobConfig.aggregationJob(),
+                new JobParametersBuilder()
+                        .addLong("time", new Date().getTime())
+                        .toJobParameters()
+        );
+        emailUtils.sendCsvMail();
+    }
 }

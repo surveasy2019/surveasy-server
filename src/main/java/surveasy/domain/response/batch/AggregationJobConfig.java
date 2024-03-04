@@ -57,9 +57,8 @@ public class AggregationJobConfig {
     private static final QResponse qResponse = QResponse.response;
     private static final QPanel qPanel = QPanel.panel;
     private static final int SENT_CYCLE = (LocalDate.now().getDayOfMonth() == 1) ? 11 : 10;
-    private static final int RESPONSE_CHUNK_SIZE = 5;
-    private static final int PANEL_CHUNK_SIZE = 2;
-    private static final String CSV_FILE_PATH = "output" + File.separator + LocalDate.now() + ".csv";
+    private static final int RESPONSE_CHUNK_SIZE = 100;
+    private static final int PANEL_CHUNK_SIZE = 100;
 
     @Bean
     public Job aggregationJob() throws Exception {
@@ -173,7 +172,7 @@ public class AggregationJobConfig {
         FlatFileItemWriter<PanelBatchVo> writer = new FlatFileItemWriterBuilder<PanelBatchVo>()
                 .name("csvFileWriter")
                 .encoding("UTF-8")
-                .resource(new FileSystemResource(CSV_FILE_PATH))
+                .resource(new FileSystemResource("output" + File.separator + LocalDate.now() + ".csv"))
                 .lineAggregator(lineAggregator)
                 .headerCallback(writer1 -> writer1.write("입금은행,입금계좌번호,입금액,예상예금주,입금통장표시"))
                 .append(true)

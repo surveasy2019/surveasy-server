@@ -1,6 +1,8 @@
 package surveasy.domain.review.helper;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import surveasy.domain.review.domain.Review;
 import surveasy.domain.review.dto.request.ReviewCreateRequestDTO;
@@ -75,5 +77,9 @@ public class ReviewHelper {
         }
 
         return review.getId();
+    }
+
+    public Page<ReviewVo> getAdminReviewList(Pageable pageable) {
+        return reviewRepository.findAllByOrderById(pageable);
     }
 }
