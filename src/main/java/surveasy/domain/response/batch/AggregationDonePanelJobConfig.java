@@ -29,7 +29,7 @@ public class AggregationDonePanelJobConfig {
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
     private static final QPanel qPanel = QPanel.panel;
-    private static final int PANEL_CHUNK_SIZE = 2;
+    private static final int PANEL_CHUNK_SIZE = 100;
 
     @Bean
     public Job aggregationDonePanelJob() {

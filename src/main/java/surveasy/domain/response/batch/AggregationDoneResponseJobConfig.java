@@ -32,7 +32,7 @@ public class AggregationDoneResponseJobConfig {
     private final DataSource dataSource;
     private static final QResponse qResponse = QResponse.response;
     private static final int SENT_CYCLE = (LocalDate.now().getDayOfMonth() == 1) ? 11 : 10;
-    private static final int RESPONSE_CHUNK_SIZE = 5;
+    private static final int RESPONSE_CHUNK_SIZE = 100;
 
     @Bean
     public Job aggregationDoneResponseJob() {

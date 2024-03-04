@@ -5,10 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.review.dto.request.ReviewCreateRequestDTO;
 import surveasy.domain.review.dto.request.ReviewUpdateRequestDTO;
+import surveasy.domain.review.dto.response.AdminReviewListResponse;
 import surveasy.domain.review.dto.response.HomeReviewVoListResponse;
 import surveasy.domain.review.dto.response.ReviewIdResponse;
 import surveasy.domain.review.service.ReviewService;
@@ -41,6 +44,12 @@ public class ReviewController {
     @GetMapping("/{surveyId}")
     public ResponseEntity<ReviewVo> getReviewVoBySurveyId(@PathVariable Long surveyId) {
         return ResponseEntity.ok(reviewService.getReviewVoBySurveyId(surveyId));
+    }
+
+    @Operation(summary = "Admin 리뷰 목록")
+    @GetMapping("/admin")
+    public AdminReviewListResponse getReview(@PageableDefault(size = 10) Pageable pageable) {
+        return reviewService.getAdminReviewList(pageable);
     }
 
     @Operation(summary = "Admin 리뷰 수정")
