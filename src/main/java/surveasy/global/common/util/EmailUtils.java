@@ -18,9 +18,6 @@ import java.time.LocalDate;
 public class EmailUtils {
 
     private final JavaMailSender javaMailSender;
-    private final static LocalDate NOW = LocalDate.now();
-    private final static String FILE_LOCATION = "output" + File.separator;
-    private final static String TITLE_CSV = "[" + NOW + "] 정산 CSV 파일";
 
     public void sendCsvMail() {
         javaMailSender.send(createCsvMail());
@@ -28,14 +25,14 @@ public class EmailUtils {
 
     private MimeMessage createCsvMail() {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        FileSystemResource fileSystemResource = new FileSystemResource(new File(FILE_LOCATION + NOW + ".csv"));
+        FileSystemResource fileSystemResource = new FileSystemResource(new File("output" + File.separator + LocalDate.now() + ".csv"));
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             mimeMessageHelper.setTo("official@gosurveasy.com");
-            mimeMessageHelper.setSubject(TITLE_CSV);
+            mimeMessageHelper.setSubject("[" + LocalDate.now() + "] 정산 CSV 파일");
             mimeMessageHelper.setText("정산 완료 !");
-            mimeMessageHelper.addAttachment(MimeUtility.encodeText(String.valueOf(NOW), "UTF-8", "B"), fileSystemResource);
+            mimeMessageHelper.addAttachment(MimeUtility.encodeText(String.valueOf(LocalDate.now()), "UTF-8", "B"), fileSystemResource);
             return mimeMessage;
         } catch (MessagingException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

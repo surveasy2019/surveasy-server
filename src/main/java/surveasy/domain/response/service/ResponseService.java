@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.response.batch.BatchScheduler;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
 import surveasy.domain.response.dto.response.AdminSurveyResponseListResponse;
@@ -27,6 +28,8 @@ import java.nio.file.Path;
 public class ResponseService {
     private final ResponseHelper responseHelper;
     private final ResponseMapper responseMapper;
+
+    private final BatchScheduler batchScheduler;
 
     @Transactional
     public ResponseIdResponse createResponse(PanelDetails panelDetails, Long surveyId, ResponseCreateRequestDTO responseCreateRequestDTO) {
@@ -58,5 +61,9 @@ public class ResponseService {
 
     public void doneAggregation() {
         responseHelper.doneAggregation();
+    }
+
+    public void doAggregation() throws Exception {
+        batchScheduler.batchSchedulerTest();
     }
 }
