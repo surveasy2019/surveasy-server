@@ -3,10 +3,12 @@ package surveasy.domain.panel.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.panel.domain.option.AuthProvider;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.exception.PanelNotFound;
@@ -52,6 +54,10 @@ public class PanelService {
         return panelHelper.createOAuth2Response(oAuth2UserInfo);
     }
 
+    public OAuth2AppleResponse oauth2Apple(AuthIdDTO authIdDTO) {
+        return panelHelper.createOauth2AppleResponse(authIdDTO);
+    }
+
     @Transactional
     public PanelTokenResponse signUp(PanelDetails panelDetails, PanelSignUpDTO panelSignUpDTO) {
         Panel panel = panelDetails.getPanel();
@@ -63,6 +69,11 @@ public class PanelService {
         final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
 
         return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public PanelTokenResponse signUpApple(PanelAppleSignUpDTO panelAppleSignUpDTO) {
+        return panelHelper.signUpApple(panelAppleSignUpDTO);
     }
 
     @Transactional

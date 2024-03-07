@@ -17,6 +17,8 @@ public interface PanelRepository extends JpaRepository<Panel, Long>, PanelReposi
 
     Optional<Panel> findByEmailAndAuthProvider(String email, AuthProvider authProvider);
 
+    Optional<Panel> findByAuthProviderAndAuthId(AuthProvider authProvider, String authId);
+
     Page<Panel> findAll(Pageable pageable);
 
 

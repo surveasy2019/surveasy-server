@@ -7,7 +7,7 @@ public enum AuthProvider {
 
     EMAIL("이메일"),
     KAKAO("카카오"),
-    APPPLE("애플");
+    APPLE("애플");
 
     private final String value;
 
