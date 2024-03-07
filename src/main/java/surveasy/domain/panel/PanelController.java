@@ -16,6 +16,7 @@ import surveasy.domain.panel.service.PanelService;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.global.config.user.PanelDetails;
+
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -39,11 +40,23 @@ public class PanelController {
         return panelService.oauth2(oAuth2UserInfo);
     }
 
+    @PostMapping("/oauth2/apple")
+    @Operation(summary = "App 애플 소셜 로그인 후 회원가입 여부 판단")
+    public OAuth2AppleResponse oauth2Apple(@RequestBody @Valid AuthIdDTO oauthIdDTO) {
+        return panelService.oauth2Apple(oauthIdDTO);
+    }
+
     @PostMapping("/signup")
     @Operation(summary = "App 신규 패널 추가 정보 입력")
     public PanelTokenResponse signUp(@AuthenticationPrincipal PanelDetails panelDetails,
                                   @RequestBody @Valid PanelSignUpDTO panelSignUpDTO) {
         return panelService.signUp(panelDetails, panelSignUpDTO);
+    }
+
+    @PostMapping("/signup/apple")
+    @Operation(summary = "App 애플 로그인 신규 패널 회원가입")
+    public PanelTokenResponse signUpApple(@RequestBody @Valid PanelAppleSignUpDTO panelAppleSignUpDTO) {
+        return panelService.signUpApple(panelAppleSignUpDTO);
     }
 
     @PostMapping("/first-survey")

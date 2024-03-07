@@ -12,6 +12,7 @@ import org.hibernate.annotations.Where;
 import surveasy.domain.panel.domain.option.*;
 import surveasy.domain.panel.domain.target.*;
 import surveasy.domain.panel.dto.request.OAuth2UserInfo;
+import surveasy.domain.panel.dto.request.PanelAppleSignUpDTO;
 import surveasy.domain.panel.dto.request.PanelInfoDAO;
 import surveasy.domain.panel.dto.request.PanelInfoFirstSurveyDAO;
 import surveasy.domain.survey.domain.target.TargetGender;
@@ -90,6 +91,10 @@ public class Panel {
     @Enumerated(EnumType.STRING)
     private AuthProvider authProvider;
 
+    @Nullable
+    @Size(max = 50)
+    private String authId;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private PanelStatus status;
@@ -146,7 +151,7 @@ public class Panel {
                  PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
                  Integer rewardCurrent, Integer rewardTotal, LocalDate signedUpAt, LocalDateTime lastParticipatedAt,
                   Boolean english, TargetCity city, TargetFamily family, TargetJob job,
-                  TargetMajor major, TargetPet pet, String role, AuthProvider authProvider) {
+                  TargetMajor major, TargetPet pet, String role, AuthProvider authProvider, String authId) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -179,6 +184,7 @@ public class Panel {
 
         this.role = role;
         this.authProvider = authProvider;
+        if(authProvider.equals(AuthProvider.APPLE)) this.authId = authId;
     }
 
 
@@ -246,6 +252,42 @@ public class Panel {
                 .pet(null)
                 .role("ROLE_ANONYMOUS")
                 .authProvider(oAuth2UserInfo.getAuthProvider())
+                .build();
+
+    }
+
+    public static Panel ofOAuth2Apple(PanelAppleSignUpDTO panelAppleSignUpDTO) {
+        return Panel.builder()
+                .name(panelAppleSignUpDTO.getName())
+                .email(panelAppleSignUpDTO.getEmail())
+                .phoneNumber(panelAppleSignUpDTO.getPhoneNumber())
+                .gender(panelAppleSignUpDTO.getGender())
+                .birth(panelAppleSignUpDTO.getBirth())
+                .authProvider(AuthProvider.APPLE)
+                .authId(panelAppleSignUpDTO.getAuthId())
+                .platform(PanelPlatform.IOS)
+                .accountOwner(panelAppleSignUpDTO.getAccountOwner())
+                .accountType(panelAppleSignUpDTO.getAccountType())
+                .accountNumber(panelAppleSignUpDTO.getAccountNumber())
+                .inflowPath(panelAppleSignUpDTO.getInflowPath())
+                .inflowPathEtc(panelAppleSignUpDTO.getInflowPathEtc())
+                .pushOn(panelAppleSignUpDTO.getPushOn())
+                .marketingAgree(panelAppleSignUpDTO.getMarketingAgree())
+                .password("")
+                .fcmToken("")
+                .status(PanelStatus.FS_YET)
+                .role("ROLE_USER")
+
+                .rewardCurrent(0)
+                .rewardTotal(0)
+                .signedUpAt(LocalDate.now())
+
+                .english(true)
+                .city(null)
+                .family(null)
+                .job(null)
+                .major(null)
+                .pet(null)
                 .build();
 
     }

@@ -18,12 +18,11 @@ import surveasy.domain.panel.domain.option.AuthProvider;
 import surveasy.domain.panel.domain.option.PanelPlatform;
 import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
+import surveasy.domain.panel.dto.response.OAuth2AppleResponse;
 import surveasy.domain.panel.dto.response.OAuth2Response;
 import surveasy.domain.panel.dto.response.PanelAdminListResponse;
-import surveasy.domain.panel.exception.MismatchPassword;
-import surveasy.domain.panel.exception.PanelNotFound;
-import surveasy.domain.panel.exception.PanelNotFoundFB;
-import surveasy.domain.panel.exception.RefreshTokenNotFound;
+import surveasy.domain.panel.dto.response.PanelTokenResponse;
+import surveasy.domain.panel.exception.*;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.domain.panel.util.RedisUtil;
@@ -159,6 +158,11 @@ public class PanelHelper {
         return panelRepository.save(newPanel);
     }
 
+    private Panel addNewPanelApple(PanelAppleSignUpDTO panelAppleSignUpDTO) {
+        Panel newPanel = panelMapper.toEntityNewApple(panelAppleSignUpDTO);
+        return panelRepository.save(newPanel);
+    }
+
 
     public OAuth2Response createOAuth2Response(OAuth2UserInfo oAuth2UserInfo) {
         Panel panel = findPanelByEmailAndAuthProvider(oAuth2UserInfo.getEmail(), oAuth2UserInfo.getAuthProvider());
@@ -192,6 +196,21 @@ public class PanelHelper {
     }
 
 
+    public OAuth2AppleResponse createOauth2AppleResponse(AuthIdDTO authIdDTO) {
+        final Panel panel = panelRepository.findByAuthProviderAndAuthId(AuthProvider.APPLE, authIdDTO.getAuthId()).orElse(null);
+        boolean isSignedUp = (panel != null);
+
+        if(isSignedUp) {
+            final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
+            final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+            final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+            return panelMapper.toOAuth2AppleResponse(true, PanelTokenResponse.of(accessToken, refreshToken));
+        }
+
+        return OAuth2AppleResponse.of(false, null);
+    }
+
+
     /* [App] 패널 추가 정보 입력 */
     public Panel signUp(Panel panel, PanelSignUpDTO panelSignUpDTO) {
         panel.setPlatform(panelSignUpDTO.getPlatform());
@@ -207,6 +226,18 @@ public class PanelHelper {
         panel.setRole("ROLE_USER");
 
         return panelRepository.save(panel);
+    }
+
+
+    public PanelTokenResponse signUpApple(PanelAppleSignUpDTO panelAppleSignUpDTO) {
+        final Panel checkPanel = panelRepository.findByAuthProviderAndAuthId(AuthProvider.APPLE, panelAppleSignUpDTO.getAuthId()).orElse(null);
+        if(checkPanel != null) throw PanelDuplicateData.EXCEPTION;
+
+        Panel panel = addNewPanelApple(panelAppleSignUpDTO);
+        final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
+        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        return PanelTokenResponse.of(accessToken, refreshToken);
     }
 
 
