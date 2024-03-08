@@ -60,6 +60,9 @@ dependencies {
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.0'
+
+	// logback
+	implementation 'ca.pjer:logback-awslogs-appender:1.6.0'
 }
 
 tasks.named('test') {
