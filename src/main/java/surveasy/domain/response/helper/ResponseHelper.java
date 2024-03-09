@@ -149,10 +149,15 @@ public class ResponseHelper {
         Response response = responseRepository.findById(responseId)
                 .orElseThrow(() -> ResponseNotFound.EXCEPTION);
 
-        if(responseUpdateRequestDTO.getStatus() != null) {
+        if(responseUpdateRequestDTO.getStatus() != null && response.getSentAt() == null) {
             if((response.getStatus().equals(ResponseStatus.CREATED) || response.getStatus().equals(ResponseStatus.UPDATED)) && responseUpdateRequestDTO.getStatus().equals(ResponseStatus.WRONG)) {
                 Panel panel = response.getPanel();
                 panel.setRewardCurrent(panel.getRewardCurrent() - response.getReward());
+            }
+
+            else if(response.getStatus().equals(ResponseStatus.WRONG) && responseUpdateRequestDTO.getStatus().equals(ResponseStatus.CREATED)) {
+                Panel panel = response.getPanel();
+                panel.setRewardCurrent(panel.getRewardCurrent() + response.getReward());
             }
             response.setStatus(responseUpdateRequestDTO.getStatus());
         }
