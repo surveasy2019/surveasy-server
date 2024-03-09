@@ -67,7 +67,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .requestMatchers(SwaggerPatterns).permitAll()
+                .requestMatchers("/actuator/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/**").permitAll()
+
 //                .requestMatchers("panel/auth").permitAll()
 //                .requestMatchers("/survey/home", "/survey/list").permitAll()
 //                .requestMatchers("/survey/service/**").hasAuthority("ROLE_USER")
