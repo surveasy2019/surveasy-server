@@ -191,6 +191,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qResponse.panel.eq(panel),
                         qResponse.createdAt.between(oneWeekBefore, now))
                 .where(
+                        qSurvey.sid.gt(0),
                         qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
