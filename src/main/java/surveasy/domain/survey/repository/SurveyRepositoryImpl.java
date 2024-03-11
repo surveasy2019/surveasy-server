@@ -172,6 +172,10 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .when(qSurvey.dueDate.after(now)).then(0)
                 .otherwise(1);
 
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(qSurvey.status.eq(SurveyStatus.IN_PROGRESS)).then(0)
+                .otherwise(1);
+
         surveyAppListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListVo.class,
                     qSurvey.id,
@@ -197,7 +201,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.targetAgeListStr.eq("ALL")
                                 .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
                         languageBuilder)
-                .orderBy(overDueOrder.asc(), qResponse.id.asc(), qSurvey.dueDate.asc())
+                .orderBy(statusOrder.asc(), overDueOrder.asc(), qResponse.id.asc(), qSurvey.dueDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -210,6 +214,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qResponse.panel.eq(panel),
                         qResponse.createdAt.between(oneWeekBefore, now))
                 .where(
+                        qSurvey.sid.gt(0),
                         qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
                         qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
                         qSurvey.targetAgeListStr.eq("ALL")
