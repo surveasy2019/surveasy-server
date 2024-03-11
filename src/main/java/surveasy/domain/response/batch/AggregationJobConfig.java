@@ -53,10 +53,6 @@ public class AggregationJobConfig {
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
-
-    private static final QResponse qResponse = QResponse.response;
-    private static final QPanel qPanel = QPanel.panel;
-    private static final int SENT_CYCLE = (LocalDate.now().getDayOfMonth() == 1) ? 11 : 10;
     private static final int RESPONSE_CHUNK_SIZE = 100;
     private static final int PANEL_CHUNK_SIZE = 100;
 
@@ -80,8 +76,12 @@ public class AggregationJobConfig {
 
     @Bean
     public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader() {
+        QResponse qResponse = QResponse.response;
         LocalDate now = LocalDate.now();
+        int SENT_CYCLE = (now.getDayOfMonth() == 1) ? 11 : 10;
+
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
+
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
                 RESPONSE_CHUNK_SIZE,
@@ -137,7 +137,9 @@ public class AggregationJobConfig {
 
     @Bean
     public QuerydslNoOffsetPagingItemReader<Panel> querydslNoOffsetPagingPanelReader() {
+        QPanel qPanel = QPanel.panel;
         QuerydslNoOffsetNumberOptions<Panel, Long> options = new QuerydslNoOffsetNumberOptions<>(qPanel.id, Expression.ASC);
+
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
                 PANEL_CHUNK_SIZE,
