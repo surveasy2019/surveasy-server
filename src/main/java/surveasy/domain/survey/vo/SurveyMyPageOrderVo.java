@@ -46,11 +46,13 @@ public class SurveyMyPageOrderVo {
 
     private String dueDate;
 
+    private Long reviewId;
+
     @Builder
     public SurveyMyPageOrderVo(Long id, Long sid, String title, SurveyHeadcount headCount, Integer responseCount,
                                SurveySpendTime spendTime, String targetAgeListStr, TargetGender targetGender, SurveyStatus status,
                                Integer price, SurveyIdentity identity, String link,
-                               LocalDateTime uploadedAt, LocalDateTime dueDate) {
+                               LocalDateTime uploadedAt, LocalDateTime dueDate, Long reviewId) {
         this.id = id;
         this.sid = sid;
         this.title = title;
@@ -66,5 +68,6 @@ public class SurveyMyPageOrderVo {
         this.link = link;
         this.uploadedAt = DateAndStringUtils.localDateTimeToString(uploadedAt);
         this.dueDate = DateAndStringUtils.localDateTimeToString(dueDate);
+        this.reviewId = reviewId;
     }
 }
