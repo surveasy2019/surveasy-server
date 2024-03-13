@@ -86,9 +86,11 @@ public class PanelInfoDAO {
     private Boolean marketingAgree;
 
 
-    private Integer rewardCurrent;
+    private Integer rewardCurrent = 0;
 
-    private Integer rewardTotal;
+    private Integer rewardTemp = 0;
+
+    private Integer rewardTotal = 0;
 
     private LocalDate signedUpAt;
 
@@ -114,8 +116,18 @@ public class PanelInfoDAO {
         this.accountType = ACCOUNT_TYPE_MAP.get(accountType);
         this.accountNumber = accountNumber;
 
-        if(didFirstSurvey) this.status = PanelStatus.FS_DONE;
-        else this.status = PanelStatus.FS_YET;
+        if(!didFirstSurvey) {
+            this.status = PanelStatus.FS_YET;
+        } else if(rewardCurrent == 200 && rewardTotal == 200) {
+            this.status = PanelStatus.FS_ONLY_DONE;
+            this.rewardCurrent = 200;
+            this.rewardTemp = 200;
+        } else {
+            this.status = PanelStatus.FS_DONE;
+            this.rewardCurrent = rewardCurrent;
+            this.rewardTotal = rewardTotal;
+        }
+
 
         if(INFLOW_PATH_MAP.get(inflowPath) != null) this.inflowPath = INFLOW_PATH_MAP.get(inflowPath);
         else if(INFLOW_PATH_IDX_MAP.get(inflowPath) != null) this.inflowPath = INFLOW_PATH_IDX_MAP.get(inflowPath);
@@ -128,8 +140,6 @@ public class PanelInfoDAO {
         this.platform = platform;
         this.pushOn = pushOn;
         this.marketingAgree = marketingAgree;
-        this.rewardCurrent = rewardCurrent;
-        this.rewardTotal = rewardTotal;
         this.lastParticipatedAt = lastParticipatedAt;
         this.signedUpAt = signedUpAt;
     }
