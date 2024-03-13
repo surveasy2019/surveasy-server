@@ -103,7 +103,8 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         qSurvey.identity,
                         qSurvey.link,
                         qSurvey.uploadedAt,
-                        qSurvey.dueDate))
+                        qSurvey.dueDate,
+                        qSurvey.reviewId))
                 .from(qSurvey)
                 .where(qSurvey.email.eq(email))
                 .orderBy(qSurvey.id.desc())
