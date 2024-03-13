@@ -149,7 +149,7 @@ public class Panel {
                  LocalDate birth, String accountOwner, AccountType accountType, String accountNumber,
                  PanelStatus status, InflowPath inflowPath, String inflowPathEtc, String phoneNumber,
                  PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
-                 Integer rewardCurrent, Integer rewardTotal, LocalDate signedUpAt, LocalDateTime lastParticipatedAt,
+                 Integer rewardCurrent, Integer rewardTotal, Integer rewardTemp, LocalDate signedUpAt, LocalDateTime lastParticipatedAt,
                   Boolean english, TargetCity city, TargetFamily family, TargetJob job,
                   TargetMajor major, TargetPet pet, String role, AuthProvider authProvider, String authId) {
         this.name = name;
@@ -171,6 +171,7 @@ public class Panel {
 
         this.rewardCurrent = rewardCurrent;
         this.rewardTotal = rewardTotal;
+        this.rewardTemp = rewardTemp;
         this.signedUpAt = signedUpAt;
         this.lastParticipatedAt = lastParticipatedAt;
 
@@ -184,7 +185,7 @@ public class Panel {
 
         this.role = role;
         this.authProvider = authProvider;
-        if(authProvider.equals(AuthProvider.APPLE)) this.authId = authId;
+        if(authProvider != null && authProvider.equals(AuthProvider.APPLE)) this.authId = authId;
     }
 
 
@@ -209,6 +210,7 @@ public class Panel {
 
                 .rewardCurrent(panelInfoDAO.getRewardCurrent())
                 .rewardTotal(panelInfoDAO.getRewardTotal())
+                .rewardTemp(panelInfoDAO.getRewardTemp())
                 .signedUpAt(panelInfoDAO.getSignedUpAt())
                 .lastParticipatedAt(panelInfoDAO.getLastParticipatedAt())
 
@@ -242,6 +244,7 @@ public class Panel {
 
                 .rewardCurrent(0)
                 .rewardTotal(0)
+                .rewardTemp(0)
                 .signedUpAt(LocalDate.now())
 
                 .english(true)
@@ -280,6 +283,7 @@ public class Panel {
 
                 .rewardCurrent(0)
                 .rewardTotal(0)
+                .rewardTemp(0)
                 .signedUpAt(LocalDate.now())
 
                 .english(true)
