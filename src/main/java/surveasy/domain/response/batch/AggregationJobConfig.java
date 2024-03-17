@@ -2,19 +2,18 @@ package surveasy.domain.response.batch;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -24,27 +23,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
+import surveasy.domain.file.service.FileService;
+import surveasy.domain.file.vo.S3SavedFileVo;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.vo.PanelBatchVo;
 import surveasy.domain.response.batch.reader.QuerydslNoOffsetPagingItemReader;
-import surveasy.domain.response.batch.reader.QuerydslPagingItemReader;
 import surveasy.domain.response.batch.reader.expression.Expression;
 import surveasy.domain.response.batch.reader.options.QuerydslNoOffsetNumberOptions;
-import surveasy.domain.response.batch.reader.options.QuerydslNoOffsetOptions;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.response.domain.ResponseStatus;
-import surveasy.domain.response.service.FileService;
 import surveasy.domain.response.vo.ResponseBatchVo;
 import surveasy.domain.response.domain.QResponse;
 import surveasy.domain.panel.domain.QPanel;
 import surveasy.global.common.util.EmailUtils;
+import surveasy.global.common.util.FileUtils;
+import surveasy.global.common.util.S3Utils;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class AggregationJobConfig {
@@ -53,12 +55,17 @@ public class AggregationJobConfig {
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
-    private static final int RESPONSE_CHUNK_SIZE = 100;
-    private static final int PANEL_CHUNK_SIZE = 100;
+    private final FileUtils fileUtils;
+    private final EmailUtils emailUtils;
+    private final S3Utils s3Utils;
+    private final FileService fileService;
+    private static final int RESPONSE_CHUNK_SIZE = 2;
+    private static final int PANEL_CHUNK_SIZE = 2;
 
     @Bean
     public Job aggregationJob() throws Exception {
         return new JobBuilder("aggregationJob", jobRepository)
+                .listener(jobExecutionListener())
                 .start(step1())
                 .next(step2())
                 .build();
@@ -182,6 +189,28 @@ public class AggregationJobConfig {
 
         writer.afterPropertiesSet();
         return writer;
+    }
+
+    @JobScope
+    @Bean
+    public JobExecutionListener jobExecutionListener() {
+        return new JobExecutionListener() {
+            @Override
+            public void beforeJob(JobExecution jobExecution) {
+                fileUtils.deleteAllFiles();
+            }
+
+            @Override
+            public void afterJob(JobExecution jobExecution) {
+                try {
+                    S3SavedFileVo fileVo = s3Utils.saveAggregationCsvFile();
+                    fileService.saveFile(fileVo);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                emailUtils.sendCsvMail();
+            }
+        };
     }
 
 
