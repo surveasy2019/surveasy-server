@@ -1,24 +1,20 @@
-package surveasy.domain.response.service;
+package surveasy.global.common.util;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import surveasy.global.error.exception.FileNotFound;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class FileService {
+public class FileUtils {
 
     private static final String FILE_LOCATION = "output" + File.separator;
     private static final String FOLDER = "output";
@@ -41,7 +37,7 @@ public class FileService {
         File folder = new File(FOLDER);
         try {
             if(folder.exists()) {
-                FileUtils.cleanDirectory(folder);   // 하위 폴더, 파일 삭제
+                org.apache.tomcat.util.http.fileupload.FileUtils.cleanDirectory(folder);   // 하위 폴더, 파일 삭제
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

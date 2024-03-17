@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,7 +16,6 @@ import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
 import surveasy.domain.response.dto.response.AdminSurveyResponseListResponse;
 import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
-import surveasy.domain.response.service.FileService;
 import surveasy.domain.response.service.ResponseService;
 import surveasy.global.common.util.S3Utils;
 import surveasy.global.config.user.PanelDetails;
@@ -30,7 +28,6 @@ import surveasy.global.config.user.PanelDetails;
 public class ResponseController {
 
     private final ResponseService responseService;
-    private final FileService fileService;
     private final S3Utils s3Utils;
 
     @Operation(summary = "App 설문 응답 생성하기")
