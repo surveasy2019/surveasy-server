@@ -164,7 +164,7 @@ public class AggregationJobConfig {
 
     @Bean
     public CompositeItemWriter<PanelBatchVo> compositePanelWriter() throws Exception {
-        final CompositeItemWriter<PanelBatchVo> compositeItemWriter = new CompositeItemWriter<>();
+        CompositeItemWriter<PanelBatchVo> compositeItemWriter = new CompositeItemWriter<>();
         compositeItemWriter.setDelegates(Arrays.asList(csvFileWriter()));
         return compositeItemWriter;
     }
