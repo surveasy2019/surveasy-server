@@ -12,6 +12,7 @@ import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.response.dto.request.ResponseCreateRequestDTO;
 import surveasy.domain.response.dto.request.ResponseUpdateRequestDTO;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
+import surveasy.domain.response.exception.ResponseCannotBeUpdated;
 import surveasy.domain.response.exception.ResponseDuplicateData;
 import surveasy.domain.response.exception.ResponseNotFound;
 import surveasy.domain.response.exception.ResponseUnauthorized;
@@ -123,7 +124,8 @@ public class ResponseHelper {
 
 
     /* [App] MyPage - 응답 사진 변경
-    * 설문 status가 IN_PROGRESS인 경우만 변경 가능 */
+    * 설문 status가 IN_PROGRESS인 경우만 변경 가능
+    * WRONG에서 CREATED로 업데이트하는 경우에만 적립금 반환 */
     public Long updateResponseImgUrl(Panel panel, Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
         Response response = responseRepository.findById(responseId)
                 .orElseThrow(() -> ResponseNotFound.EXCEPTION);
@@ -138,10 +140,14 @@ public class ResponseHelper {
             throw SurveyExpired.EXCEPTION;
         }
 
-        response.setImgUrl(responseUpdateRequestDTO.getImgUrl());
-        response.setStatus(ResponseStatus.UPDATED);
-        panelHelper.updatePanelInfoAfterResponse(panel, response.getReward());
-        return responseRepository.save(response).getId();
+        // CREATED or UPDATED 응답만 수정 가능
+        if(response.getStatus().equals(ResponseStatus.CREATED) || response.getStatus().equals(ResponseStatus.UPDATED)) {
+            response.setImgUrl(responseUpdateRequestDTO.getImgUrl());
+            response.setStatus(ResponseStatus.UPDATED);
+            return responseRepository.save(response).getId();
+        }
+
+        throw ResponseCannotBeUpdated.EXCEPTION;
     }
 
     /* [Admin] 어드민 설문 응답 업데이트 (이미지 검수 후) */
@@ -150,11 +156,13 @@ public class ResponseHelper {
                 .orElseThrow(() -> ResponseNotFound.EXCEPTION);
 
         if(responseUpdateRequestDTO.getStatus() != null && response.getSentAt() == null) {
+            // CREATED or UPDATED -> WRONG
             if((response.getStatus().equals(ResponseStatus.CREATED) || response.getStatus().equals(ResponseStatus.UPDATED)) && responseUpdateRequestDTO.getStatus().equals(ResponseStatus.WRONG)) {
                 Panel panel = response.getPanel();
                 panel.setRewardCurrent(panel.getRewardCurrent() - response.getReward());
             }
 
+            // WRONG -> CREATED
             else if(response.getStatus().equals(ResponseStatus.WRONG) && responseUpdateRequestDTO.getStatus().equals(ResponseStatus.CREATED)) {
                 Panel panel = response.getPanel();
                 panel.setRewardCurrent(panel.getRewardCurrent() + response.getReward());
