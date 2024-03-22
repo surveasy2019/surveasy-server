@@ -89,7 +89,7 @@ public class AggregationJobConfig {
         QResponse qResponse = QResponse.response;
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
 
-        log.info("----------------------------------- now = " + now + ", from = " + now.minusDays(sentCycle).atTime(0, 0) + ", to = " + now.atTime(0, 0));
+        System.out.println("[querydslNoOffsetPagingResponseReader] now = " + now + ", from = " + now.minusDays(sentCycle).atTime(0, 0) + ", to = " + now.atTime(0, 0));
 
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
