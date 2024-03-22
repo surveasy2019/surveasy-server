@@ -28,7 +28,6 @@ public class AggregationDonePanelJobConfig {
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
-    private static final QPanel qPanel = QPanel.panel;
     private static final int PANEL_CHUNK_SIZE = 100;
 
     @Bean
@@ -50,7 +49,9 @@ public class AggregationDonePanelJobConfig {
 
     @Bean
     public QuerydslNoOffsetPagingItemReader<Panel> querydslNoOffsetPagingPanelReader2() {
+        QPanel qPanel = QPanel.panel;
         QuerydslNoOffsetNumberOptions<Panel, Long> options = new QuerydslNoOffsetNumberOptions<>(qPanel.id, Expression.ASC);
+
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
                 PANEL_CHUNK_SIZE,

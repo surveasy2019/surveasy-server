@@ -30,8 +30,6 @@ public class AggregationDoneResponseJobConfig {
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final DataSource dataSource;
-    private static final QResponse qResponse = QResponse.response;
-    private static final int SENT_CYCLE = (LocalDate.now().getDayOfMonth() == 1) ? 11 : 10;
     private static final int RESPONSE_CHUNK_SIZE = 100;
 
     @Bean
@@ -53,7 +51,11 @@ public class AggregationDoneResponseJobConfig {
     @Bean
     public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader2() {
         LocalDate now = LocalDate.now();
+        int sentCycle = (now.getDayOfMonth() == 1) ? 11 : 10;
+
+        QResponse qResponse = QResponse.response;
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
+
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
                 RESPONSE_CHUNK_SIZE,
@@ -62,7 +64,7 @@ public class AggregationDoneResponseJobConfig {
                         .selectFrom(qResponse)
                         .where(qResponse.status.eq(ResponseStatus.WAITING)
                                 .and(qResponse.createdAt.between(
-                                        now.minusDays(SENT_CYCLE).atTime(0, 0),
+                                        now.minusDays(sentCycle).atTime(0, 0),
                                         now.atTime(0, 0))))
         );
     }

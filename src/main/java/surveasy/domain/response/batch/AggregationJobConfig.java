@@ -83,11 +83,13 @@ public class AggregationJobConfig {
 
     @Bean
     public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader() {
-        QResponse qResponse = QResponse.response;
         LocalDate now = LocalDate.now();
-        int SENT_CYCLE = (now.getDayOfMonth() == 1) ? 11 : 10;
+        int sentCycle = (now.getDayOfMonth() == 1) ? 11 : 10;
 
+        QResponse qResponse = QResponse.response;
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
+
+        log.info("----------------------------------- now = " + now + ", from = " + now.minusDays(sentCycle).atTime(0, 0) + ", to = " + now.atTime(0, 0));
 
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
@@ -97,7 +99,7 @@ public class AggregationJobConfig {
                         .selectFrom(qResponse)
                         .where(qResponse.status.in(ResponseStatus.CREATED, ResponseStatus.UPDATED)
                                 .and(qResponse.createdAt.between(
-                                        now.minusDays(SENT_CYCLE).atTime(0, 0),
+                                        now.minusDays(sentCycle).atTime(0, 0),
                                         now.atTime(0, 0))))
         );
     }
