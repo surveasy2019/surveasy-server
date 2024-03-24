@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Component
@@ -30,8 +31,9 @@ public class JobLauncherService {
         try {
             final JobExecution responseJobExecution = jobLauncher.run(responseJob,
                     new JobParametersBuilder()
-                        .addLong("time", new Date().getTime())
-                        .toJobParameters());
+                            .addLong("time", new Date().getTime())
+                            .addLocalDate("now", LocalDate.now())
+                            .toJobParameters());
 
             final JobExecution panelJobExecution = jobLauncher.run(panelJob,
                     new JobParametersBuilder()
