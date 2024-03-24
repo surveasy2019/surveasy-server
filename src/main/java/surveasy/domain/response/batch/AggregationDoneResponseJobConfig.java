@@ -4,11 +4,14 @@ import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -35,22 +38,23 @@ public class AggregationDoneResponseJobConfig {
     @Bean
     public Job aggregationDoneResponseJob() {
         return new JobBuilder("aggregationDoneResponseJob", jobRepository)
-                .start(responseUpdateStep())
+                .start(responseUpdateStep(null))
                 .build();
     }
 
     @Bean
-    protected Step responseUpdateStep() {
+    @JobScope
+    protected Step responseUpdateStep(@Value("#{jobParameters[now]}") LocalDate now) {
         return new StepBuilder("responseUpdateStep", jobRepository)
                 .<Response, Response>chunk(RESPONSE_CHUNK_SIZE, transactionManager)
-                .reader(querydslNoOffsetPagingResponseReader2())
-                .writer(jdbcBatchResponseWriter2())
+                .reader(querydslNoOffsetPagingResponseReader2(now))
+                .writer(jdbcBatchResponseWriter2(now))
                 .build();
     }
 
     @Bean
-    public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader2() {
-        LocalDate now = LocalDate.now();
+    @StepScope
+    public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader2(@Value("#{jobParameters[now]}") LocalDate now) {
         int sentCycle = (now.getDayOfMonth() == 1) ? 11 : 10;
 
         QResponse qResponse = QResponse.response;
@@ -70,8 +74,8 @@ public class AggregationDoneResponseJobConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<Response> jdbcBatchResponseWriter2() {
-        LocalDate now = LocalDate.now();
+    @StepScope
+    public JdbcBatchItemWriter<Response> jdbcBatchResponseWriter2(@Value("#{jobParameters[now]}") LocalDate now) {
         return new JdbcBatchItemWriterBuilder<Response>()
                 .dataSource(dataSource)
                 .sql("UPDATE response SET status = 'DONE', sent_at = \'" + now + "\' WHERE id = :id")

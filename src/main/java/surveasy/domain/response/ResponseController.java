@@ -70,12 +70,6 @@ public class ResponseController {
     @Operation(summary = "어드민 정산 결과 csv 파일 다운로드")
     @GetMapping("/admin/download/{fileName}")
     public ResponseEntity<UrlResource> downloadFile(@PathVariable String fileName) {
-//        Resource resource = fileService.loadFileAsResource(fileName);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.valueOf("text/csv; charset=UTF-8"))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-//                .body(resource);
         return s3Utils.downloadFile(fileName);
     }
 

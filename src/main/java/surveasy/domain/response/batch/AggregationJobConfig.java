@@ -8,6 +8,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -19,6 +20,7 @@ import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.support.CompositeItemWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -66,30 +68,29 @@ public class AggregationJobConfig {
     public Job aggregationJob() throws Exception {
         return new JobBuilder("aggregationJob", jobRepository)
                 .listener(jobExecutionListener())
-                .start(step1())
-                .next(step2())
+                .start(step1(null))
+                .next(step2(null))
                 .build();
     }
 
     @Bean
-    protected Step step1() {
+    @JobScope
+    protected Step step1(@Value("#{jobParameters[now]}") LocalDate now) {
         return new StepBuilder("queryStep", jobRepository)
                 .<Response, ResponseBatchVo>chunk(RESPONSE_CHUNK_SIZE, transactionManager)
-                .reader(querydslNoOffsetPagingResponseReader())
+                .reader(querydslNoOffsetPagingResponseReader(now))
                 .processor(jpaPagingResponseProcessor())
                 .writer(compositePanelAndResponseWriter())
                 .build();
     }
 
     @Bean
-    public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader() {
-        LocalDate now = LocalDate.now();
+    @StepScope
+    public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader(@Value("#{jobParameters[now]}") LocalDate now) {
         int sentCycle = (now.getDayOfMonth() == 1) ? 11 : 10;
 
         QResponse qResponse = QResponse.response;
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
-
-        log.info("----------------------------------- now = " + now + ", from = " + now.minusDays(sentCycle).atTime(0, 0) + ", to = " + now.atTime(0, 0));
 
         return new QuerydslNoOffsetPagingItemReader<>(
                 entityManagerFactory,
@@ -135,12 +136,13 @@ public class AggregationJobConfig {
     }
 
     @Bean
-    protected Step step2() throws Exception {
+    @JobScope
+    protected Step step2(@Value("#{jobParameters[now]}") LocalDate now) throws Exception {
         return new StepBuilder("csvFileExportStep", jobRepository)
                 .<Panel, PanelBatchVo>chunk(PANEL_CHUNK_SIZE, transactionManager)
                 .reader(querydslNoOffsetPagingPanelReader())
                 .processor(jpaPagingPanelProcessor())
-                .writer(csvFileWriter())
+                .writer(csvFileWriter(now))
                 .build();
     }
 
@@ -165,14 +167,16 @@ public class AggregationJobConfig {
     }
 
     @Bean
-    public CompositeItemWriter<PanelBatchVo> compositePanelWriter() throws Exception {
+    @StepScope
+    public CompositeItemWriter<PanelBatchVo> compositePanelWriter(@Value("#{jobParameters[now]}") LocalDate now) throws Exception {
         CompositeItemWriter<PanelBatchVo> compositeItemWriter = new CompositeItemWriter<>();
-        compositeItemWriter.setDelegates(Arrays.asList(csvFileWriter()));
+        compositeItemWriter.setDelegates(Arrays.asList(csvFileWriter(now)));
         return compositeItemWriter;
     }
 
     @Bean
-    public FlatFileItemWriter<PanelBatchVo> csvFileWriter() throws Exception {
+    @StepScope
+    public FlatFileItemWriter<PanelBatchVo> csvFileWriter(@Value("#{jobParameters[now]}") LocalDate now) throws Exception {
         BeanWrapperFieldExtractor<PanelBatchVo> extractor = new BeanWrapperFieldExtractor<>();
         extractor.setNames(new String[] {"accountType", "accountNumber", "rewardTemp", "accountOwner", "sender"});    // of PanelBatchVo
 
@@ -183,7 +187,7 @@ public class AggregationJobConfig {
         FlatFileItemWriter<PanelBatchVo> writer = new FlatFileItemWriterBuilder<PanelBatchVo>()
                 .name("csvFileWriter")
                 .encoding("UTF-8")
-                .resource(new FileSystemResource("output" + File.separator + LocalDate.now() + ".csv"))
+                .resource(new FileSystemResource("output" + File.separator + now + ".csv"))
                 .lineAggregator(lineAggregator)
                 .headerCallback(writer1 -> writer1.write("입금은행,입금계좌번호,입금액,예상예금주,입금통장표시"))
                 .append(true)

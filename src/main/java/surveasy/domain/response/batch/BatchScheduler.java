@@ -6,6 +6,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Component
@@ -20,6 +21,7 @@ public class BatchScheduler {
         jobLauncher.run(aggregationJobConfig.aggregationJob(),
                 new JobParametersBuilder()
                         .addLong("time", new Date().getTime())
+                        .addLocalDate("now", LocalDate.now())
                         .toJobParameters()
         );
     }
@@ -28,15 +30,17 @@ public class BatchScheduler {
         jobLauncher.run(aggregationJobConfig.aggregationJob(),
                 new JobParametersBuilder()
                         .addLong("time", new Date().getTime())
+                        .addLocalDate("now", LocalDate.now())
                         .toJobParameters()
         );
     }
 
-    @Scheduled(cron = "0 10 4 * * ?")
+    @Scheduled(cron = "0 10 4,16 * * ?")
     public void batchSchedulerTest2() throws Exception {
         jobLauncher.run(aggregationJobConfig.aggregationJob(),
                 new JobParametersBuilder()
                         .addLong("time", new Date().getTime())
+                        .addLocalDate("now", LocalDate.now())
                         .toJobParameters()
         );
     }
