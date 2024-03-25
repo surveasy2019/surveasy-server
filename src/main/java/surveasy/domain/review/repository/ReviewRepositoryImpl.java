@@ -27,6 +27,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                         qReview.username,
                         qReview.grade,
                         qReview.content,
+                        qReview.status,
                         qReview.createdAt
                 ))
                 .from(qReview)
@@ -46,6 +47,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                         qReview.username,
                         qReview.grade,
                         qReview.content,
+                        qReview.status,
                         qReview.createdAt
                 ))
                 .from(qReview)
