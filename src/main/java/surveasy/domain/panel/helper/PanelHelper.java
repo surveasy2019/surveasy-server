@@ -316,33 +316,40 @@ public class PanelHelper {
     /* [Web] Active Panel 목록
     * 성별로 구분 */
     public Activepanel getActivePanelList() {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -7);
-        Date aWeekAgo = cal.getTime();
+        LocalDate aWeekAgo = LocalDate.now().minusDays(11);
 
         StringBuilder totalList = new StringBuilder();
         StringBuilder maleList = new StringBuilder();
         StringBuilder femaleList = new StringBuilder();
 
-        for(int i=0 ; i<SurveyOptions.AGES.length-1 ; i++) {
-            Calendar ageFrom = Calendar.getInstance();
-            Calendar ageEnd = Calendar.getInstance();
-            ageFrom.add(Calendar.YEAR, -SurveyOptions.AGES[i]);
-            ageEnd.add(Calendar.YEAR, -SurveyOptions.AGES[i+1]);
+        long sumOfMalePanel = 0;
+        long sumOfFemalePanel = 0;
 
-            long malePanel = panelRepository.countActivePanel(TargetGender.MALE, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
-            long femalePanel = panelRepository.countActivePanel(TargetGender.FEMALE, aWeekAgo, ageFrom.getTime(), ageEnd.getTime());
+        for(int i=0 ; i<SurveyOptions.AGES.length-1 ; i++) {
+            LocalDate birthStart = LocalDate.now().minusYears(SurveyOptions.AGES[i]).withDayOfYear(1);
+            LocalDate birthEnd = LocalDate.now().minusYears(SurveyOptions.AGES[i+1]).withDayOfYear(1).minusDays(1);
+
+            long malePanel = panelRepository.countActivePanel(TargetGender.MALE, aWeekAgo, birthStart, birthEnd);
+            long femalePanel = panelRepository.countActivePanel(TargetGender.FEMALE, aWeekAgo, birthStart, birthEnd);
+
+            sumOfMalePanel += malePanel;
+            sumOfFemalePanel += femalePanel;
 
             totalList.append(malePanel + femalePanel);
             maleList.append(malePanel);
             femaleList.append(femalePanel);
 
-            if(i<SurveyOptions.AGES.length-2) {
+            if(i < SurveyOptions.AGES.length-2) {
                 totalList.append(", ");
                 maleList.append(", ");
                 femaleList.append(", ");
             }
         }
+
+        // 각 List 총합을 index 0에 삽입
+        totalList.insert(0, sumOfMalePanel + sumOfFemalePanel + ", ");
+        maleList.insert(0, sumOfMalePanel + ", ");
+        femaleList.insert(0, sumOfFemalePanel + ", ");
 
         return Activepanel.of(totalList.toString(), maleList.toString(), femaleList.toString());
     }
