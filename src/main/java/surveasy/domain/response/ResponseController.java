@@ -78,10 +78,4 @@ public class ResponseController {
     public void doneAggregation() {
         responseService.doneAggregation();
     }
-
-    @Operation(summary = "임시 자동 정산 트리거")
-    @GetMapping("/test")
-    public void testAggregation() throws Exception {
-         responseService.doAggregation();
-    }
 }

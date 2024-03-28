@@ -15,6 +15,7 @@ import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.AuthProvider;
 import surveasy.domain.panel.domain.option.PanelPlatform;
+import surveasy.domain.panel.domain.option.PanelRole;
 import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.OAuth2AppleResponse;
@@ -223,7 +224,7 @@ public class PanelHelper {
         panel.setPushOn(panelSignUpDTO.getPushOn());
         panel.setMarketingAgree(panelSignUpDTO.getMarketingAgree());
         panel.setStatus(PanelStatus.FS_YET);
-        panel.setRole("ROLE_USER");
+        panel.setRole(PanelRole.ROLE_USER);
 
         return panelRepository.save(panel);
     }
