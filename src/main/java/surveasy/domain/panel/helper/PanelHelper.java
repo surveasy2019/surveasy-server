@@ -1,8 +1,7 @@
 package surveasy.domain.panel.helper;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +15,7 @@ import surveasy.domain.activepanel.domain.Activepanel;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.AuthProvider;
 import surveasy.domain.panel.domain.option.PanelPlatform;
+import surveasy.domain.panel.domain.option.PanelRole;
 import surveasy.domain.panel.domain.option.PanelStatus;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.OAuth2AppleResponse;
@@ -99,8 +99,9 @@ public class PanelHelper {
         DocumentSnapshot documentSnapshot = future.get();
 
         // Firebase Panel First Survey Info
-        ApiFuture<DocumentSnapshot> futureFirstSurvey = db.collection(COLLECTION_NAME).document(uid).collection(COLLECTION_FS_NAME).document(uid).get();
-        DocumentSnapshot documentSnapshotFS = futureFirstSurvey.get();
+        Query firstSurveyQuery = db.collection(COLLECTION_NAME).document(uid).collection(COLLECTION_FS_NAME).limit(1);
+        ApiFuture<QuerySnapshot> futureFirstSurvey = firstSurveyQuery.get();
+        QueryDocumentSnapshot documentSnapshotFS = futureFirstSurvey.get().getDocuments().get(0);
 
         if(documentSnapshot.exists()) {
             LocalDate birth = DateAndStringUtils.stringToLocalDate(documentSnapshot.getString("birthDate"));
@@ -223,7 +224,7 @@ public class PanelHelper {
         panel.setPushOn(panelSignUpDTO.getPushOn());
         panel.setMarketingAgree(panelSignUpDTO.getMarketingAgree());
         panel.setStatus(PanelStatus.FS_YET);
-        panel.setRole("ROLE_USER");
+        panel.setRole(PanelRole.ROLE_USER);
 
         return panelRepository.save(panel);
     }

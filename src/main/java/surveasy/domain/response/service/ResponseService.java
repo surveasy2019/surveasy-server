@@ -2,8 +2,6 @@ package surveasy.domain.response.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,9 +59,5 @@ public class ResponseService {
 
     public void doneAggregation() {
         responseHelper.doneAggregation();
-    }
-
-    public void doAggregation() throws Exception {
-        batchScheduler.batchSchedulerTest();
     }
 }

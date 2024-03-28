@@ -72,12 +72,6 @@ public class PanelController {
         return panelService.reissueToken(refreshTokenRequestDTO);
     }
 
-    @GetMapping("/reissue/{panelId}")
-    @Operation(summary = "임시 엑세스 토큰 재발급 - panelId")
-    public ResponseEntity<String> userIdReissue(@PathVariable Long panelId) {
-        return ResponseEntity.ok(panelService.reissueAccessToken(panelId));
-    }
-
     @GetMapping("/signout")
     @Operation(summary = "App 패널 로그아웃")
     public void signOut(@AuthenticationPrincipal PanelDetails panelDetails) {

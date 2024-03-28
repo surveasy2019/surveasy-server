@@ -85,7 +85,8 @@ public class Panel {
 
     // Default
     @NotNull
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private PanelRole role;
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -151,7 +152,7 @@ public class Panel {
                  PanelPlatform platform, Boolean pushOn, Boolean marketingAgree,
                  Integer rewardCurrent, Integer rewardTotal, Integer rewardTemp, LocalDate signedUpAt, LocalDateTime lastParticipatedAt,
                   Boolean english, TargetCity city, TargetFamily family, TargetJob job,
-                  TargetMajor major, TargetPet pet, String role, AuthProvider authProvider, String authId) {
+                  TargetMajor major, TargetPet pet, PanelRole role, AuthProvider authProvider, String authId) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -220,7 +221,7 @@ public class Panel {
                 .job(panelInfoFirstSurveyDAO.getJob())
                 .major(panelInfoFirstSurveyDAO.getMajor())
                 .pet(panelInfoFirstSurveyDAO.getPet())
-                .role("ROLE_USER")
+                .role(PanelRole.ROLE_ANONYMOUS)
                 .build();
     }
 
@@ -253,7 +254,7 @@ public class Panel {
                 .job(null)
                 .major(null)
                 .pet(null)
-                .role("ROLE_ANONYMOUS")
+                .role(PanelRole.ROLE_ANONYMOUS)
                 .authProvider(oAuth2UserInfo.getAuthProvider())
                 .build();
 
@@ -279,7 +280,7 @@ public class Panel {
                 .password("")
                 .fcmToken("")
                 .status(PanelStatus.FS_YET)
-                .role("ROLE_USER")
+                .role(PanelRole.ROLE_USER)
 
                 .rewardCurrent(0)
                 .rewardTotal(0)

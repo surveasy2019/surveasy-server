@@ -16,27 +16,8 @@ public class BatchScheduler {
     private final JobLauncher jobLauncher;
     private final AggregationJobConfig aggregationJobConfig;
 
-    // @Scheduled(cron = "0 10 4 1,11,21 * ?")
+    @Scheduled(cron = "0 10 4 1,11,21 * ?")
     public void batchScheduler() throws Exception {
-        jobLauncher.run(aggregationJobConfig.aggregationJob(),
-                new JobParametersBuilder()
-                        .addLong("time", new Date().getTime())
-                        .addLocalDate("now", LocalDate.now())
-                        .toJobParameters()
-        );
-    }
-
-    public void batchSchedulerTest() throws Exception {
-        jobLauncher.run(aggregationJobConfig.aggregationJob(),
-                new JobParametersBuilder()
-                        .addLong("time", new Date().getTime())
-                        .addLocalDate("now", LocalDate.now())
-                        .toJobParameters()
-        );
-    }
-
-    @Scheduled(cron = "0 10 4,16 * * ?")
-    public void batchSchedulerTest2() throws Exception {
         jobLauncher.run(aggregationJobConfig.aggregationJob(),
                 new JobParametersBuilder()
                         .addLong("time", new Date().getTime())

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -44,6 +45,39 @@ public class WebSecurityConfig {
             "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
     };
 
+    private final String[] AdminGetPatterns = {
+            "/survey/admin/**", "/review/admin/**", "/response/admin/**", "/panel/admin/**",
+            "/file/**", "/coupon"
+    };
+
+    private final String[] AdminPostPatterns = {
+            "/coupon"
+    };
+
+    private final String[] AdminPatchPatterns = {
+            "/survey/admin/**", "/review/admin/**", "/response/admin/**", "/coupon/**"
+    };
+
+    private final String[] AdminDeletePatterns = {
+            "/survey/admin/**", "/file/**", "/coupon/**"
+    };
+
+    private final String[] UserGetPatterns = {
+            "/survey/app/**", "/response/**", "/panel/signout", "/panel/home", "/panel/response", "/panel"
+    };
+
+    private final String[] UserPostPatterns = {
+            "/response/**", "/panel/signup", "/panel/first-survey"
+    };
+
+    private final String[] UserPatchPatterns = {
+            "/response/**", "/panel"
+    };
+
+    private final String[] UserDeletePatterns = {
+            "/panel/withdraw"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().configurationSource(corsConfigurationSource())
@@ -67,13 +101,15 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .requestMatchers(SwaggerPatterns).permitAll()
-                .requestMatchers("/**").permitAll()
-
-//                .requestMatchers("panel/auth").permitAll()
-//                .requestMatchers("/survey/home", "/survey/list").permitAll()
-//                .requestMatchers("/survey/service/**").hasAuthority("ROLE_USER")
-//                .requestMatchers("/survey/admin/**").hasAuthority("ROLE_ADMIN")
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, AdminGetPatterns).hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, AdminPostPatterns).hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, AdminPatchPatterns).hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, AdminDeletePatterns).hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, UserGetPatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
+                .requestMatchers(HttpMethod.POST, UserPostPatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
+                .requestMatchers(HttpMethod.PATCH, UserPatchPatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
+                .requestMatchers(HttpMethod.DELETE, UserDeletePatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
+                .anyRequest().permitAll()
                 .and()
                 .headers().frameOptions().disable();
 
