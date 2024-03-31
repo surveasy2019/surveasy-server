@@ -4,6 +4,7 @@ spring:
       - dev
     include:
       - secret
+      - dev
 
   jpa:
     properties:
@@ -14,6 +15,7 @@ spring:
 
   data:
     - secret
+    - dev
 
 
 springdoc:
