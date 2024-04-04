@@ -42,6 +42,16 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     @Override
+    public Long countByStatusInProgressOrDone() {
+        QSurvey qSurvey = QSurvey.survey;
+        return jpaQueryFactory
+                .select(qSurvey.count())
+                .from(qSurvey)
+                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE))
+                .fetchFirst();
+    }
+
+    @Override
     public Long countByEmailAndStatus(String email, SurveyStatus status) {
         QSurvey qSurvey = QSurvey.survey;
 

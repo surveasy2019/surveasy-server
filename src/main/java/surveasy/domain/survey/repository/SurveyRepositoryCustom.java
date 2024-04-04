@@ -13,6 +13,8 @@ public interface SurveyRepositoryCustom {
 
     Long findMaxSid();
 
+    Long countByStatusInProgressOrDone();
+
     Long countByEmailAndStatus(String email, SurveyStatus status);
 
     Page<SurveyListVo> findAllSurveyListVos(Pageable pageable);
