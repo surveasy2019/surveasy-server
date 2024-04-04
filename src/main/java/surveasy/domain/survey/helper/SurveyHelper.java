@@ -55,7 +55,7 @@ public class SurveyHelper {
 
     /* [Web] 홈화면 진행중인 설문 개수 */
     public Long getSurveyTotalCount() {
-        return surveyRepository.countByStatus(SurveyStatus.IN_PROGRESS);
+        return 1311 + surveyRepository.countByStatusInProgressOrDone();
     }
 
 

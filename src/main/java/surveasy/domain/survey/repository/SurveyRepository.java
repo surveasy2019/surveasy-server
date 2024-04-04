@@ -9,8 +9,6 @@ import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long>, PagingAndSortingRepository<Survey, Long>, JpaSpecificationExecutor<Survey>, SurveyRepositoryCustom {
-
-    Long countByStatus(SurveyStatus status);
     Page<Survey> findAll(Pageable pageable);
 
 }
