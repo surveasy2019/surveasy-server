@@ -139,6 +139,8 @@ public class WebSecurityConfig {
                         "http://localhost:8081",
                         "https://newsurveasyweb.web.app",
                         "https://surveasy-admin.web.app",
+                        "https://surveasy-workspace.web.app/#/",
+                        "https://surveasy-workspace.web.app",
                         SERVER_URL
                 )
         );
