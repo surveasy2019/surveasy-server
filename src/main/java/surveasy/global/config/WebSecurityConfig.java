@@ -141,6 +141,8 @@ public class WebSecurityConfig {
                         "https://surveasy-admin.web.app",
                         "https://surveasy-workspace.web.app/#/",
                         "https://surveasy-workspace.web.app",
+                        "https://gosurveasy.com/#/",
+                        "https://gosurveasy.com",
                         SERVER_URL
                 )
         );
