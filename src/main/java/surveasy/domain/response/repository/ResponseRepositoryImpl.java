@@ -33,7 +33,9 @@ public class ResponseRepositoryImpl implements ResponseRepositoryCustom {
                             qResponse.survey.reward,
                             qResponse.imgUrl,
                             qResponse.createdAt,
-                            qResponse.sentAt))
+                            qResponse.sentAt,
+                            qResponse.status,
+                            qResponse.survey.status))
                     .from(qResponse)
                     .where(qResponse.panel.id.eq(panelId))
                     .where(qResponse.status.eq(ResponseStatus.CREATED).or(qResponse.status.eq(ResponseStatus.WAITING)).or(qResponse.status.eq(ResponseStatus.UPDATED)))
@@ -55,7 +57,9 @@ public class ResponseRepositoryImpl implements ResponseRepositoryCustom {
                             qResponse.survey.reward,
                             qResponse.imgUrl,
                             qResponse.createdAt,
-                            qResponse.sentAt))
+                            qResponse.sentAt,
+                            qResponse.status,
+                            qResponse.survey.status))
                     .from(qResponse)
                     .where(qResponse.panel.id.eq(panelId))
                     .where(qResponse.status.eq(ResponseStatus.DONE))
