@@ -61,8 +61,8 @@ public class AggregationJobConfig {
     private final EmailUtils emailUtils;
     private final S3Utils s3Utils;
     private final FileService fileService;
-    private static final int RESPONSE_CHUNK_SIZE = 2;
-    private static final int PANEL_CHUNK_SIZE = 2;
+    private static final int RESPONSE_CHUNK_SIZE = 100;
+    private static final int PANEL_CHUNK_SIZE = 100;
 
     @Bean
     public Job aggregationJob() throws Exception {
