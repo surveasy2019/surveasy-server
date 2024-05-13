@@ -183,8 +183,8 @@ public class SurveyHelper {
             survey.setDueDate(surveyAdminDTO.getDueDate());
         }
 
-        if(surveyAdminDTO.getHeadcount() != null) {
-            survey.setHeadCount(surveyAdminDTO.getHeadcount());
+        if(surveyAdminDTO.getHeadCount() != null) {
+            survey.setHeadCount(surveyAdminDTO.getHeadCount());
         }
 
         return surveyRepository.save(survey).getId();

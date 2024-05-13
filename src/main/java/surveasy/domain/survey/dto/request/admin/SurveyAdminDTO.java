@@ -21,5 +21,5 @@ public class SurveyAdminDTO {
 
     private LocalDateTime dueDate;
 
-    private SurveyHeadcount headcount;
+    private SurveyHeadcount headCount;
 }

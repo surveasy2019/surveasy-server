@@ -91,7 +91,7 @@ public class SurveyController {
         return ResponseEntity.ok(surveyService.getAdminSurvey(surveyId));
     }
 
-    @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link")
+    @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link, dueDate, headCount")
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId, @RequestBody SurveyAdminDTO surveyAdminDTO) {
         return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
