@@ -179,6 +179,14 @@ public class SurveyHelper {
             survey.setNoticeToPanel(surveyAdminDTO.getNoticeToPanel());
         }
 
+        if(surveyAdminDTO.getDueDate() != null) {
+            survey.setDueDate(surveyAdminDTO.getDueDate());
+        }
+
+        if(surveyAdminDTO.getHeadcount() != null) {
+            survey.setHeadCount(surveyAdminDTO.getHeadcount());
+        }
+
         return surveyRepository.save(survey).getId();
     }
 
