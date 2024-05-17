@@ -7,10 +7,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import surveasy.domain.panel.domain.QPanel;
+import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.survey.domain.target.TargetGender;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -52,5 +54,22 @@ public class PanelRepositoryImpl implements PanelRepositoryCustom {
                 .from(qPanel)
                 .where(qPanel.id.eq(panelId))
                 .fetchFirst());
+    }
+
+    @Override
+    public List<PanelAdminCsvVo> findAllPanelAdminCsvVos() {
+        QPanel qPanel = QPanel.panel;
+        return jpaQueryFactory
+                .select(Projections.constructor(PanelAdminCsvVo.class,
+                        qPanel.id,
+                        qPanel.name,
+                        qPanel.birth,
+                        qPanel.gender,
+                        qPanel.inflowPath,
+                        qPanel.inflowPathEtc,
+                        qPanel.signedUpAt,
+                        qPanel.status))
+                .from(qPanel)
+                .fetch();
     }
 }

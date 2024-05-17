@@ -15,6 +15,7 @@ import surveasy.domain.panel.exception.PanelNotFound;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
+import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.domain.response.helper.ResponseHelper;
@@ -22,6 +23,7 @@ import surveasy.domain.response.repository.ResponseRepository;
 import surveasy.global.config.jwt.TokenProvider;
 import surveasy.global.config.user.PanelDetails;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -144,5 +146,10 @@ public class PanelService {
         final Panel panel = panelRepository.findById(panelId)
                 .orElseThrow(() -> PanelNotFound.EXCEPTION);
         return tokenProvider.createAccessToken(panelId, tokenProvider.panelAuthorizationInput(panel));
+    }
+
+    public PanelAdminCsvListResponse getAdminPanelCsvList() {
+        List<PanelAdminCsvVo> panelAdminCsvVoList = panelHelper.findAllPanelAdminCsvVos();
+        return panelMapper.toPanelAdminCsvListResponse(panelAdminCsvVoList);
     }
 }
