@@ -116,4 +116,10 @@ public class PanelController {
     public PanelAdminListResponse getAdminPanelList(@PageableDefault(size = 50) Pageable pageable) {
         return panelService.getAdminPanelList(pageable);
     }
+
+    @GetMapping("/admin/csv")
+    @Operation(summary = "Admin 패널 리스트 - csv 파일 추출용")
+    public PanelAdminCsvListResponse getAdminPanelCsvList() {
+        return panelService.getAdminPanelCsvList();
+    }
 }

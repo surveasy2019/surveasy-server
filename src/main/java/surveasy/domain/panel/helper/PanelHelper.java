@@ -26,6 +26,7 @@ import surveasy.domain.panel.exception.*;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
 import surveasy.domain.panel.util.RedisUtil;
+import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
@@ -378,5 +379,9 @@ public class PanelHelper {
                 .build();
 
         return PanelAdminListResponse.from(panelList, pageInfo);
+    }
+
+    public List<PanelAdminCsvVo> findAllPanelAdminCsvVos() {
+        return panelRepository.findAllPanelAdminCsvVos();
     }
 }

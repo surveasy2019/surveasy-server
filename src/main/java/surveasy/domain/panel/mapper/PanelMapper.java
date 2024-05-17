@@ -6,8 +6,11 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.AuthProvider;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
+import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -55,5 +58,9 @@ public class PanelMapper {
 
     public PanelAuthProviderResponse toPanelAuthProviderResponse(AuthProvider authProvider) {
         return PanelAuthProviderResponse.from(authProvider);
+    }
+
+    public PanelAdminCsvListResponse toPanelAdminCsvListResponse(List<PanelAdminCsvVo> panelAdminCsvVoList) {
+        return PanelAdminCsvListResponse.of(panelAdminCsvVoList);
     }
 }

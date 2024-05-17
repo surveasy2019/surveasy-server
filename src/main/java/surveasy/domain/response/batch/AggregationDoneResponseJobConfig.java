@@ -55,8 +55,6 @@ public class AggregationDoneResponseJobConfig {
     @Bean
     @StepScope
     public QuerydslNoOffsetPagingItemReader<Response> querydslNoOffsetPagingResponseReader2(@Value("#{jobParameters[now]}") LocalDate now) {
-        int sentCycle = (now.getDayOfMonth() == 1) ? 11 : 10;
-
         QResponse qResponse = QResponse.response;
         QuerydslNoOffsetNumberOptions<Response, Long> options = new QuerydslNoOffsetNumberOptions<>(qResponse.id, Expression.ASC);
 
@@ -66,10 +64,7 @@ public class AggregationDoneResponseJobConfig {
                 options,
                 jpaQueryFactory -> jpaQueryFactory
                         .selectFrom(qResponse)
-                        .where(qResponse.status.eq(ResponseStatus.WAITING)
-                                .and(qResponse.createdAt.between(
-                                        now.minusDays(sentCycle).atTime(0, 0),
-                                        now.atTime(0, 0))))
+                        .where(qResponse.status.eq(ResponseStatus.WAITING))
         );
     }
 
