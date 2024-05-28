@@ -358,27 +358,9 @@ public class PanelHelper {
 
 
     /* [Web] Admin - 패널 전체 목록 */
-    public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
-        int pageNum = pageable.getPageNumber();
-        int pageSize = pageable.getPageSize();
-
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page<Panel> panels = panelRepository.findAll(pageRequest);
-
-        List<Panel> panelList = new ArrayList<>();
-
-        if (panels != null && panels.hasContent()) {
-            panelList = panels.getContent();
-        }
-
-        PageInfo pageInfo = PageInfo.builder()
-                .pageNum(pageNum)
-                .pageSize(pageSize)
-                .totalElements(panels.getTotalElements())
-                .totalPages(panels.getTotalPages())
-                .build();
-
-        return PanelAdminListResponse.from(panelList, pageInfo);
+    public PanelAdminListResponse getAdminPanelList(Pageable pageable, String keyword) {
+        Page<Panel> panelList = panelRepository.findAll(pageable, keyword);
+        return PanelAdminListResponse.from(panelList);
     }
 
     public List<PanelAdminCsvVo> findAllPanelAdminCsvVos() {

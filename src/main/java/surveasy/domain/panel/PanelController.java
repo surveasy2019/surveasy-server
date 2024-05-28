@@ -113,8 +113,9 @@ public class PanelController {
 
     @GetMapping("/admin")
     @Operation(summary = "Admin 패널 리스트")
-    public PanelAdminListResponse getAdminPanelList(@PageableDefault(size = 50) Pageable pageable) {
-        return panelService.getAdminPanelList(pageable);
+    public PanelAdminListResponse getAdminPanelList(@PageableDefault(size = 50) Pageable pageable,
+                                                    @RequestParam(required = false) final String keyword) {
+        return panelService.getAdminPanelList(pageable, keyword);
     }
 
     @GetMapping("/admin/csv")

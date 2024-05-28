@@ -36,7 +36,7 @@ public interface PanelService {
 
     PanelInfoVo updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO);
 
-    PanelAdminListResponse getAdminPanelList(Pageable pageable);
+    PanelAdminListResponse getAdminPanelList(Pageable pageable, String keyword);
 
     PanelAdminCsvListResponse getAdminPanelCsvList();
 }

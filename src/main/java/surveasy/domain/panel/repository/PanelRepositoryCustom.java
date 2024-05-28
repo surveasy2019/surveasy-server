@@ -1,5 +1,8 @@
 package surveasy.domain.panel.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.survey.domain.target.TargetGender;
@@ -15,4 +18,6 @@ public interface PanelRepositoryCustom {
     Optional<PanelInfoVo> findPanelInfoVo(Long panelId);
 
     List<PanelAdminCsvVo> findAllPanelAdminCsvVos();
+
+    Page<Panel> findAll(Pageable pageable, String keyword);
 }

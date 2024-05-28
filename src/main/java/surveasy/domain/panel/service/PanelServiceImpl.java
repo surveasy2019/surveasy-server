@@ -81,8 +81,8 @@ public class PanelServiceImpl implements PanelService {
         return panelMapper.toPanelInfoVo(panel);
     }
 
-    public PanelAdminListResponse getAdminPanelList(Pageable pageable) {
-        return panelHelper.getAdminPanelList(pageable);
+    public PanelAdminListResponse getAdminPanelList(Pageable pageable, String keyword) {
+        return panelHelper.getAdminPanelList(pageable, keyword);
     }
 
     public PanelTokenResponse reissueToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
