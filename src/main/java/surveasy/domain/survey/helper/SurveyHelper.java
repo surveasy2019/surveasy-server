@@ -123,20 +123,9 @@ public class SurveyHelper {
 
 
     /* [Web] 어드민 설문 전체 목록 */
-    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
-        int pageNum = pageable.getPageNumber();
-        int pageSize = pageable.getPageSize();
-
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by("id").descending());
-        Page<Survey> surveys = surveyRepository.findAll(pageRequest);
-        PageInfo pageInfo = getPageInfo(pageNum, pageSize, surveys);
-
-        List<Survey> surveyList = new ArrayList<>();
-        if(surveys.hasContent()) {
-            surveyList = surveys.getContent();
-        }
-
-        return SurveyAdminListResponse.of(surveyList, pageInfo);
+    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable, String username) {
+        Page<Survey> surveyList = surveyRepository.findAll(pageable, username);
+        return SurveyAdminListResponse.of(surveyList);
     }
 
     public Survey getAdminSurvey(Long surveyId) {

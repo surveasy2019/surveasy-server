@@ -82,8 +82,9 @@ public class SurveyController {
 
     @Operation(summary = "Admin 설문 리스트")
     @GetMapping("/admin")
-    public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable) {
-        return surveyService.getAdminSurveyList(pageable);
+    public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable,
+                                                      @RequestParam(required = false) final String username) {
+        return surveyService.getAdminSurveyList(pageable, username);
     }
 
     @Operation(summary = "Admin 설문 1개 상세 정보")

@@ -83,8 +83,8 @@ public class SurveyServiceImpl implements SurveyService {
         return surveyHelper.getSurveyAppListDetail(surveyId);
     }
 
-    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
-        return surveyHelper.getAdminSurveyList(pageable);
+    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable, String username) {
+        return surveyHelper.getAdminSurveyList(pageable, username);
     }
 
     public Survey getAdminSurvey(Long surveyId) {

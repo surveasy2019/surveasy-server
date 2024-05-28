@@ -1,6 +1,7 @@
 package surveasy.domain.survey.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.domain.option.SurveyLanguage;
 import surveasy.domain.survey.domain.target.TargetAge;
@@ -64,6 +66,28 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                 .fetchFirst();
     }
 
+    @Override
+    public Page<Survey> findAll(Pageable pageable, String username) {
+        List<Survey> surveyList = jpaQueryFactory
+                .select(survey)
+                .from(survey)
+                .where(
+                        eqUsername(username)
+                )
+                .orderBy(survey.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = jpaQueryFactory
+                .select(survey.count())
+                .from(survey)
+                .where(
+                        eqUsername(username)
+                );
+
+        return PageableExecutionUtils.getPage(surveyList, pageable, count::fetchOne);
+    }
 
     @Override
     public Page<SurveyListVo> findAllSurveyListVos(Pageable pageable) {
@@ -244,7 +268,11 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     private BooleanExpression eqEmail(String email) {
-        return survey.email.eq(email);
+        return email != null ? survey.email.eq(email) : null;
+    }
+
+    private BooleanExpression eqUsername(String username) {
+        return username != null ? survey.username.containsIgnoreCase(username) : null;
     }
 
     private BooleanExpression eqStatus(SurveyStatus status) {

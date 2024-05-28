@@ -29,7 +29,7 @@ public interface SurveyService {
 
     SurveyIdResponse deleteMyPageSurvey(Long surveyId);
 
-    SurveyAdminListResponse getAdminSurveyList(Pageable pageable);
+    SurveyAdminListResponse getAdminSurveyList(Pageable pageable, String username);
 
     Survey getAdminSurvey(Long surveyId);
 
