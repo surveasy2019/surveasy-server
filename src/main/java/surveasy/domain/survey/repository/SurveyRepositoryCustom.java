@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public interface SurveyRepositoryCustom {
 
-    Long findMaxSid();
+    long findMaxSid();
 
-    Long countByStatusInProgressOrDone();
+    long countByStatusInProgressOrDone();
 
-    Long countByEmailAndStatus(String email, SurveyStatus status);
+    long countByEmailAndStatus(String email, SurveyStatus status);
 
     Page<SurveyListVo> findAllSurveyListVos(Pageable pageable);
 

@@ -4,8 +4,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
@@ -16,7 +16,7 @@ import surveasy.global.config.user.PanelDetails;
 public interface SurveyService {
     SurveyHomeResponse getSurveyTotalCount();
 
-    SurveyIdResponse createSurvey(SurveyServiceDTO surveyServiceDTO);
+    SurveyIdResponse createSurvey(SurveyCreateRequestDto surveyCreateRequestDto);
 
     SurveyListResponse getSurveyList(Pageable pageable);
 

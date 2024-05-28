@@ -14,7 +14,7 @@ import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
@@ -45,8 +45,8 @@ public class SurveyController {
 
     @Operation(summary = "Web 설문 주문하기")
     @PostMapping("")
-    public SurveyIdResponse createSurvey(@RequestBody @Valid SurveyServiceDTO surveyServiceDTO) {
-        return surveyService.createSurvey(surveyServiceDTO);
+    public SurveyIdResponse createSurvey(@RequestBody @Valid SurveyCreateRequestDto surveyCreateRequestDto) {
+        return surveyService.createSurvey(surveyCreateRequestDto);
     }
 
     @Operation(summary = "Web 설문 리스트 불러오기")

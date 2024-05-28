@@ -10,23 +10,19 @@ import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.exception.SurveyCannotDelete;
 import surveasy.domain.survey.exception.SurveyCannotEdit;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.repository.SurveyRepository;
-import surveasy.domain.survey.vo.SurveyAppHomeVo;
-import surveasy.domain.survey.vo.SurveyAppListDetailVo;
-import surveasy.domain.survey.vo.SurveyAppListVo;
-import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
+import surveasy.domain.survey.vo.*;
 import surveasy.global.common.dto.PageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -54,17 +50,18 @@ public class SurveyHelper {
 
 
     /* [Web] 홈화면 진행중인 설문 개수 */
-    public Long getSurveyTotalCount() {
+    public long getSurveyTotalCount() {
         return 1311 + surveyRepository.countByStatusInProgressOrDone();
+    }
+
+    public Page<SurveyListVo> findAllSurveyListVos(Pageable pageable) {
+        return surveyRepository.findAllSurveyListVos(pageable);
     }
 
 
     /* [Web] 설문 주문하기 */
-    public Long createSurvey(SurveyServiceDTO surveyServiceDTO) {
-        Survey newSurvey = surveyMapper.toEntity(surveyServiceDTO);
-        Survey savedSurvey = surveyRepository.save(newSurvey);
-
-        return savedSurvey.getId();
+    public Long saveSurvey(Survey survey) {
+        return surveyRepository.save(survey).getId();
     }
 
 

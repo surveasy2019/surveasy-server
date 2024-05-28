@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SurveyServiceDTO {
+public class SurveyCreateRequestDto {
 
     /* Service 1 */
     @NotNull
