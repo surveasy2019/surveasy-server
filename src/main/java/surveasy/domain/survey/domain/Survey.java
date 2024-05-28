@@ -12,7 +12,7 @@ import surveasy.domain.survey.domain.option.SurveyLanguage;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.global.common.util.ListAndStringUtils;
 
 import java.time.LocalDateTime;
@@ -159,27 +159,27 @@ public class Survey {
         this.responseCount = 0;
     }
 
-    public static Survey from(SurveyServiceDTO surveyServiceDTO) {
+    public static Survey from(SurveyCreateRequestDto surveyCreateRequestDto) {
         return Survey.builder()
-                .headCount(surveyServiceDTO.getHeadCount())
-                .spendTime(surveyServiceDTO.getSpendTime())
-                .dueDate(surveyServiceDTO.getDueDate())
-                .targetGender(surveyServiceDTO.getTargetGender())
-                .targetAgeList(surveyServiceDTO.getTargetAgeList())
-                .language(surveyServiceDTO.getLanguage())
-                .identity(surveyServiceDTO.getIdentity())
-                .title(surveyServiceDTO.getTitle())
-                .targetInput(surveyServiceDTO.getTargetInput())
-                .institute(surveyServiceDTO.getInstitute())
-                .link(surveyServiceDTO.getLink())
-                .description(surveyServiceDTO.getDescription())
-                .notice(surveyServiceDTO.getNotice())
-                .accountName(surveyServiceDTO.getAccountName())
-                .price(surveyServiceDTO.getPrice())
-                .priceDiscounted(surveyServiceDTO.getPriceDiscounted())
-                .pointAdd(surveyServiceDTO.getPointAdd())
-                .email(surveyServiceDTO.getEmail())
-                .username(surveyServiceDTO.getUsername())
+                .headCount(surveyCreateRequestDto.getHeadCount())
+                .spendTime(surveyCreateRequestDto.getSpendTime())
+                .dueDate(surveyCreateRequestDto.getDueDate())
+                .targetGender(surveyCreateRequestDto.getTargetGender())
+                .targetAgeList(surveyCreateRequestDto.getTargetAgeList())
+                .language(surveyCreateRequestDto.getLanguage())
+                .identity(surveyCreateRequestDto.getIdentity())
+                .title(surveyCreateRequestDto.getTitle())
+                .targetInput(surveyCreateRequestDto.getTargetInput())
+                .institute(surveyCreateRequestDto.getInstitute())
+                .link(surveyCreateRequestDto.getLink())
+                .description(surveyCreateRequestDto.getDescription())
+                .notice(surveyCreateRequestDto.getNotice())
+                .accountName(surveyCreateRequestDto.getAccountName())
+                .price(surveyCreateRequestDto.getPrice())
+                .priceDiscounted(surveyCreateRequestDto.getPriceDiscounted())
+                .pointAdd(surveyCreateRequestDto.getPointAdd())
+                .email(surveyCreateRequestDto.getEmail())
+                .username(surveyCreateRequestDto.getUsername())
                 .build();
     }
 }

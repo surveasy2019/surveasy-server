@@ -1,7 +1,9 @@
 package surveasy.domain.survey.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -12,18 +14,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.response.domain.QResponse;
-import surveasy.domain.survey.domain.QSurvey;
+import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.domain.option.SurveyLanguage;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.vo.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static surveasy.domain.survey.domain.QSurvey.survey;
+import static surveasy.domain.response.domain.QResponse.response;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,227 +36,286 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Long findMaxSid() {
-        QSurvey qSurvey = QSurvey.survey;
-
+    public long findMaxSid() {
         return jpaQueryFactory
-                .select(qSurvey.sid.max())
-                .from(qSurvey)
+                .select(survey.sid.max())
+                .from(survey)
                 .fetchOne();
     }
 
     @Override
-    public Long countByStatusInProgressOrDone() {
-        QSurvey qSurvey = QSurvey.survey;
+    public long countByStatusInProgressOrDone() {
         return jpaQueryFactory
-                .select(qSurvey.count())
-                .from(qSurvey)
-                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE))
+                .select(survey.count())
+                .from(survey)
+                .where(
+                        inVisibleStatus()
+                )
                 .fetchFirst();
     }
 
     @Override
-    public Long countByEmailAndStatus(String email, SurveyStatus status) {
-        QSurvey qSurvey = QSurvey.survey;
-
+    public long countByEmailAndStatus(String email, SurveyStatus status) {
         return jpaQueryFactory
-                .select(qSurvey.count())
-                .from(qSurvey)
-                .where(qSurvey.email.eq(email), qSurvey.status.eq(status))
+                .select(survey.count())
+                .from(survey)
+                .where(
+                        eqEmail(email),
+                        eqStatus(status)
+                )
                 .fetchFirst();
     }
 
+    @Override
+    public Page<Survey> findAll(Pageable pageable, String username) {
+        List<Survey> surveyList = jpaQueryFactory
+                .select(survey)
+                .from(survey)
+                .where(
+                        eqUsername(username)
+                )
+                .orderBy(survey.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = jpaQueryFactory
+                .select(survey.count())
+                .from(survey)
+                .where(
+                        eqUsername(username)
+                );
+
+        return PageableExecutionUtils.getPage(surveyList, pageable, count::fetchOne);
+    }
 
     @Override
     public Page<SurveyListVo> findAllSurveyListVos(Pageable pageable) {
-        QSurvey qSurvey = QSurvey.survey;
         List<SurveyListVo> surveyListVos;
         JPAQuery<Long> count;
 
         surveyListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyListVo.class,
-                        qSurvey.sid,
-                        qSurvey.title,
-                        qSurvey.link,
-                        qSurvey.status,
-                        qSurvey.dueDate,
-                        qSurvey.targetInput,
-                        qSurvey.headCount,
-                        qSurvey.responseCount,
-                        qSurvey.username))
-                .from(qSurvey)
-                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE))
-                .orderBy(qSurvey.id.desc())
+                        survey.sid,
+                        survey.title,
+                        survey.link,
+                        survey.status,
+                        survey.dueDate,
+                        survey.targetInput,
+                        survey.headCount,
+                        survey.responseCount,
+                        survey.username))
+                .from(survey)
+                .where(
+                        inVisibleStatus()
+                )
+                .orderBy(survey.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        count = jpaQueryFactory.select(qSurvey.count())
-                .from(qSurvey)
-                .where(qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE));
+        count = jpaQueryFactory.select(survey.count())
+                .from(survey)
+                .where(
+                        inVisibleStatus()
+                );
 
         return PageableExecutionUtils.getPage(surveyListVos, pageable, count::fetchOne);
     }
 
     @Override
     public List<SurveyMyPageOrderVo> findAllSurveyMyPageVosByEmail(String email) {
-        QSurvey qSurvey = QSurvey.survey;
-
         return jpaQueryFactory
                 .select(Projections.constructor(SurveyMyPageOrderVo.class,
-                        qSurvey.id,
-                        qSurvey.sid,
-                        qSurvey.title,
-                        qSurvey.headCount,
-                        qSurvey.responseCount,
-                        qSurvey.spendTime,
-                        qSurvey.targetAgeListStr,
-                        qSurvey.targetGender,
-                        qSurvey.status,
-                        qSurvey.price,
-                        qSurvey.identity,
-                        qSurvey.link,
-                        qSurvey.uploadedAt,
-                        qSurvey.dueDate,
-                        qSurvey.reviewId))
-                .from(qSurvey)
-                .where(qSurvey.email.eq(email))
-                .orderBy(qSurvey.id.desc())
+                        survey.id,
+                        survey.sid,
+                        survey.title,
+                        survey.headCount,
+                        survey.responseCount,
+                        survey.spendTime,
+                        survey.targetAgeListStr,
+                        survey.targetGender,
+                        survey.status,
+                        survey.price,
+                        survey.identity,
+                        survey.link,
+                        survey.uploadedAt,
+                        survey.dueDate,
+                        survey.reviewId))
+                .from(survey)
+                .where(
+                        eqEmail(email)
+                )
+                .orderBy(survey.id.desc())
                 .fetch();
-    }
-
-    private BooleanBuilder getLanguageBuilder(Boolean english) {
-        QSurvey qSurvey = QSurvey.survey;
-        BooleanBuilder languageBuilder = new BooleanBuilder();
-        if(english)
-            languageBuilder.and(qSurvey.language.in(SurveyLanguage.KOR, SurveyLanguage.ENG));
-        else
-            languageBuilder.and(qSurvey.language.eq(SurveyLanguage.KOR));
-
-        return languageBuilder;
     }
 
     @Override
     public List<SurveyAppHomeVo> findAllSurveyAppHomeVos(Panel panel) {
-        QSurvey qSurvey = QSurvey.survey;
-        QResponse qResponse = QResponse.response;
-
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekBefore = now.minusDays(8);
 
         return jpaQueryFactory
                 .select(Projections.constructor(SurveyAppHomeVo.class,
-                        qSurvey.id,
-                        qSurvey.title,
-                        qSurvey.targetInput,
-                        qSurvey.reward,
-                        qSurvey.responseCount))
-                .from(qSurvey)
-                .leftJoin(qResponse)
+                        survey.id,
+                        survey.title,
+                        survey.targetInput,
+                        survey.reward,
+                        survey.responseCount))
+                .from(survey)
+                .leftJoin(response)
                 .on(
-                        qResponse.survey.eq(qSurvey),
-                        qResponse.panel.eq(panel),
-                        qResponse.createdAt.between(oneWeekBefore, now))
+                        response.survey.eq(survey),
+                        response.panel.eq(panel),
+                        response.createdAt.between(oneWeekBefore, now))
                 .where(
-                        qResponse.isNull(),
-                        qSurvey.status.eq(SurveyStatus.IN_PROGRESS),
-                        qSurvey.dueDate.after(LocalDateTime.now()),
-                        qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
-                        qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
-                        getLanguageBuilder(panel.getEnglish()))
-                .orderBy(qSurvey.dueDate.asc())
+                        response.isNull(),
+                        eqStatus(SurveyStatus.IN_PROGRESS),
+                        dueDateAfterNow(),
+                        inTargetGender(panel.getGender()),
+                        inTargetAge(panel.getBirth()),
+                        getLanguageBuilder(panel.getEnglish())
+                )
+                .orderBy(survey.dueDate.asc())
                 .limit(3)
                 .fetch();
     }
 
     @Override
     public Page<SurveyAppListVo> findAllSurveyAppListVos(Panel panel, Pageable pageable) {
-        QSurvey qSurvey = QSurvey.survey;
-        QResponse qResponse = QResponse.response;
-
         List<SurveyAppListVo> surveyAppListVos;
         JPAQuery<Long> count;
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekBefore = now.minusDays(8);
 
-        BooleanBuilder languageBuilder = getLanguageBuilder(panel.getEnglish());
-
-        NumberExpression<Integer> overDueOrder = new CaseBuilder()
-                .when(qSurvey.dueDate.after(now)).then(0)
-                .otherwise(1);
-
-        NumberExpression<Integer> statusOrder = new CaseBuilder()
-                .when(qSurvey.status.eq(SurveyStatus.IN_PROGRESS)).then(0)
-                .otherwise(1);
-
         surveyAppListVos = jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListVo.class,
-                    qSurvey.id,
-                    qSurvey.title,
-                    qSurvey.reward,
-                    qSurvey.headCount,
-                    qSurvey.spendTime,
-                    qSurvey.targetInput,
-                    qSurvey.status,
-                    qSurvey.responseCount,
-                    qSurvey.dueDate,
-                    qResponse))
-                .from(qSurvey)
-                .leftJoin(qResponse)
+                    survey.id,
+                    survey.title,
+                    survey.reward,
+                    survey.headCount,
+                    survey.spendTime,
+                    survey.targetInput,
+                    survey.status,
+                    survey.responseCount,
+                    survey.dueDate,
+                    response))
+                .from(survey)
+                .leftJoin(response)
                 .on(
-                        qResponse.survey.eq(qSurvey),
-                        qResponse.panel.eq(panel),
-                        qResponse.createdAt.between(oneWeekBefore, now))
+                        response.survey.eq(survey),
+                        response.panel.eq(panel),
+                        response.createdAt.between(oneWeekBefore, now))
                 .where(
-                        qSurvey.sid.gt(0),
-                        qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
-                        qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
-                        qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
-                        languageBuilder)
-                .orderBy(statusOrder.asc(), overDueOrder.asc(), qResponse.id.asc(), qSurvey.dueDate.asc())
+                        sidGtZero(),
+                        inVisibleStatus(),
+                        inTargetGender(panel.getGender()),
+                        inTargetAge(panel.getBirth()),
+                        getLanguageBuilder(panel.getEnglish())
+                )
+                .orderBy(
+                        statusOrder().asc(),
+                        overdueOrder(now).asc(),
+                        response.id.asc(),
+                        survey.dueDate.asc()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        count = jpaQueryFactory.select(qSurvey.count())
-                .from(qSurvey)
-                .leftJoin(qResponse)
+        count = jpaQueryFactory.select(survey.count())
+                .from(survey)
+                .leftJoin(response)
                 .on(
-                        qResponse.survey.eq(qSurvey),
-                        qResponse.panel.eq(panel),
-                        qResponse.createdAt.between(oneWeekBefore, now))
+                        response.survey.eq(survey),
+                        response.panel.eq(panel),
+                        response.createdAt.between(oneWeekBefore, now))
                 .where(
-                        qSurvey.sid.gt(0),
-                        qSurvey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE),
-                        qSurvey.targetGender.in(TargetGender.ALL, panel.getGender()),
-                        qSurvey.targetAgeListStr.eq("ALL")
-                                .or(qSurvey.targetAgeListStr.contains(TargetAge.from(panel.getBirth()).toString())),
-                        languageBuilder);
+                        sidGtZero(),
+                        inVisibleStatus(),
+                        inTargetGender(panel.getGender()),
+                        inTargetAge(panel.getBirth()),
+                        getLanguageBuilder(panel.getEnglish())
+                );
 
         return PageableExecutionUtils.getPage(surveyAppListVos, pageable, count::fetchOne);
     }
 
     @Override
     public Optional<SurveyAppListDetailVo> findSurveyAppListDetailVo(Long surveyId) {
-        QSurvey qSurvey = QSurvey.survey;
-
         return Optional.ofNullable(jpaQueryFactory
                 .select(Projections.constructor(SurveyAppListDetailVo.class,
-                        qSurvey.id,
-                        qSurvey.title,
-                        qSurvey.reward,
-                        qSurvey.headCount,
-                        qSurvey.spendTime,
-                        qSurvey.responseCount,
-                        qSurvey.targetInput,
-                        qSurvey.noticeToPanel,
-                        qSurvey.link,
-                        qSurvey.description))
-                .from(qSurvey)
-                .where(qSurvey.id.eq(surveyId))
+                        survey.id,
+                        survey.title,
+                        survey.reward,
+                        survey.headCount,
+                        survey.spendTime,
+                        survey.responseCount,
+                        survey.targetInput,
+                        survey.noticeToPanel,
+                        survey.link,
+                        survey.description))
+                .from(survey)
+                .where(
+                        eqSurveyId(surveyId)
+                )
                 .fetchFirst());
+    }
+
+    private BooleanExpression eqSurveyId(Long surveyId) {
+        return surveyId != null ? survey.id.eq(surveyId) : null;
+    }
+
+    private BooleanExpression eqEmail(String email) {
+        return email != null ? survey.email.eq(email) : null;
+    }
+
+    private BooleanExpression eqUsername(String username) {
+        return username != null ? survey.username.containsIgnoreCase(username) : null;
+    }
+
+    private BooleanExpression eqStatus(SurveyStatus status) {
+        return status != null ? survey.status.eq(status) : null;
+    }
+
+    private BooleanExpression sidGtZero() {
+        return survey.sid.gt(0);
+    }
+
+    private BooleanExpression dueDateAfterNow() {
+        LocalDateTime now = LocalDateTime.now();
+        return survey.dueDate.after(now);
+    }
+
+    private BooleanExpression inVisibleStatus() {
+        return survey.status.in(SurveyStatus.IN_PROGRESS, SurveyStatus.DONE);
+    }
+
+    private BooleanExpression inTargetGender(TargetGender targetGender) {
+        return targetGender != null ? survey.targetGender.in(TargetGender.ALL, targetGender) : null;
+    }
+
+    private BooleanExpression inTargetAge(LocalDate birth) {
+        return birth != null ? survey.targetAgeListStr.eq("ALL").or(survey.targetAgeListStr.contains(TargetAge.from(birth).toString())) : null;
+    }
+
+    private BooleanBuilder getLanguageBuilder(Boolean english) {
+        if(english)
+            return new BooleanBuilder().and(survey.language.in(SurveyLanguage.KOR, SurveyLanguage.ENG));
+        else
+            return new BooleanBuilder().and(survey.language.eq(SurveyLanguage.KOR));
+    }
+
+    private NumberExpression<Integer> overdueOrder(LocalDateTime now) {
+        return new CaseBuilder()
+                .when(survey.dueDate.after(now)).then(0)
+                .otherwise(1);
+    }
+
+    private NumberExpression<Integer> statusOrder() {
+        return new CaseBuilder()
+                .when(survey.status.eq(SurveyStatus.IN_PROGRESS)).then(0)
+                .otherwise(1);
     }
 }

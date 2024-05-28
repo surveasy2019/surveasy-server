@@ -2,6 +2,7 @@ package surveasy.domain.survey.dto.response.web;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.global.common.dto.PageInfo;
 
@@ -19,10 +20,11 @@ public class SurveyAdminListResponse {
         this.pageInfo = pageInfo;
     }
 
-    public static SurveyAdminListResponse of(List<Survey> surveyList, PageInfo pageInfo) {
+    public static SurveyAdminListResponse of(Page<Survey> surveyList) {
+        PageInfo pageInfo = PageInfo.from(surveyList);
         return SurveyAdminListResponse.builder()
+                .surveyList(surveyList.getContent())
                 .pageInfo(pageInfo)
-                .surveyList(surveyList)
                 .build();
     }
 
