@@ -8,6 +8,7 @@ import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.service.SurveyService;
+import surveasy.domain.survey.service.SurveyServiceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
