@@ -2,6 +2,7 @@ package surveasy.domain.survey.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
@@ -36,9 +37,9 @@ public interface SurveyService {
 
     void deleteAdminSurvey(Long surveyId);
 
-    SurveyAppHomeListResponse getSurveyAppHomeList(PanelDetails panelDetails);
+    SurveyAppHomeListResponse getSurveyAppHomeList(Panel panel);
 
-    SurveyAppListResponse getSurveyAppList(PanelDetails panelDetails, Pageable pageable);
+    SurveyAppListResponse getSurveyAppList(Panel panel, Pageable pageable);
 
     SurveyAppListDetailVo getSurveyAppListDetail(Long surveyId);
 }

@@ -384,4 +384,8 @@ public class PanelHelper {
     public List<PanelAdminCsvVo> findAllPanelAdminCsvVos() {
         return panelRepository.findAllPanelAdminCsvVos();
     }
+
+    public void deletePanel(Panel panel) {
+        panelRepository.delete(panel);
+    }
 }

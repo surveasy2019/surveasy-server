@@ -8,14 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.dto.request.*;
 import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.service.PanelService;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
-import surveasy.global.config.user.PanelDetails;
+import surveasy.global.common.annotation.CurrentPanel;
 
 import java.util.concurrent.ExecutionException;
 
@@ -48,9 +48,9 @@ public class PanelController {
 
     @PostMapping("/signup")
     @Operation(summary = "App 신규 패널 추가 정보 입력")
-    public PanelTokenResponse signUp(@AuthenticationPrincipal PanelDetails panelDetails,
-                                  @RequestBody @Valid PanelSignUpDTO panelSignUpDTO) {
-        return panelService.signUp(panelDetails, panelSignUpDTO);
+    public PanelTokenResponse signUp(@CurrentPanel Panel panel,
+                                     @RequestBody @Valid PanelSignUpDTO panelSignUpDTO) {
+        return panelService.signUp(panel, panelSignUpDTO);
     }
 
     @PostMapping("/signup/apple")
@@ -61,9 +61,9 @@ public class PanelController {
 
     @PostMapping("/first-survey")
     @Operation(summary = "App 패널 First Survey")
-    public PanelIdResponse doFirstSurvey(@AuthenticationPrincipal PanelDetails panelDetails,
+    public PanelIdResponse doFirstSurvey(@CurrentPanel Panel panel,
                                          @RequestBody @Valid PanelFirstSurveyDTO panelFirstSurveyDTO) {
-        return panelService.doFirstSurvey(panelDetails, panelFirstSurveyDTO);
+        return panelService.doFirstSurvey(panel, panelFirstSurveyDTO);
     }
 
     @PostMapping("/reissue")
@@ -74,41 +74,41 @@ public class PanelController {
 
     @GetMapping("/signout")
     @Operation(summary = "App 패널 로그아웃")
-    public void signOut(@AuthenticationPrincipal PanelDetails panelDetails) {
-        panelService.signOut(panelDetails);
+    public void signOut(@CurrentPanel Panel panel) {
+        panelService.signOut(panel);
     }
 
     @DeleteMapping ("/withdraw")
     @Operation(summary = "App 패널 탈퇴")
-    public PanelAuthProviderResponse withdraw(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return panelService.withdraw(panelDetails);
+    public PanelAuthProviderResponse withdraw(@CurrentPanel Panel panel) {
+        return panelService.withdraw(panel);
     }
 
     @GetMapping("/home")
     @Operation(summary = "App 홈화면 패널 정보 불러오기")
-    public PanelHomeInfoResponse getPanelHomeInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return panelService.getPanelHomeInfo(panelDetails);
+    public PanelHomeInfoResponse getPanelHomeInfo(@CurrentPanel Panel panel) {
+        return panelService.getPanelHomeInfo(panel);
     }
 
     @GetMapping("/response")
     @Operation(summary = "App 마이페이지 정산 예정 금액 & 계좌 정보")
-    public ResponseEntity<PanelResponseInfoVo> getPanelMyPageResponseInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return ResponseEntity.ok(panelService.getPanelResponseInfoVo(panelDetails));
+    public ResponseEntity<PanelResponseInfoVo> getPanelMyPageResponseInfo(@CurrentPanel Panel panel) {
+        return ResponseEntity.ok(panelService.getPanelResponseInfoVo(panel));
     }
 
 
     @GetMapping("")
     @Operation(summary = "App 마이페이지 패널 정보 불러오기")
-    public ResponseEntity<PanelInfoVo> getPanelMyPageInfo(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return ResponseEntity.ok(panelService.getPanelInfoVo(panelDetails));
+    public ResponseEntity<PanelInfoVo> getPanelMyPageInfo(@CurrentPanel Panel panel) {
+        return ResponseEntity.ok(panelService.getPanelInfoVo(panel));
     }
 
     @PatchMapping("")
     @Operation(summary = "App 마이페이지 패널 정보 수정하기")
     public ResponseEntity<PanelInfoVo> updatePanelInfo(
-            @AuthenticationPrincipal PanelDetails panelDetails,
+            @CurrentPanel Panel panel,
             @RequestBody PanelInfoUpdateDTO panelInfoUpdateDTO) {
-        return ResponseEntity.ok(panelService.updatePanelInfo(panelDetails, panelInfoUpdateDTO));
+        return ResponseEntity.ok(panelService.updatePanelInfo(panel, panelInfoUpdateDTO));
     }
 
     @GetMapping("/admin")

@@ -71,13 +71,11 @@ public class SurveyServiceImpl implements SurveyService {
         return surveyMapper.toSurveyIdResponse(surveyHelper.deleteMyPageSurvey(id));
     }
 
-    public SurveyAppHomeListResponse getSurveyAppHomeList(PanelDetails panelDetails) {
-        final Panel panel = panelDetails.getPanel();
+    public SurveyAppHomeListResponse getSurveyAppHomeList(Panel panel) {
         return surveyMapper.toSurveyAppHomeList(surveyHelper.getSurveyAppHomeList(panel), panel.getStatus());
     }
 
-    public SurveyAppListResponse getSurveyAppList(PanelDetails panelDetails, Pageable pageable) {
-        final Panel panel = panelDetails.getPanel();
+    public SurveyAppListResponse getSurveyAppList(Panel panel, Pageable pageable) {
         return surveyMapper.toSurveyAppList(surveyHelper.getSurveyAppList(panel, pageable), panel.getStatus());
     }
 
