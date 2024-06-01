@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.service.SurveyService;
 
@@ -23,8 +23,8 @@ public class SurveyServiceTest {
     @DisplayName("설문 주문 추가하기")
     public void createSurvey() throws Exception {
         // given
-        SurveyServiceDTO surveyServiceDTO = null;
-//        SurveyServiceDTO surveyServiceDTO = SurveyServiceDTO.builder()
+        SurveyCreateRequestDto surveyCreateRequestDto = null;
+//        SurveyCreateRequestDto surveyCreateRequestDto = SurveyCreateRequestDto.builder()
 //                .english(false)
 //                .accountName("계좌주")
 //                .dueDate(new Date())
@@ -46,7 +46,7 @@ public class SurveyServiceTest {
 //                .build();
 
         // when
-        surveyService.createSurvey(surveyServiceDTO);
+        surveyService.createSurvey(surveyCreateRequestDto);
         Survey findSurvey = surveyRepository.findById(1L).orElseThrow();
 
         // then

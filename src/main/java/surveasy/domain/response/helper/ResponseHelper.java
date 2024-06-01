@@ -185,4 +185,8 @@ public class ResponseHelper {
     public void doneAggregation() {
         jobLauncherService.runJobs();
     }
+
+    public void deleteAllByPanelId(Long panelId) {
+        responseRepository.deleteAllByPanelId(panelId);
+    }
 }

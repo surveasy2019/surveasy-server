@@ -3,6 +3,7 @@ package surveasy.domain.survey.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import surveasy.domain.panel.domain.Panel;
+import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.vo.*;
 
@@ -11,11 +12,13 @@ import java.util.Optional;
 
 public interface SurveyRepositoryCustom {
 
-    Long findMaxSid();
+    long findMaxSid();
 
-    Long countByStatusInProgressOrDone();
+    long countByStatusInProgressOrDone();
 
-    Long countByEmailAndStatus(String email, SurveyStatus status);
+    long countByEmailAndStatus(String email, SurveyStatus status);
+
+    Page<Survey> findAll(Pageable pageable, String username);
 
     Page<SurveyListVo> findAllSurveyListVos(Pageable pageable);
 

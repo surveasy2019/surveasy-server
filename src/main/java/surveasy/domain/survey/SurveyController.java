@@ -8,19 +8,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.service.SurveyService;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
-import surveasy.global.config.user.PanelDetails;
+import surveasy.global.common.annotation.CurrentPanel;
 
 @Slf4j
 @RestController
@@ -45,8 +45,8 @@ public class SurveyController {
 
     @Operation(summary = "Web 설문 주문하기")
     @PostMapping("")
-    public SurveyIdResponse createSurvey(@RequestBody @Valid SurveyServiceDTO surveyServiceDTO) {
-        return surveyService.createSurvey(surveyServiceDTO);
+    public SurveyIdResponse createSurvey(@RequestBody @Valid SurveyCreateRequestDto surveyCreateRequestDto) {
+        return surveyService.createSurvey(surveyCreateRequestDto);
     }
 
     @Operation(summary = "Web 설문 리스트 불러오기")
@@ -69,7 +69,8 @@ public class SurveyController {
 
     @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headcount, price")
     @PatchMapping("/{surveyId}")
-    public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId, @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
+    public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId,
+                                             @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
         return surveyService.editMyPageSurvey(surveyId, surveyMyPageEditDTO);
     }
 
@@ -81,8 +82,9 @@ public class SurveyController {
 
     @Operation(summary = "Admin 설문 리스트")
     @GetMapping("/admin")
-    public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable) {
-        return surveyService.getAdminSurveyList(pageable);
+    public SurveyAdminListResponse getAdminSurveyList(@PageableDefault(size = 10) Pageable pageable,
+                                                      @RequestParam(required = false) final String username) {
+        return surveyService.getAdminSurveyList(pageable, username);
     }
 
     @Operation(summary = "Admin 설문 1개 상세 정보")
@@ -93,7 +95,8 @@ public class SurveyController {
 
     @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link, dueDate, headCount")
     @PatchMapping("/admin/{surveyId}")
-    public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId, @RequestBody SurveyAdminDTO surveyAdminDTO) {
+    public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId,
+                                              @RequestBody SurveyAdminDTO surveyAdminDTO) {
         return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
     }
 
@@ -105,15 +108,15 @@ public class SurveyController {
 
     @Operation(summary = "App 홈화면 설문 리스트")
     @GetMapping("/app/home")
-    public SurveyAppHomeListResponse getSurveyAppHomeList(@AuthenticationPrincipal PanelDetails panelDetails) {
-        return surveyService.getSurveyAppHomeList(panelDetails);
+    public SurveyAppHomeListResponse getSurveyAppHomeList(@CurrentPanel Panel panel) {
+        return surveyService.getSurveyAppHomeList(panel);
     }
 
     @Operation(summary = "App 설문 리스트")
     @GetMapping("/app")
-    public SurveyAppListResponse getSurveyAppList(@AuthenticationPrincipal PanelDetails panelDetails,
+    public SurveyAppListResponse getSurveyAppList(@CurrentPanel Panel panel,
                                                   @PageableDefault(size = 10) Pageable pageable) {
-        return surveyService.getSurveyAppList(panelDetails, pageable);
+        return surveyService.getSurveyAppList(panel, pageable);
     }
 
     @Operation(summary = "App 설문 1개 상세 정보")

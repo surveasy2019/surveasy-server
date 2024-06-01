@@ -1,114 +1,45 @@
 package surveasy.domain.survey.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.web.SurveyServiceDTO;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
-import surveasy.domain.survey.helper.SurveyHelper;
-import surveasy.domain.survey.mapper.SurveyMapper;
-import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
-import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.global.config.user.PanelDetails;
 
-import java.util.List;
-
-@Slf4j
 @Service
-@RequiredArgsConstructor
-public class SurveyService {
+public interface SurveyService {
+    SurveyHomeResponse getSurveyTotalCount();
 
-    private final SurveyRepository surveyRepository;
-    private final SurveyHelper surveyHelper;
-    private final SurveyMapper surveyMapper;
-    private final PanelHelper panelHelper;
+    SurveyIdResponse createSurvey(SurveyCreateRequestDto surveyCreateRequestDto);
 
-    @Transactional
-    public SurveyIdResponse createSurvey(SurveyServiceDTO surveyServiceDTO) {
-        return surveyMapper.toSurveyIdResponse(surveyHelper.createSurvey(surveyServiceDTO));
-    }
+    SurveyListResponse getSurveyList(Pageable pageable);
 
-    @Transactional
-    public SurveyHomeResponse getSurveyTotalCount() {
-        return surveyMapper.toSurveyHomeResponse(
-                surveyHelper.getSurveyTotalCount(), panelHelper.getPanelCount());
-    }
+    SurveyMyPageCountResponse getMyPageSurveyCounts(String email);
 
-    @Transactional
-    public SurveyListResponse getSurveyList(Pageable pageable) {
-        Page<SurveyListVo> surveyList = surveyRepository.findAllSurveyListVos(pageable);
-        return surveyMapper.toSurveyListResponse(surveyList);
-    }
+    SurveyMyPageOrderListResponse getSurveyMyPageOrderList(String email);
 
-    @Transactional
-    public SurveyMyPageOrderListResponse getSurveyMyPageOrderList(String email) {
-        return surveyMapper.toSurveyMyPageOrderListResponse(surveyHelper.getMyPageOrderList(email));
-    }
+    SurveyIdResponse editMyPageSurvey(Long surveyId, SurveyMyPageEditDTO surveyMyPageEditDTO);
 
-    @Transactional
-    public SurveyMyPageCountResponse getMyPageSurveyCounts(String email) {
-        return surveyMapper.toSurveyMyPageCountResponse(
-                surveyHelper.getMyPageSurveyCount(email, SurveyStatus.IN_PROGRESS),
-                surveyHelper.getMyPageSurveyCount(email, SurveyStatus.DONE)
-        );
-    }
+    SurveyIdResponse deleteMyPageSurvey(Long surveyId);
 
-    @Transactional
-    public SurveyIdResponse editMyPageSurvey(Long id, SurveyMyPageEditDTO surveyMyPageEditDTO) {
-        return surveyMapper.toSurveyIdResponse(surveyHelper.editMyPageSurvey(id, surveyMyPageEditDTO));
-    }
+    SurveyAdminListResponse getAdminSurveyList(Pageable pageable, String username);
 
-    @Transactional
-    public SurveyIdResponse deleteMyPageSurvey(Long id) {
-        return surveyMapper.toSurveyIdResponse(surveyHelper.deleteMyPageSurvey(id));
-    }
+    Survey getAdminSurvey(Long surveyId);
 
-    @Transactional(readOnly = true)
-    public SurveyAppHomeListResponse getSurveyAppHomeList(PanelDetails panelDetails) {
-        final Panel panel = panelDetails.getPanel();
-        return surveyMapper.toSurveyAppHomeList(surveyHelper.getSurveyAppHomeList(panel), panel.getStatus());
-    }
+    SurveyIdResponse updateAdminSurvey(Long surveyId, SurveyAdminDTO surveyAdminDTO);
 
-    @Transactional(readOnly = true)
-    public SurveyAppListResponse getSurveyAppList(PanelDetails panelDetails, Pageable pageable) {
-        final Panel panel = panelDetails.getPanel();
-        return surveyMapper.toSurveyAppList(surveyHelper.getSurveyAppList(panel, pageable), panel.getStatus());
-    }
+    void deleteAdminSurvey(Long surveyId);
 
-    @Transactional(readOnly = true)
-    public SurveyAppListDetailVo getSurveyAppListDetail(Long surveyId) {
-        return surveyHelper.getSurveyAppListDetail(surveyId);
-    }
+    SurveyAppHomeListResponse getSurveyAppHomeList(Panel panel);
 
-    @Transactional(readOnly = true)
-    public SurveyAdminListResponse getAdminSurveyList(Pageable pageable) {
-        return surveyHelper.getAdminSurveyList(pageable);
-    }
+    SurveyAppListResponse getSurveyAppList(Panel panel, Pageable pageable);
 
-    @Transactional(readOnly = true)
-    public Survey getAdminSurvey(Long surveyId) {
-        return surveyHelper.getAdminSurvey(surveyId);
-    }
-
-    @Transactional
-    public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
-        return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
-    }
-
-    @Transactional
-    public void deleteAdminSurvey(Long surveyId) {
-        surveyHelper.deleteAdminSurvey(surveyId);
-    }
+    SurveyAppListDetailVo getSurveyAppListDetail(Long surveyId);
 }
