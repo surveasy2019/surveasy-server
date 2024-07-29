@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class PanelJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
 
@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             if(tokenProvider.validateToken(jwt)) {
-                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                Authentication authentication = tokenProvider.getPanelAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 throw TokenValidateException.EXCEPTION;

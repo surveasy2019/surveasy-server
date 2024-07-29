@@ -30,6 +30,7 @@ import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
 import surveasy.global.common.dto.PageInfo;
+import surveasy.global.common.enm.AuthType;
 import surveasy.global.common.util.DateAndStringUtils;
 import surveasy.global.config.jwt.TokenProvider;
 
@@ -191,8 +192,8 @@ public class PanelHelper {
         }
 
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
 
         return panelMapper.toOAuth2Response(existingPanel, additionalInfo, accessToken, refreshToken);
     }
@@ -204,8 +205,8 @@ public class PanelHelper {
 
         if(isSignedUp) {
             final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-            final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-            final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+            final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+            final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
             return panelMapper.toOAuth2AppleResponse(true, PanelTokenResponse.of(accessToken, refreshToken));
         }
 
@@ -237,8 +238,8 @@ public class PanelHelper {
 
         Panel panel = addNewPanelApple(panelAppleSignUpDTO);
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
         return PanelTokenResponse.of(accessToken, refreshToken);
     }
 

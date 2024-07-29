@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import surveasy.domain.user.dto.request.UserSignInRequestDto;
+import surveasy.domain.user.dto.response.TokenResponseDto;
 import surveasy.domain.user.service.UserService;
 
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity signIn(@RequestBody UserSignInRequestDto signInRequestDto) {
-        userService.signIn(signInRequestDto);
-        return ResponseEntity.ok(null);
+        TokenResponseDto responseDto = userService.signIn(signInRequestDto);
+        return ResponseEntity.ok(responseDto);
     }
 }

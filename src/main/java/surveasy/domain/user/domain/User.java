@@ -45,6 +45,10 @@ public class User {
     @NotNull
     private Integer pointTotal;
 
+    @NotNull
+    @Builder.Default
+    private UserRole role = UserRole.USER;
+
     public static User createUserFromFirebase(FirebaseUserInfoVo firebaseUserInfoVo) {
         return User.builder()
                 .name(firebaseUserInfoVo.name())

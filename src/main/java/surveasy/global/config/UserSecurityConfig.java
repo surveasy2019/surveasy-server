@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,10 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import surveasy.global.config.jwt.JwtAccessDeniedHandler;
-import surveasy.global.config.jwt.JwtAuthenticationEntryPoint;
-import surveasy.global.config.jwt.PanelJwtAuthenticationFilter;
-import surveasy.global.config.jwt.JwtExceptionHandlerFilter;
+import surveasy.global.config.jwt.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,57 +27,23 @@ import java.util.List;
 @ConditionalOnDefaultWebSecurity
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class UserSecurityConfig {
 
     @Value("${server.url}")
     private String SERVER_URL;
 
-    private final PanelJwtAuthenticationFilter panelJwtAuthenticationFilter;
+    private final UserJwtAuthenticationFilter userJwtAuthenticationFilter;
     private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
-
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final String[] SwaggerPatterns = {
             "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
     };
 
-    private final String[] AdminGetPatterns = {
-            "/survey/admin/**", "/review/admin/**", "/response/admin/**", "/panel/admin/**",
-            "/file/**", "/coupon"
-    };
-
-    private final String[] AdminPostPatterns = {
-            "/coupon"
-    };
-
-    private final String[] AdminPatchPatterns = {
-            "/survey/admin/**", "/review/admin/**", "/response/admin/**", "/coupon/**"
-    };
-
-    private final String[] AdminDeletePatterns = {
-            "/survey/admin/**", "/file/**", "/coupon/**"
-    };
-
-    private final String[] UserGetPatterns = {
-            "/survey/app/**", "/response/**", "/panel/signout", "/panel/home", "/panel/response", "/panel"
-    };
-
-    private final String[] UserPostPatterns = {
-            "/response/**", "/panel/signup", "/panel/first-survey"
-    };
-
-    private final String[] UserPatchPatterns = {
-            "/response/**", "/panel"
-    };
-
-    private final String[] UserDeletePatterns = {
-            "/panel/withdraw"
-    };
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http.cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
@@ -95,31 +59,25 @@ public class WebSecurityConfig {
 
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)     // JWT 사용하기 때문
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .requestMatchers(SwaggerPatterns).permitAll()
-                .requestMatchers(HttpMethod.GET, AdminGetPatterns).hasAnyRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, AdminPostPatterns).hasAnyRole("ADMIN")
-                .requestMatchers(HttpMethod.PATCH, AdminPatchPatterns).hasAnyRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, AdminDeletePatterns).hasAnyRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, UserGetPatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
-                .requestMatchers(HttpMethod.POST, UserPostPatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
-                .requestMatchers(HttpMethod.PATCH, UserPatchPatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
-                .requestMatchers(HttpMethod.DELETE, UserDeletePatterns).hasAnyRole("USER", "ANONYMOUS","ADMIN")
+                .requestMatchers("/user/signin").permitAll()
+                .requestMatchers("/user/**").authenticated()
                 .anyRequest().permitAll()
+
                 .and()
                 .headers().frameOptions().disable();
-
 
         http.exceptionHandling()
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint);
-        http.addFilterBefore(panelJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionHandlerFilter, PanelJwtAuthenticationFilter.class);
 
+        http.addFilterBefore(userJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionHandlerFilter, UserJwtAuthenticationFilter.class);
 
         return http.build();
     }

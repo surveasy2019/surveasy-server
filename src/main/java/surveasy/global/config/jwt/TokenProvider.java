@@ -13,10 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.exception.NotRefreshToken;
 import surveasy.domain.panel.util.RedisUtil;
+import surveasy.domain.user.domain.User;
+import surveasy.global.common.enm.AuthType;
+import surveasy.global.common.enm.TokenType;
+import surveasy.global.config.user.CustomUserDetails;
+import surveasy.global.config.user.CustomUserDetailsService;
 import surveasy.global.config.user.PanelDetails;
 import surveasy.global.config.user.PanelDetailsService;
 
@@ -32,6 +38,7 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
 
     private final PanelDetailsService panelDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final RedisUtil redisUtil;
 
     private static final String AUTHORITIES_KEY = "auth";
@@ -57,15 +64,15 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(Long id, Authentication authentication) {
-        return createToken(ACCESS_KEY, id, accessTokenExpirationTime, authentication);
+    public String createAccessToken(AuthType authType, Long id, Authentication authentication) {
+        return createToken(authType, TokenType.ACCESS, id, accessTokenExpirationTime, authentication);
     }
 
-    public String createRefreshToken(Long id, Authentication authentication) {
-        return createToken(REFRESH_KEY, id, refreshTokenExpirationTIme, authentication);
+    public String createRefreshToken(AuthType authType, Long id, Authentication authentication) {
+        return createToken(authType, TokenType.REFRESH, id, refreshTokenExpirationTIme, authentication);
     }
 
-    private String createToken(String type, Long id, int expirationTime, Authentication authentication) {
+    private String createToken(AuthType authType, TokenType tokenType, Long id, int expirationTime, Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -80,14 +87,14 @@ public class TokenProvider implements InitializingBean {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject(id.toString())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim("type", type)
+                .claim("type", tokenType.toString())
                 .setIssuedAt(issuedAt)
                 .setExpiration(validity)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        if(type.equals(REFRESH_KEY)) {
-            redisUtil.setRefreshToken(id, token, expirationTime);
+        if(tokenType.equals(TokenType.REFRESH)) {
+            redisUtil.setRefreshToken(authType, id, token, expirationTime);
         }
 
         return token;
@@ -106,7 +113,12 @@ public class TokenProvider implements InitializingBean {
                 .getSubject();
     }
 
-    public Authentication getAuthentication(String token) {
+    public Authentication getUserAuthentication(String token) {
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUserId(Long.parseLong(getTokenPanelId(token)));
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+    }
+
+    public Authentication getPanelAuthentication(String token) {
         PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadUserByUserId(Long.parseLong(getTokenPanelId(token)));
         return new UsernamePasswordAuthenticationToken(panelDetails, token, panelDetails.getAuthorities());
     }
@@ -138,6 +150,17 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
+    public Authentication userAuthorizationInput(User user) {
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUserId(user.getId());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                "",
+                userDetails.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
+    }
 
     public Authentication panelAuthorizationInput(Panel panel) {
         PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadUserByUserId(panel.getId());
