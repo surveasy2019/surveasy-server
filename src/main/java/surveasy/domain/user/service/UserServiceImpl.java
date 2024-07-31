@@ -25,7 +25,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUp(UserSignUpRequestDto signUpRequestDto) {
         validateExistingUser(signUpRequestDto);
-        User newUser = User.createUser(signUpRequestDto);
+        String encodedPassword = userHelper.encodePassword(signUpRequestDto.password());
+        User newUser = User.createUser(signUpRequestDto, encodedPassword);
         userHelper.saveUser(newUser);
     }
 

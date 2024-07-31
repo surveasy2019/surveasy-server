@@ -52,7 +52,7 @@ public class UserHelper {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    private String encodePassword(String password) {
+    public String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
 

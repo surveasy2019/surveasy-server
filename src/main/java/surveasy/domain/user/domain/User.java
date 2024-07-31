@@ -61,10 +61,10 @@ public class User {
                 .build();
     }
 
-    public static User createUser(UserSignUpRequestDto signUpRequestDto) {
+    public static User createUser(UserSignUpRequestDto signUpRequestDto, String encodedPassword) {
         return User.builder()
                 .email(signUpRequestDto.email())
-                .password(signUpRequestDto.password())
+                .password(encodedPassword)
                 .name(signUpRequestDto.name())
                 .phoneNumber(signUpRequestDto.phoneNumber())
                 .inflowPath(signUpRequestDto.inflowPath())
