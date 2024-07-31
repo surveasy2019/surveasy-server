@@ -11,12 +11,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.exception.MismatchPassword;
 import surveasy.domain.panel.exception.PanelNotFoundFB;
+import surveasy.domain.panel.exception.RefreshTokenNotFound;
 import surveasy.domain.user.domain.InflowPath;
 import surveasy.domain.user.domain.User;
 import surveasy.domain.user.domain.UserIdentity;
 import surveasy.domain.user.dto.request.UserSignInRequestDto;
 import surveasy.domain.user.repository.UserRepository;
 import surveasy.domain.user.vo.FirebaseUserInfoVo;
+import surveasy.global.common.util.RedisUtils;
 
 import java.util.concurrent.ExecutionException;
 
@@ -24,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class UserHelper {
     private final UserRepository userRepository;
+    private final RedisUtils redisUtils;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String USER_COLLECTION_NAME = "userData";
 
@@ -88,5 +91,13 @@ public class UserHelper {
 
     public User findUserByIdOrThrow(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    public void matchesRefreshToken(String refreshToken, User user) {
+        String savedToken = redisUtils.getRefreshToken("user_" + user.getId().toString());
+        System.out.println(savedToken);
+        if(savedToken == null || !savedToken.equals(refreshToken)) {
+            throw RefreshTokenNotFound.EXCEPTION;
+        }
     }
 }

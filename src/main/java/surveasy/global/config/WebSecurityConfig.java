@@ -103,7 +103,7 @@ public class WebSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/user/signin", "/user/signup").permitAll()
+                                .requestMatchers("/user/signin", "/user/signup", "/user/reissue").permitAll()
                                 .requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/survey/mypage/**").hasAnyAuthority("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/survey").hasAnyAuthority("USER", "ADMIN")

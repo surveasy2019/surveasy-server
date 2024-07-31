@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
+import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.user.domain.User;
 import surveasy.domain.user.dto.request.UserSignInRequestDto;
 import surveasy.domain.user.dto.request.UserSignUpRequestDto;
@@ -36,6 +38,13 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<TokenResponseDto> signIn(@RequestBody UserSignInRequestDto signInRequestDto) {
         TokenResponseDto responseDto = userService.signIn(signInRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/reissue")
+    @Operation(summary = "고객 엑세스 토큰 재발급 - 에러 해결 전")
+    public ResponseEntity<TokenResponseDto> reissueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        TokenResponseDto responseDto = userService.reissueToken(refreshTokenRequestDTO);
         return ResponseEntity.ok(responseDto);
     }
 

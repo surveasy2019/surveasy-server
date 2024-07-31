@@ -144,7 +144,7 @@ public class TokenProvider implements InitializingBean {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken).getBody();
         String type = claims.get("type", String.class);
 
-        if(!type.equals("refresh")) {
+        if(!type.equals("REFRESH")) {
             throw NotRefreshToken.EXCEPTION;
         }
     }

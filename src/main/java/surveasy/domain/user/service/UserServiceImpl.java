@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import surveasy.domain.panel.dto.request.RefreshTokenRequestDTO;
 import surveasy.domain.user.domain.User;
 import surveasy.domain.user.dto.request.UserSignInRequestDto;
 import surveasy.domain.user.dto.request.UserSignUpRequestDto;
@@ -37,6 +38,17 @@ public class UserServiceImpl implements UserService {
         final String accessToken = tokenProvider.createAccessToken(AuthType.USER, user.getId(), authentication);
         final String refreshToken = tokenProvider.createRefreshToken(AuthType.USER, user.getId(), authentication);
         return userMapper.toTokenResponseDto(accessToken, refreshToken);
+    }
+
+    @Override
+    public TokenResponseDto reissueToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        final String refreshToken = refreshTokenRequestDTO.getRefreshToken();
+        final User user = userHelper.findUserByIdOrThrow(Long.parseLong(tokenProvider.getTokenId(refreshToken)));
+        final Authentication authentication = tokenProvider.userAuthorizationInput(user);
+        tokenProvider.validateRefreshToken(refreshToken);
+        userHelper.matchesRefreshToken(refreshToken, user);
+        final String newAccessToken = tokenProvider.createAccessToken(AuthType.USER, user.getId(), authentication);
+        return userMapper.toTokenResponseDto(newAccessToken, refreshToken);
     }
 
     private void validateExistingUser(UserSignUpRequestDto signUpRequestDto) {
