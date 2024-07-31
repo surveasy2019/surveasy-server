@@ -24,20 +24,17 @@ public class ResponseServiceImpl implements ResponseService {
     private final ResponseMapper responseMapper;
 
     @Override
-    public ResponseIdResponse createResponse(PanelDetails panelDetails, Long surveyId, ResponseCreateRequestDTO responseCreateRequestDTO) {
-        final Panel panel = panelDetails.getPanel();
+    public ResponseIdResponse createResponse(Panel panel, Long surveyId, ResponseCreateRequestDTO responseCreateRequestDTO) {
         return responseMapper.toResponseIdResponse(responseHelper.createResponse(panel, surveyId, responseCreateRequestDTO));
     }
 
     @Override
-    public ResponseHistoryListResponse getResponseMyPageList(PanelDetails panelDetails, String type, Pageable pageable) {
-        final Panel panel = panelDetails.getPanel();
+    public ResponseHistoryListResponse getResponseMyPageList(Panel panel, String type, Pageable pageable) {
         return responseHelper.getResponseMyPageList(panel.getId(), type, pageable);
     }
 
     @Override
-    public ResponseIdResponse updateResponseImgUrl(PanelDetails panelDetails, Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
-        final Panel panel = panelDetails.getPanel();
+    public ResponseIdResponse updateResponseImgUrl(Panel panel, Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO) {
         return responseMapper.toResponseIdResponse(responseHelper.updateResponseImgUrl(panel, responseId, responseUpdateRequestDTO));
     }
 

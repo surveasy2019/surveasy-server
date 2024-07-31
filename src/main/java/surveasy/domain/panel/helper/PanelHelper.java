@@ -40,18 +40,13 @@ import java.util.concurrent.ExecutionException;
 @Component
 @RequiredArgsConstructor
 public class PanelHelper {
-
-    private final PanelMapper panelMapper;
-    private final PanelRepository panelRepository;
-
-    private final TokenProvider tokenProvider;
-
-    private final RedisUtils redisUtils;
-
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     private static final String COLLECTION_NAME = "panelData";
     private static final String COLLECTION_FS_NAME = "FirstSurvey";
+    private final PanelMapper panelMapper;
+    private final PanelRepository panelRepository;
+    private final TokenProvider tokenProvider;
+    private final RedisUtils redisUtils;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
