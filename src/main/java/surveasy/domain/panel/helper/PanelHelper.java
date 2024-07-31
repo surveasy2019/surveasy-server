@@ -281,28 +281,20 @@ public class PanelHelper {
     }
 
 
-    /* [App] 마이페이지 패널 정보 업데이트
-    * phoneNumber, accountType, accountNumber, english */
+    /* [App] 마이페이지 패널 정보 업데이트 */
     public Panel updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO) {
-        if(panelInfoUpdateDTO.getPhoneNumber() != null) {
+        if(panelInfoUpdateDTO.getPhoneNumber() != null)
             panel.setPhoneNumber(panelInfoUpdateDTO.getPhoneNumber());
-        }
-
-        if(panelInfoUpdateDTO.getAccountOwner() != null) {
+        if(panelInfoUpdateDTO.getAccountOwner() != null)
             panel.setAccountOwner(panelInfoUpdateDTO.getAccountOwner());
-        }
-
-        if(panelInfoUpdateDTO.getAccountType() != null) {
+        if(panelInfoUpdateDTO.getAccountType() != null)
             panel.setAccountType(panelInfoUpdateDTO.getAccountType());
-        }
-
-        if(panelInfoUpdateDTO.getAccountNumber() != null) {
+        if(panelInfoUpdateDTO.getAccountNumber() != null)
             panel.setAccountNumber(panelInfoUpdateDTO.getAccountNumber());
-        }
-
-        if(panelInfoUpdateDTO.getEnglish() != null) {
+        if(panelInfoUpdateDTO.getEnglish() != null)
             panel.setEnglish(panelInfoUpdateDTO.getEnglish());
-        }
+        if(panelInfoUpdateDTO.getFcmToken() != null)
+            panel.setFcmToken(panelInfoUpdateDTO.getFcmToken());
 
         return panelRepository.save(panel);
     }

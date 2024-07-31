@@ -17,4 +17,6 @@ public class PanelInfoUpdateDTO {
     private String accountNumber;
 
     private Boolean english;
+
+    private String fcmToken;
 }
