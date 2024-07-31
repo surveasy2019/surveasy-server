@@ -13,10 +13,14 @@ import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
+import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
+import surveasy.domain.user.domain.User;
 import surveasy.global.common.util.ListAndStringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static surveasy.global.common.util.EntityUpdateValueUtils.updateValue;
 
 @Entity
 @Getter @Setter
@@ -87,14 +91,6 @@ public class Survey {
     private Integer pointAdd;
 
 
-    /* User */
-    @NotNull
-    private String email;
-
-    @NotNull
-    private String username;
-
-
     /* Default */
     @NotNull
     private Long sid;
@@ -123,14 +119,20 @@ public class Survey {
     @JsonIgnore
     private List<Response> responseList;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Builder
-    private Survey(SurveyHeadcount headCount, SurveySpendTime spendTime, LocalDateTime dueDate,
+    private Survey(User user, SurveyHeadcount headCount, SurveySpendTime spendTime, LocalDateTime dueDate,
                   TargetGender targetGender, List<TargetAge> targetAgeList,
                   SurveyLanguage language, SurveyIdentity identity,
                   String title, String targetInput, String institute,
                   String link, String description, String notice, String accountName,
-                  Integer price, Integer priceDiscounted, Integer pointAdd,
-                  String email, String username) {
+                  Integer price, Integer priceDiscounted, Integer pointAdd) {
+        this.user = user;
+
         this.headCount = headCount;
         this.spendTime = spendTime;
         this.dueDate = dueDate;
@@ -150,17 +152,15 @@ public class Survey {
         this.priceDiscounted = priceDiscounted;
         this.pointAdd = pointAdd;
 
-        this.email = email;
-        this.username = username;
-
         this.sid = 0L;
         this.uploadedAt = LocalDateTime.now();
         this.reward = 0;
         this.responseCount = 0;
     }
 
-    public static Survey from(SurveyCreateRequestDto surveyCreateRequestDto) {
+    public static Survey from(User user, SurveyCreateRequestDto surveyCreateRequestDto) {
         return Survey.builder()
+                .user(user)
                 .headCount(surveyCreateRequestDto.getHeadCount())
                 .spendTime(surveyCreateRequestDto.getSpendTime())
                 .dueDate(surveyCreateRequestDto.getDueDate())
@@ -178,8 +178,13 @@ public class Survey {
                 .price(surveyCreateRequestDto.getPrice())
                 .priceDiscounted(surveyCreateRequestDto.getPriceDiscounted())
                 .pointAdd(surveyCreateRequestDto.getPointAdd())
-                .email(surveyCreateRequestDto.getEmail())
-                .username(surveyCreateRequestDto.getUsername())
                 .build();
+    }
+
+    public void updateSurvey(SurveyUpdateRequestDto surveyUpdateRequestDto) {
+        this.title = updateValue(this.title, surveyUpdateRequestDto.getTitle());
+        this.link = updateValue(this.link, surveyUpdateRequestDto.getLink());
+        this.headCount = updateValue(this.headCount, surveyUpdateRequestDto.getHeadCount());
+        this.price = updateValue(this.price, surveyUpdateRequestDto.getPrice());
     }
 }

@@ -95,6 +95,7 @@ public class WebSecurityConfig {
         http
                 .securityMatchers((matchers) -> matchers
                         .requestMatchers("/user/**")
+                        .requestMatchers("/survey/**")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
@@ -103,8 +104,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/user/signin", "/user/signup").permitAll()
-                                .requestMatchers("/user/**").hasAnyAuthority("USER")
-                                .anyRequest().authenticated())
+                                .requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/survey/mypage/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/survey").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/survey/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/survey/**").hasAnyAuthority("USER", "ADMIN")
+                                .anyRequest().permitAll())
                 .cors(httpSecurityCorsConfigurer ->
                         httpSecurityCorsConfigurer
                                 .configurationSource(corsConfigurationSource()))

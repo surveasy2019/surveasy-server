@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
-import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
-import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
+import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.service.SurveyService;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
+import surveasy.domain.user.domain.User;
 import surveasy.global.common.annotation.CurrentPanel;
+import surveasy.global.common.annotation.CurrentUser;
 
 @Slf4j
 @RestController
@@ -44,9 +45,10 @@ public class SurveyController {
     }
 
     @Operation(summary = "Web 설문 주문하기")
-    @PostMapping("")
-    public SurveyIdResponse createSurvey(@RequestBody @Valid SurveyCreateRequestDto surveyCreateRequestDto) {
-        return surveyService.createSurvey(surveyCreateRequestDto);
+    @PostMapping
+    public SurveyIdResponse createSurvey(@CurrentUser User user,
+                                         @RequestBody @Valid SurveyCreateRequestDto surveyCreateRequestDto) {
+        return surveyService.createSurvey(user, surveyCreateRequestDto);
     }
 
     @Operation(summary = "Web 설문 리스트 불러오기")
@@ -56,28 +58,30 @@ public class SurveyController {
     }
 
     @Operation(summary = "Web 마이페이지 진행중 / 완료 설문 개수")
-    @PostMapping("/mypage")
-    public SurveyMyPageCountResponse getMyPageSurveyCounts(@RequestBody @Valid SurveyMyPageEmailDTO surveyMyPageEmailDTO) {
-        return surveyService.getMyPageSurveyCounts(surveyMyPageEmailDTO.getEmail());
+    @GetMapping("/mypage")
+    public SurveyMyPageCountResponse getMyPageSurveyCounts(@CurrentUser User user) {
+        return surveyService.getMyPageSurveyCounts(user);
     }
 
     @Operation(summary = "Web 마이페이지 나의 설문 리스트")
-    @PostMapping("/mypage/list")
-    public SurveyMyPageOrderListResponse getMyPageOrderList(@RequestBody @Valid SurveyMyPageEmailDTO surveyMyPageEmailDTO) {
-        return surveyService.getSurveyMyPageOrderList(surveyMyPageEmailDTO.getEmail());
+    @GetMapping("/mypage/list")
+    public SurveyMyPageOrderListResponse getMyPageOrderList(@CurrentUser User user) {
+        return surveyService.getSurveyMyPageOrderList(user);
     }
 
     @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headcount, price")
     @PatchMapping("/{surveyId}")
-    public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId,
-                                             @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
-        return surveyService.editMyPageSurvey(surveyId, surveyMyPageEditDTO);
+    public SurveyIdResponse updateSurvey(@PathVariable Long surveyId,
+                                             @RequestBody SurveyUpdateRequestDto surveyUpdateRequestDto,
+                                             @CurrentUser User user) {
+        return surveyService.updateSurvey(surveyId, surveyUpdateRequestDto, user);
     }
 
     @Operation(summary = "Web 마이페이지 설문 삭제")
     @DeleteMapping("/{surveyId}")
-    public SurveyIdResponse deleteMyPageSurvey(@PathVariable Long surveyId) {
-        return surveyService.deleteMyPageSurvey(surveyId);
+    public SurveyIdResponse deleteSurvey(@PathVariable Long surveyId,
+                                           @CurrentUser User user) {
+        return surveyService.deleteSurvey(surveyId, user);
     }
 
     @Operation(summary = "Admin 설문 리스트")

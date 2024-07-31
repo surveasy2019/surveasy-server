@@ -2,16 +2,13 @@ package surveasy.domain.survey.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
-import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
-import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
+import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.response.web.SurveyAdminListResponse;
 import surveasy.domain.survey.exception.SurveyCannotDelete;
 import surveasy.domain.survey.exception.SurveyCannotEdit;
@@ -21,7 +18,6 @@ import surveasy.domain.survey.repository.SurveyRepository;
 import surveasy.domain.survey.vo.*;
 import surveasy.global.common.dto.PageInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -66,59 +62,31 @@ public class SurveyHelper {
 
 
     /* [Web] 마이 페이지 설문 개수 */
-    public Long getMyPageSurveyCount(String email, SurveyStatus status) {
-        return surveyRepository.countByEmailAndStatus(email, status);
+    public Long getCountByUserIdAndStatus(Long userId, SurveyStatus status) {
+        return surveyRepository.countByUserIdAndStatus(userId, status);
     }
 
 
     /* [Web] 마이 페이지 주문 목록 */
-    public List<SurveyMyPageOrderVo> getMyPageOrderList(String email) {
-        return surveyRepository.findAllSurveyMyPageVosByEmail(email);
+    public List<SurveyMyPageOrderVo> getMyPageOrderList(Long userId) {
+        return surveyRepository.findAllSurveyMyPageVosByUserId(userId);
     }
 
 
     /* [Web] 마이 페이지 설문 수정 (title, link, headCount, price)
     * progress 2 미만일 경우만 가능 */
-    public Long editMyPageSurvey(Long id, SurveyMyPageEditDTO surveyMyPageEditDTO) {
-        Survey survey = surveyRepository.findById(id)
-                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
-
-        if(!isWaiting(survey.getStatus())) {
-            throw SurveyCannotEdit.EXCEPTION;
-        }
-
-        if(surveyMyPageEditDTO.getTitle() != null) {
-            survey.setTitle(surveyMyPageEditDTO.getTitle());
-        }
-
-        if(surveyMyPageEditDTO.getLink() != null) {
-            survey.setLink(surveyMyPageEditDTO.getLink());
-        }
-
-        if(surveyMyPageEditDTO.getHeadCount() != null) {
-            survey.setHeadCount(surveyMyPageEditDTO.getHeadCount());
-        }
-
-        if(surveyMyPageEditDTO.getPrice() != null) {
-            survey.setPrice(surveyMyPageEditDTO.getPrice());
-        }
-
-        return surveyRepository.save(survey).getId();
+    public Long updateSurvey(Survey survey, SurveyUpdateRequestDto surveyUpdateRequestDto) {
+        if(!isWaiting(survey.getStatus())) throw SurveyCannotEdit.EXCEPTION;
+        survey.updateSurvey(surveyUpdateRequestDto);
+        return survey.getId();
     }
 
 
     /* [Web] 마이 페이지 설문 삭제
     * progress 2 미만일 경우만 가능 */
-    public Long deleteMyPageSurvey(Long id) {
-        Survey survey = surveyRepository.findById(id)
-                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
-
-        if(!isWaiting(survey.getStatus())) {
-            throw SurveyCannotDelete.EXCEPTION;
-        }
-
-        surveyRepository.deleteById(id);
-        return id;
+    public Long deleteSurvey(Survey survey) {
+        surveyRepository.delete(survey);
+        return survey.getId();
     }
 
 
@@ -206,8 +174,14 @@ public class SurveyHelper {
                 .orElseThrow(() -> SurveyNotFound.EXCEPTION);
     }
 
+    public Survey findSurveyByIdOrThrow(Long surveyId) {
+        return surveyRepository.findById(surveyId)
+                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
+    }
+
     public void deleteAdminSurvey(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId).orElseThrow(() -> SurveyNotFound.EXCEPTION);
         surveyRepository.delete(survey);
     }
+
 }

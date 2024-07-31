@@ -21,7 +21,7 @@ public class UserController {
 
     @Operation(summary = "고객 정보 1건 조회")
     @GetMapping
-    public ResponseEntity getUserInfo(@CurrentUser User user) {
+    public ResponseEntity<User> getUserInfo(@CurrentUser User user) {
         return ResponseEntity.ok(user);
     }
 
@@ -34,7 +34,7 @@ public class UserController {
 
     @Operation(summary = "고객 로그인")
     @PostMapping("/signin")
-    public ResponseEntity signIn(@RequestBody UserSignInRequestDto signInRequestDto) {
+    public ResponseEntity<TokenResponseDto> signIn(@RequestBody UserSignInRequestDto signInRequestDto) {
         TokenResponseDto responseDto = userService.signIn(signInRequestDto);
         return ResponseEntity.ok(responseDto);
     }

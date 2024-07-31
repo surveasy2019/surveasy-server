@@ -6,7 +6,7 @@ import surveasy.domain.survey.domain.option.SurveyHeadcount;
 
 @Getter
 @NoArgsConstructor
-public class SurveyMyPageEditDTO {
+public class SurveyUpdateRequestDto {
 
     private String title;
 

@@ -76,14 +76,4 @@ public class SurveyCreateRequestDto {
 
     @NotNull
     private Integer pointAdd;
-
-
-    /* User */
-    @NotNull
-    private String email;
-
-    @NotNull
-    private String username;
-
-
 }
