@@ -14,11 +14,7 @@ import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.domain.response.mapper.ResponseMapper;
-import surveasy.global.config.user.PanelDetails;
-
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
+import surveasy.global.security.user.PanelDetails;
 
 @Slf4j
 @Service

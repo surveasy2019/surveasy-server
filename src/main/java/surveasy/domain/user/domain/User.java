@@ -47,6 +47,7 @@ public class User {
 
     @NotNull
     @Builder.Default
+    @Enumerated
     private UserRole role = UserRole.USER;
 
     public static User createUserFromFirebase(FirebaseUserInfoVo firebaseUserInfoVo) {

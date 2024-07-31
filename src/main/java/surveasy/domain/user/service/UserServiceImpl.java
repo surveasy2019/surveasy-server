@@ -10,7 +10,7 @@ import surveasy.domain.user.dto.response.TokenResponseDto;
 import surveasy.domain.user.helper.UserHelper;
 import surveasy.domain.user.mapper.UserMapper;
 import surveasy.global.common.enm.AuthType;
-import surveasy.global.config.jwt.TokenProvider;
+import surveasy.global.security.jwt.TokenProvider;
 
 @RequiredArgsConstructor
 @Service
@@ -27,5 +27,10 @@ public class UserServiceImpl implements UserService {
         final String accessToken = tokenProvider.createAccessToken(AuthType.USER, user.getId(), authentication);
         final String refreshToken = tokenProvider.createRefreshToken(AuthType.USER, user.getId(), authentication);
         return userMapper.toTokenResponseDto(accessToken, refreshToken);
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        return userHelper.findUserByIdOrThrow(id);
     }
 }

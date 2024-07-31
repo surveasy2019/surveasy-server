@@ -11,7 +11,6 @@ import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
-import surveasy.global.config.user.PanelDetails;
 
 @Service
 public interface SurveyService {

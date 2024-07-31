@@ -1,26 +1,32 @@
-package surveasy.global.config.user;
+package surveasy.global.security.user;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import surveasy.domain.user.domain.User;
+import surveasy.domain.panel.domain.Panel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
-public class CustomUserDetails implements UserDetails {
+public class PanelDetails implements UserDetails {
 
-    private User user;
+    private Panel panel;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
+    private boolean duplicateEmail = false;
+
+    public PanelDetails(Panel panel) {
+        this.panel = panel;
+    }
+
+    public Long getId() {
+        return panel.getId();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> String.valueOf(user.getRole()));
+        collection.add((GrantedAuthority) () -> String.valueOf(panel.getRole()));
         return collection;
     }
 
@@ -31,7 +37,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getName();
+        return panel.getName();
     }
 
     @Override

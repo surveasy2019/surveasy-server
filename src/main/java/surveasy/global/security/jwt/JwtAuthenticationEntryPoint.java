@@ -1,4 +1,4 @@
-package surveasy.global.config.jwt;
+package surveasy.global.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -6,36 +6,37 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import surveasy.global.error.BaseErrorCode;
 import surveasy.global.error.ErrorResponse;
-import surveasy.global.error.exception.ForbiddenAdminException;
+import surveasy.global.error.exception.NoTokenException;
 
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void handle(
+    public void commence(
             HttpServletRequest request,
             HttpServletResponse response,
-            AccessDeniedException accessDeniedException
+            AuthenticationException authException
     ) throws IOException, ServletException {
-        responseToClient(response,
-                getErrorResponse(ForbiddenAdminException.EXCEPTION.getErrorCode()));
+        responseToClient(response, getErrorResponse(NoTokenException.EXCEPTION.getErrorCode()));
     }
 
     private ErrorResponse getErrorResponse(BaseErrorCode errorCode) {
+
         return ErrorResponse.from(errorCode.getErrorReason());
     }
 
-    private void responseToClient(HttpServletResponse response, ErrorResponse errorResponse) throws IOException {
+    private void responseToClient(HttpServletResponse response, ErrorResponse errorResponse)
+            throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(Integer.parseInt(errorResponse.getStatus()));

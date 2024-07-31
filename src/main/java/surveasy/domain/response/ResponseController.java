@@ -18,7 +18,7 @@ import surveasy.domain.response.dto.response.ResponseIdResponse;
 import surveasy.domain.response.dto.response.ResponseHistoryListResponse;
 import surveasy.domain.response.service.ResponseService;
 import surveasy.global.common.util.S3Utils;
-import surveasy.global.config.user.PanelDetails;
+import surveasy.global.security.user.PanelDetails;
 
 @Slf4j
 @RestController

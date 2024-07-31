@@ -1,4 +1,4 @@
-package surveasy.global.config.user;
+package surveasy.global.security.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,12 +17,11 @@ public class PanelDetailsService implements UserDetailsService {
 
 
     @Transactional
-    public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
+    public PanelDetails loadPanelByPanelId(Long id) throws UsernameNotFoundException {
         return panelRepository.findById(id)
                 .map(panel -> createPanel(id, panel))
                 .orElseThrow(() -> new UsernameNotFoundException(id + " -> DB에서 찾을 수 없음"));
     }
-
 
     private PanelDetails createPanel(Long id, Panel panel) {
         return new PanelDetails(panel);

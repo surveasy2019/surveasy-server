@@ -9,17 +9,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import surveasy.global.config.jwt.JwtAccessDeniedHandler;
-import surveasy.global.config.jwt.JwtAuthenticationEntryPoint;
-import surveasy.global.config.jwt.PanelJwtAuthenticationFilter;
-import surveasy.global.config.jwt.JwtExceptionHandlerFilter;
+import surveasy.global.security.jwt.filter.JwtExceptionHandlerFilter;
+import surveasy.global.security.jwt.filter.PanelJwtAuthenticationFilter;
+import surveasy.global.security.jwt.filter.UserJwtAuthenticationFilter;
+import surveasy.global.security.jwt.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,15 +33,11 @@ import java.util.List;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
     @Value("${server.url}")
     private String SERVER_URL;
-
-    private final PanelJwtAuthenticationFilter panelJwtAuthenticationFilter;
+    private final TokenProvider tokenProvider;
     private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
-
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final String[] SwaggerPatterns = {
@@ -79,8 +78,50 @@ public class WebSecurityConfig {
     };
 
     @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    public UserJwtAuthenticationFilter userJwtAuthenticationFilter() {
+        return new UserJwtAuthenticationFilter(tokenProvider);
+    }
+
+    public PanelJwtAuthenticationFilter panelJwtAuthenticationFilter() {
+        return new PanelJwtAuthenticationFilter(tokenProvider);
+    }
+
+    @Bean
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatchers((matchers) -> matchers
+                        .requestMatchers("/user/**")
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers("/user/signin").permitAll()
+                                .requestMatchers("/user/**").hasAnyAuthority("USER")
+                                .anyRequest().authenticated())
+                .cors(httpSecurityCorsConfigurer ->
+                        httpSecurityCorsConfigurer
+                                .configurationSource(corsConfigurationSource()))
+                .formLogin(AbstractHttpConfigurer::disable)
+                .exceptionHandling()
+                .accessDeniedHandler(jwtAccessDeniedHandler).authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .addFilterBefore(userJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionHandlerFilter, UserJwtAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(corsConfigurationSource())
+        http
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
 
@@ -117,9 +158,8 @@ public class WebSecurityConfig {
         http.exceptionHandling()
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint);
-        http.addFilterBefore(panelJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(panelJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionHandlerFilter, PanelJwtAuthenticationFilter.class);
-
 
         return http.build();
     }

@@ -16,7 +16,7 @@ import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.global.common.enm.AuthType;
-import surveasy.global.config.jwt.TokenProvider;
+import surveasy.global.security.jwt.TokenProvider;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -88,7 +88,7 @@ public class PanelServiceImpl implements PanelService {
 
     public PanelTokenResponse reissueToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         final String refreshToken = refreshTokenRequestDTO.getRefreshToken();
-        final Panel panel = panelHelper.findPanelById(Long.parseLong(tokenProvider.getTokenPanelId(refreshToken)));
+        final Panel panel = panelHelper.findPanelById(Long.parseLong(tokenProvider.getTokenId(refreshToken)));
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
         tokenProvider.validateRefreshToken(refreshToken);
         panelHelper.matchesRefreshToken(refreshToken, panel);

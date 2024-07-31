@@ -5,7 +5,6 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,14 +24,13 @@ import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.exception.*;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
-import surveasy.domain.panel.util.RedisUtil;
+import surveasy.global.common.util.RedisUtils;
 import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
-import surveasy.global.common.dto.PageInfo;
 import surveasy.global.common.enm.AuthType;
 import surveasy.global.common.util.DateAndStringUtils;
-import surveasy.global.config.jwt.TokenProvider;
+import surveasy.global.security.jwt.TokenProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,7 +46,7 @@ public class PanelHelper {
 
     private final TokenProvider tokenProvider;
 
-    private final RedisUtil redisUtil;
+    private final RedisUtils redisUtils;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -246,7 +244,7 @@ public class PanelHelper {
 
     /* [App] 리프레쉬 토큰 검증 */
     public void matchesRefreshToken(String refreshToken, Panel panel) {
-        String savedToken = redisUtil.getRefreshToken(panel.getId().toString());
+        String savedToken = redisUtils.getRefreshToken(panel.getId().toString());
         if(savedToken == null || !savedToken.equals(refreshToken)) {
             throw RefreshTokenNotFound.EXCEPTION;
         }

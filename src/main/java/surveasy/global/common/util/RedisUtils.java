@@ -1,4 +1,4 @@
-package surveasy.domain.panel.util;
+package surveasy.global.common.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class RedisUtil {
+public class RedisUtils {
 
     private final RedisTemplate<String, String> redisTemplate;
 

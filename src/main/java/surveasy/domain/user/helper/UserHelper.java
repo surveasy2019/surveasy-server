@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -86,4 +87,8 @@ public class UserHelper {
 
     }
 
+    public User findUserByIdOrThrow(Long id) {
+        System.out.println("__________________________ " + id);
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
+    }
 }

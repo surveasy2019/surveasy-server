@@ -21,7 +21,6 @@ import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
 import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
-import surveasy.global.config.user.PanelDetails;
 
 import java.util.List;
 

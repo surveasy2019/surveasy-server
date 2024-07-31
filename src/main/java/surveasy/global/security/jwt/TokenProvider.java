@@ -1,4 +1,4 @@
-package surveasy.global.config.jwt;
+package surveasy.global.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -13,18 +13,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.exception.NotRefreshToken;
-import surveasy.domain.panel.util.RedisUtil;
+import surveasy.global.common.util.RedisUtils;
 import surveasy.domain.user.domain.User;
 import surveasy.global.common.enm.AuthType;
 import surveasy.global.common.enm.TokenType;
-import surveasy.global.config.user.CustomUserDetails;
-import surveasy.global.config.user.CustomUserDetailsService;
-import surveasy.global.config.user.PanelDetails;
-import surveasy.global.config.user.PanelDetailsService;
+import surveasy.global.security.user.CustomUserDetails;
+import surveasy.global.security.user.CustomUserDetailsService;
+import surveasy.global.security.user.PanelDetails;
+import surveasy.global.security.user.PanelDetailsService;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -39,7 +38,7 @@ public class TokenProvider implements InitializingBean {
 
     private final PanelDetailsService panelDetailsService;
     private final CustomUserDetailsService userDetailsService;
-    private final RedisUtil redisUtil;
+    private final RedisUtils redisUtils;
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String ACCESS_KEY = "access";
@@ -94,17 +93,17 @@ public class TokenProvider implements InitializingBean {
                 .compact();
 
         if(tokenType.equals(TokenType.REFRESH)) {
-            redisUtil.setRefreshToken(authType, id, token, expirationTime);
+            redisUtils.setRefreshToken(authType, id, token, expirationTime);
         }
 
         return token;
     }
 
     public void deleteRefreshToken(Long id) {
-        redisUtil.delete(id.toString());
+        redisUtils.delete(id.toString());
     }
 
-    public String getTokenPanelId(String token) {
+    public String getTokenId(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -114,12 +113,12 @@ public class TokenProvider implements InitializingBean {
     }
 
     public Authentication getUserAuthentication(String token) {
-        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUserId(Long.parseLong(getTokenPanelId(token)));
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUserId(Long.parseLong(getTokenId(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
     public Authentication getPanelAuthentication(String token) {
-        PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadUserByUserId(Long.parseLong(getTokenPanelId(token)));
+        PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadPanelByPanelId(Long.parseLong(getTokenId(token)));
         return new UsernamePasswordAuthenticationToken(panelDetails, token, panelDetails.getAuthorities());
     }
 
@@ -163,7 +162,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     public Authentication panelAuthorizationInput(Panel panel) {
-        PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadUserByUserId(panel.getId());
+        PanelDetails panelDetails = (PanelDetails) panelDetailsService.loadPanelByPanelId(panel.getId());
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 panelDetails,
                 "",

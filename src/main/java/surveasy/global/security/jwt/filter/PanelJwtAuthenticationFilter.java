@@ -1,24 +1,24 @@
-package surveasy.global.config.jwt;
+package surveasy.global.security.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import surveasy.global.error.exception.TokenValidateException;
+import surveasy.global.security.jwt.TokenProvider;
 
 import java.io.IOException;
 
-@Component
-@RequiredArgsConstructor
-public class UserJwtAuthenticationFilter extends OncePerRequestFilter {
-
+public class PanelJwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
+
+    public PanelJwtAuthenticationFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -35,7 +35,7 @@ public class UserJwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             if(tokenProvider.validateToken(jwt)) {
-                Authentication authentication = tokenProvider.getUserAuthentication(jwt);
+                Authentication authentication = tokenProvider.getPanelAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 throw TokenValidateException.EXCEPTION;

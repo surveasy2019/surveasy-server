@@ -1,4 +1,4 @@
-package surveasy.global.config.user;
+package surveasy.global.security.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +13,13 @@ import surveasy.domain.user.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    public UserDetails loadUserByUserId(Long id) {
+    public CustomUserDetails loadUserByUserId(Long id) {
         return userRepository.findById(id)
-                .map(user -> createUser(user))
+                .map(this::createUser)
                 .orElseThrow(() -> new UsernameNotFoundException(id + " -> DB에서 찾을 수 없음"));
     }
 
-    private UserDetails createUser(User user) {
+    private CustomUserDetails createUser(User user) {
         return new CustomUserDetails(user);
     }
 
