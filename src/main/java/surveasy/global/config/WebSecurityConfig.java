@@ -102,7 +102,7 @@ public class WebSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/user/signin").permitAll()
+                                .requestMatchers("/user/signin", "/user/signup").permitAll()
                                 .requestMatchers("/user/**").hasAnyAuthority("USER")
                                 .anyRequest().authenticated())
                 .cors(httpSecurityCorsConfigurer ->

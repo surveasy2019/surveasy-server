@@ -14,8 +14,7 @@ public record FirebaseUserInfoVo(
         UserIdentity identity,
         InflowPath inflowPath,
         String inflowPathDetail,
-        Integer pointCurrent,
-        Integer pointTotal
+        Integer point
 ) {
     public static FirebaseUserInfoVo of(String name,
                                         String email,
@@ -24,8 +23,7 @@ public record FirebaseUserInfoVo(
                                         UserIdentity identity,
                                         InflowPath inflowPath,
                                         String inflowPathDetail,
-                                        Integer pointCurrent,
-                                        Integer pointTotal) {
+                                        Integer point) {
         return FirebaseUserInfoVo.builder()
                 .name(name)
                 .email(email)
@@ -34,8 +32,7 @@ public record FirebaseUserInfoVo(
                 .identity(identity)
                 .inflowPath(inflowPath)
                 .inflowPathDetail(inflowPathDetail)
-                .pointCurrent(pointCurrent)
-                .pointTotal(pointTotal)
+                .point(point)
                 .build();
     }
 }

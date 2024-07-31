@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import surveasy.domain.user.dto.request.UserSignUpRequestDto;
 import surveasy.domain.user.vo.FirebaseUserInfoVo;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,16 +35,14 @@ public class User {
     @NotNull
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated
     private InflowPath inflowPath;
 
     private String inflowPathDetail;
 
     @NotNull
-    private Integer pointCurrent;
-
-    @NotNull
-    private Integer pointTotal;
+    @Builder.Default
+    private Integer point = 0;
 
     @NotNull
     @Builder.Default
@@ -58,8 +57,18 @@ public class User {
                 .phoneNumber(firebaseUserInfoVo.phoneNumber())
                 .inflowPath(firebaseUserInfoVo.inflowPath())
                 .inflowPathDetail(firebaseUserInfoVo.inflowPathDetail())
-                .pointCurrent(firebaseUserInfoVo.pointCurrent())
-                .pointTotal(firebaseUserInfoVo.pointTotal())
+                .point(firebaseUserInfoVo.point())
+                .build();
+    }
+
+    public static User createUser(UserSignUpRequestDto signUpRequestDto) {
+        return User.builder()
+                .email(signUpRequestDto.email())
+                .password(signUpRequestDto.password())
+                .name(signUpRequestDto.name())
+                .phoneNumber(signUpRequestDto.phoneNumber())
+                .inflowPath(signUpRequestDto.inflowPath())
+                .inflowPathDetail(signUpRequestDto.inflowPathDetail())
                 .build();
     }
 }

@@ -48,7 +48,7 @@ public class UserHelper {
         return User.createUserFromFirebase(firebaseUserInfoVo);
     }
 
-    private User findUserByEmailOrNull(String email) {
+    public User findUserByEmailOrNull(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
 
@@ -75,8 +75,7 @@ public class UserHelper {
                         UserIdentity.ofFirebase(documentSnapshot.getString("identity")),
                         InflowPath.ofFirebase(documentSnapshot.getString("funnel")),
                         documentSnapshot.getString("funnel_detail"),
-                        documentSnapshot.get("point_current", Integer.class),
-                        documentSnapshot.get("point_total", Integer.class)
+                        documentSnapshot.get("point_current", Integer.class)
                 );
             } else {
                 throw PanelNotFoundFB.EXCEPTION;
@@ -88,7 +87,6 @@ public class UserHelper {
     }
 
     public User findUserByIdOrThrow(Long id) {
-        System.out.println("__________________________ " + id);
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
 }
