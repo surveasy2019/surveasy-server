@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/reissue")
-    @Operation(summary = "고객 엑세스 토큰 재발급 - 에러 해결 전")
+    @Operation(summary = "고객 엑세스 토큰 재발급")
     public ResponseEntity<TokenResponseDto> reissueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
         TokenResponseDto responseDto = userService.reissueToken(refreshTokenRequestDTO);
         return ResponseEntity.ok(responseDto);
