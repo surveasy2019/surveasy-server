@@ -72,15 +72,15 @@ public class SurveyController {
     @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headcount, price")
     @PatchMapping("/{surveyId}")
     public SurveyIdResponse updateSurvey(@PathVariable Long surveyId,
-                                             @RequestBody SurveyUpdateRequestDto surveyUpdateRequestDto,
-                                             @CurrentUser User user) {
+                                         @RequestBody SurveyUpdateRequestDto surveyUpdateRequestDto,
+                                         @CurrentUser User user) {
         return surveyService.updateSurvey(surveyId, surveyUpdateRequestDto, user);
     }
 
     @Operation(summary = "Web 마이페이지 설문 삭제")
     @DeleteMapping("/{surveyId}")
     public SurveyIdResponse deleteSurvey(@PathVariable Long surveyId,
-                                           @CurrentUser User user) {
+                                         @CurrentUser User user) {
         return surveyService.deleteSurvey(surveyId, user);
     }
 

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import surveasy.domain.response.domain.ResponseStatus;
 import surveasy.domain.survey.domain.SurveyStatus;
-import surveasy.global.common.util.DateAndStringUtils;
+import surveasy.global.common.util.string.DateAndStringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

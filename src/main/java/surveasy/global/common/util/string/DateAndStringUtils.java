@@ -1,4 +1,4 @@
-package surveasy.global.common.util;
+package surveasy.global.common.util.string;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import surveasy.domain.coupon.dto.request.CouponCreateDTO;
-import surveasy.global.common.util.DateAndStringUtils;
+import surveasy.global.common.util.string.DateAndStringUtils;
 
 import java.time.LocalDate;
 

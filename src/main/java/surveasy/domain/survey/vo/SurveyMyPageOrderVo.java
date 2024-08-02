@@ -8,8 +8,8 @@ import surveasy.domain.survey.domain.option.SurveyIdentity;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
-import surveasy.global.common.util.DateAndStringUtils;
-import surveasy.global.common.util.ListAndStringUtils;
+import surveasy.global.common.util.string.DateAndStringUtils;
+import surveasy.global.common.util.string.ListAndStringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;

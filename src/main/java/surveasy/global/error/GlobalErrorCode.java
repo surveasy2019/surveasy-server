@@ -17,7 +17,7 @@ public enum GlobalErrorCode implements BaseErrorCode {
     _INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL_500_1", "서버 오류. 관리자에게 문의 부탁드립니다."),
     FILE_NOT_FOUND(NOT_FOUND, "FILE_404_1", "해당 파일이 존재하지 않습니다."),
 
-    /*토큰 에러*/
+    /* token error */
     NO_TOKEN(UNAUTHORIZED, "AUTH_401_1", "토큰이 존재하지 않습니다"),
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "AUTH_401_2", "액세스 토큰이 유효하지 않습니다"),
     EXPIRED_TOKEN(UNAUTHORIZED, "AUTH_401_3", "만료된 엑세스 토큰입니다"),
@@ -27,6 +27,9 @@ public enum GlobalErrorCode implements BaseErrorCode {
     FORBIDDEN_ADMIN(FORBIDDEN, "AUTH_403_1", "권한이 부여되지 않은 사용자입니다"),
     UNSUPPORTED_TOKEN(UNAUTHORIZED, "AUTH_401_7", "지원하지 않는 토큰입니다"),
     INVALID_SIGNATURE(UNAUTHORIZED, "AUTH_401_8", "잘못된 JWT 서명입니다"),
+
+    /* internal server error */
+    TOSS_ERROR_FORMAT(INTERNAL_SERVER_ERROR, "TOSS_500_1", "토스 페이먼츠 Error 형식 변환이 잘못되었습니다")
     ;
 
     private HttpStatus status;

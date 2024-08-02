@@ -15,7 +15,7 @@ import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.user.domain.User;
-import surveasy.global.common.util.ListAndStringUtils;
+import surveasy.global.common.util.string.ListAndStringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;

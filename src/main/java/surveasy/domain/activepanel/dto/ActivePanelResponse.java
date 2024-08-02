@@ -2,7 +2,7 @@ package surveasy.domain.activepanel.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import surveasy.global.common.util.ListAndStringUtils;
+import surveasy.global.common.util.string.ListAndStringUtils;
 
 import java.util.List;
 
