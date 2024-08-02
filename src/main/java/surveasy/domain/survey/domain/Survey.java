@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import surveasy.domain.payment.domain.Payment;
 import surveasy.domain.response.domain.Response;
 import surveasy.domain.survey.domain.option.SurveyHeadcount;
 import surveasy.domain.survey.domain.option.SurveyIdentity;
@@ -78,18 +79,6 @@ public class Survey {
     @Nullable
     private String notice;
 
-    @NotNull
-    private String accountName;
-
-    @NotNull
-    private Integer price;
-
-    @NotNull
-    private Integer priceDiscounted;
-
-    @NotNull
-    private Integer pointAdd;
-
 
     /* Default */
     @NotNull
@@ -115,8 +104,8 @@ public class Survey {
     private Long reviewId;
 
 
-    @OneToMany(mappedBy = "survey", orphanRemoval = true)
     @JsonIgnore
+    @OneToMany(mappedBy = "survey", orphanRemoval = true)
     private List<Response> responseList;
 
     @JsonIgnore
@@ -124,13 +113,17 @@ public class Survey {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
     @Builder
     private Survey(User user, SurveyHeadcount headCount, SurveySpendTime spendTime, LocalDateTime dueDate,
                   TargetGender targetGender, List<TargetAge> targetAgeList,
                   SurveyLanguage language, SurveyIdentity identity,
                   String title, String targetInput, String institute,
-                  String link, String description, String notice, String accountName,
-                  Integer price, Integer priceDiscounted, Integer pointAdd) {
+                  String link, String description, String notice) {
         this.user = user;
 
         this.headCount = headCount;
@@ -147,10 +140,6 @@ public class Survey {
         this.link = link;
         this.description = description;
         this.notice = notice;
-        this.accountName = accountName;
-        this.price = price;
-        this.priceDiscounted = priceDiscounted;
-        this.pointAdd = pointAdd;
 
         this.sid = 0L;
         this.uploadedAt = LocalDateTime.now();
@@ -174,17 +163,16 @@ public class Survey {
                 .link(surveyCreateRequestDto.getLink())
                 .description(surveyCreateRequestDto.getDescription())
                 .notice(surveyCreateRequestDto.getNotice())
-                .accountName(surveyCreateRequestDto.getAccountName())
-                .price(surveyCreateRequestDto.getPrice())
-                .priceDiscounted(surveyCreateRequestDto.getPriceDiscounted())
-                .pointAdd(surveyCreateRequestDto.getPointAdd())
                 .build();
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public void updateSurvey(SurveyUpdateRequestDto surveyUpdateRequestDto) {
         this.title = updateValue(this.title, surveyUpdateRequestDto.getTitle());
         this.link = updateValue(this.link, surveyUpdateRequestDto.getLink());
         this.headCount = updateValue(this.headCount, surveyUpdateRequestDto.getHeadCount());
-        this.price = updateValue(this.price, surveyUpdateRequestDto.getPrice());
     }
 }
