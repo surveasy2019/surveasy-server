@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static surveasy.domain.payment.domain.QPayment.payment;
 import static surveasy.domain.survey.domain.QSurvey.survey;
 import static surveasy.domain.response.domain.QResponse.response;
 import static surveasy.domain.user.domain.QUser.user;
@@ -138,13 +139,14 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         survey.targetAgeListStr,
                         survey.targetGender,
                         survey.status,
-                        survey.price,
+                        payment.price,
                         survey.identity,
                         survey.link,
                         survey.uploadedAt,
                         survey.dueDate,
                         survey.reviewId))
                 .from(survey)
+                .leftJoin(survey.payment, payment)
                 .where(
                         eqUserId(userId)
                 )
