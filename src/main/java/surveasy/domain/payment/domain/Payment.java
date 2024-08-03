@@ -3,6 +3,9 @@ package surveasy.domain.payment.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import surveasy.domain.payment.dto.request.PaymentCreateRequestDto;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -33,4 +36,18 @@ public class Payment {
     private String paymentKey;
 
     private String orderId;
+
+    @NotNull
+    @Builder.Default
+    private LocalDateTime createDate = LocalDateTime.now();
+
+    public static Payment createPayment(PaymentCreateRequestDto paymentCreateRequestDto) {
+        return Payment.builder()
+                .price(Integer.valueOf(paymentCreateRequestDto.amount()))
+                .priceDiscounted(paymentCreateRequestDto.priceDiscounted())
+                .pointAdd(paymentCreateRequestDto.pointAdd())
+                .paymentKey(paymentCreateRequestDto.paymentKey())
+                .orderId(paymentCreateRequestDto.orderId())
+                .build();
+    }
 }

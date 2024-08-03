@@ -11,8 +11,8 @@ import surveasy.domain.survey.domain.option.SurveyHeadcount;
 import surveasy.domain.survey.domain.option.SurveyIdentity;
 import surveasy.domain.survey.domain.option.SurveyLanguage;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
-import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.user.domain.User;
@@ -23,9 +23,12 @@ import java.util.List;
 
 import static surveasy.global.common.util.EntityUpdateValueUtils.updateValue;
 
-@Entity
-@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE)
+@Getter
+@Table(name = "survey")
+@Entity
 public class Survey {
 
     @Id
@@ -82,23 +85,28 @@ public class Survey {
 
     /* Default */
     @NotNull
-    private Long sid;
+    @Builder.Default
+    private Long sid = 0L;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private SurveyStatus status = SurveyStatus.CREATED;
 
     @NotNull
-    private LocalDateTime uploadedAt;
+    @Builder.Default
+    private LocalDateTime uploadedAt = LocalDateTime.now();
 
     @Nullable
     private String noticeToPanel;
 
     @NotNull
-    private Integer reward;
+    @Builder.Default
+    private Integer reward = 0;
 
     @NotNull
-    private Integer responseCount;
+    @Builder.Default
+    private Integer responseCount = 0;
 
     @Nullable
     private Long reviewId;
@@ -118,51 +126,22 @@ public class Survey {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    @Builder
-    private Survey(User user, SurveyHeadcount headCount, SurveySpendTime spendTime, LocalDateTime dueDate,
-                  TargetGender targetGender, List<TargetAge> targetAgeList,
-                  SurveyLanguage language, SurveyIdentity identity,
-                  String title, String targetInput, String institute,
-                  String link, String description, String notice) {
-        this.user = user;
-
-        this.headCount = headCount;
-        this.spendTime = spendTime;
-        this.dueDate = dueDate;
-        this.targetGender = targetGender;
-        this.targetAgeListStr = ListAndStringUtils.listToStr(targetAgeList);
-        this.language = language;
-        this.identity = identity;
-
-        this.title = title;
-        this.targetInput = targetInput;
-        this.institute = institute;
-        this.link = link;
-        this.description = description;
-        this.notice = notice;
-
-        this.sid = 0L;
-        this.uploadedAt = LocalDateTime.now();
-        this.reward = 0;
-        this.responseCount = 0;
-    }
-
-    public static Survey from(User user, SurveyCreateRequestDto surveyCreateRequestDto) {
+    public static Survey createSurvey(User user, SurveyCreateRequestDto surveyCreateRequestDto) {
         return Survey.builder()
                 .user(user)
-                .headCount(surveyCreateRequestDto.getHeadCount())
-                .spendTime(surveyCreateRequestDto.getSpendTime())
-                .dueDate(surveyCreateRequestDto.getDueDate())
-                .targetGender(surveyCreateRequestDto.getTargetGender())
-                .targetAgeList(surveyCreateRequestDto.getTargetAgeList())
-                .language(surveyCreateRequestDto.getLanguage())
-                .identity(surveyCreateRequestDto.getIdentity())
-                .title(surveyCreateRequestDto.getTitle())
-                .targetInput(surveyCreateRequestDto.getTargetInput())
-                .institute(surveyCreateRequestDto.getInstitute())
-                .link(surveyCreateRequestDto.getLink())
-                .description(surveyCreateRequestDto.getDescription())
-                .notice(surveyCreateRequestDto.getNotice())
+                .headCount(surveyCreateRequestDto.headCount())
+                .spendTime(surveyCreateRequestDto.spendTime())
+                .dueDate(surveyCreateRequestDto.dueDate())
+                .targetGender(surveyCreateRequestDto.targetGender())
+                .targetAgeListStr(ListAndStringUtils.listToStr(surveyCreateRequestDto.targetAgeList()))
+                .language(surveyCreateRequestDto.language())
+                .identity(surveyCreateRequestDto.identity())
+                .title(surveyCreateRequestDto.title())
+                .targetInput(surveyCreateRequestDto.targetInput())
+                .institute(surveyCreateRequestDto.institute())
+                .link(surveyCreateRequestDto.link())
+                .description(surveyCreateRequestDto.description())
+                .notice(surveyCreateRequestDto.notice())
                 .build();
     }
 
@@ -174,5 +153,30 @@ public class Survey {
         this.title = updateValue(this.title, surveyUpdateRequestDto.getTitle());
         this.link = updateValue(this.link, surveyUpdateRequestDto.getLink());
         this.headCount = updateValue(this.headCount, surveyUpdateRequestDto.getHeadCount());
+    }
+
+    public void updateAdminSurvey(AdminSurveyUpdateRequestDto adminSurveyUpdateRequestDto) {
+        this.status = updateValue(this.status, adminSurveyUpdateRequestDto.status());
+        this.noticeToPanel = updateValue(this.noticeToPanel, adminSurveyUpdateRequestDto.noticeToPanel());
+        this.reward = updateValue(this.reward, adminSurveyUpdateRequestDto.reward());
+        this.link = updateValue(this.link, adminSurveyUpdateRequestDto.link());
+        this.dueDate = updateValue(this.dueDate, adminSurveyUpdateRequestDto.dueDate());
+        this.headCount = updateValue(this.headCount, adminSurveyUpdateRequestDto.headCount());
+    }
+
+    public void updateSurveySid(Long sid) {
+        this.sid = updateValue(this.sid, sid);
+    }
+
+    public void updateSurveyResponseCount(Integer responseCount) {
+        this.responseCount = updateValue(this.responseCount, responseCount);
+    }
+
+    public void updateSurveyStatus(SurveyStatus status) {
+        this.status = updateValue(this.status, status);
+    }
+
+    public void updateReviewId(Long reviewId) {
+        this.reviewId = updateValue(this.reviewId, reviewId);
     }
 }

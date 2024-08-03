@@ -14,7 +14,6 @@ import surveasy.domain.review.mapper.ReviewMapper;
 import surveasy.domain.review.repository.ReviewRepository;
 import surveasy.domain.review.vo.ReviewVo;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.domain.SurveyStatus;
 import surveasy.domain.survey.exception.SurveyNotFound;
 import surveasy.domain.survey.helper.SurveyHelper;
 import surveasy.domain.survey.repository.SurveyRepository;
@@ -31,23 +30,11 @@ public class ReviewHelper {
     private final SurveyHelper surveyHelper;
 
     public Long createReview(Long surveyId, ReviewCreateRequestDTO reviewCreateRequestDTO) {
-        Survey survey = surveyRepository.findById(surveyId)
-                .orElseThrow(() -> SurveyNotFound.EXCEPTION);
-
-        // 이미 작성한 리뷰 존재 여부
-        if(survey.getReviewId() != null) {
-            throw ReviewDuplicateData.EXCEPTION;
-        }
-
-        // 설문 종료 여부
-        if(!surveyHelper.isDone(survey.getStatus())) {
-            throw ReviewNotAllowed.EXCEPTION;
-        }
-
+        Survey survey = surveyRepository.findById(surveyId).orElseThrow(() -> SurveyNotFound.EXCEPTION);
+        validateReviewCreateCondition(survey);
         Review newReview = reviewMapper.toEntity(survey, reviewCreateRequestDTO);
         Review savedReview = reviewRepository.save(newReview);
-        survey.setReviewId(savedReview.getId());
-
+        survey.updateReviewId(savedReview.getId());
         return savedReview.getId();
     }
 
@@ -81,5 +68,10 @@ public class ReviewHelper {
 
     public Page<ReviewVo> getAdminReviewList(Pageable pageable) {
         return reviewRepository.findAllByOrderById(pageable);
+    }
+
+    private void validateReviewCreateCondition(Survey survey) {
+        if(survey.getReviewId() != null) throw ReviewDuplicateData.EXCEPTION;           // 이미 작성한 리뷰 존재 여부
+        if(!surveyHelper.isDone(survey.getStatus())) throw ReviewNotAllowed.EXCEPTION;  // 설문 종료 여부
     }
 }

@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
@@ -17,7 +17,7 @@ import surveasy.domain.user.domain.User;
 public interface SurveyService {
     SurveyHomeResponse getSurveyTotalCount();
 
-    SurveyIdResponse createSurvey(User user, SurveyCreateRequestDto surveyCreateRequestDto);
+    SurveyCreateResponseDto createSurvey(User user, SurveyCreateRequestDto surveyCreateRequestDto);
 
     SurveyListResponse getSurveyList(Pageable pageable);
 
@@ -33,7 +33,7 @@ public interface SurveyService {
 
     Survey getAdminSurvey(Long surveyId);
 
-    SurveyIdResponse updateAdminSurvey(Long surveyId, SurveyAdminDTO surveyAdminDTO);
+    SurveyIdResponse updateAdminSurvey(Long surveyId, AdminSurveyUpdateRequestDto adminSurveyUpdateRequestDto);
 
     void deleteAdminSurvey(Long surveyId);
 

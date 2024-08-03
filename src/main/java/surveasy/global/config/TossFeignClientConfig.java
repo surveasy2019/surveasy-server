@@ -15,6 +15,7 @@ import surveasy.global.error.toss.TossErrorDecoder;
 public class TossFeignClientConfig {
     private final TossSecretKeyGenerator tossSecretKeyGenerator;
 
+    @Bean
     public RequestInterceptor tossFeignRequestInterceptor() {
         String authorization = tossSecretKeyGenerator.generateSecretKey();
         return requestTemplate -> {

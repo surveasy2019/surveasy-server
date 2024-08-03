@@ -1,16 +1,19 @@
 package surveasy.domain.survey.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
+import surveasy.domain.payment.domain.Payment;
+import surveasy.domain.payment.helper.PaymentHelper;
+import surveasy.domain.pg.dto.response.TossPaymentsResponseDto;
+import surveasy.domain.pg.provider.TossServiceImpl;
 import surveasy.domain.survey.domain.Survey;
 import surveasy.domain.survey.domain.SurveyStatus;
-import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
@@ -27,19 +30,21 @@ import surveasy.domain.user.exception.UnauthorizedUser;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
-@Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class SurveyServiceImpl implements SurveyService {
     private final SurveyHelper surveyHelper;
     private final SurveyMapper surveyMapper;
     private final PanelHelper panelHelper;
+    private final PaymentHelper paymentHelper;
+    private final TossServiceImpl tossServiceImpl;
 
     @Override
-    public SurveyIdResponse createSurvey(User user, SurveyCreateRequestDto surveyCreateRequestDto) {
-        Survey newSurvey = surveyMapper.toEntity(user, surveyCreateRequestDto);
-        return surveyMapper.toSurveyIdResponse(surveyHelper.saveSurvey(newSurvey));
+    public SurveyCreateResponseDto createSurvey(User user, SurveyCreateRequestDto surveyCreateRequestDto) {
+        createSurveyAndSave(user, surveyCreateRequestDto);
+        TossPaymentsResponseDto responseDto = tossServiceImpl.requestPayments(surveyCreateRequestDto.paymentInfo());
+        return surveyMapper.toSurveyCreateResponseDto(responseDto);
     }
 
     @Override
@@ -108,13 +113,20 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {
-        return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(id, surveyAdminDTO));
+    public SurveyIdResponse updateAdminSurvey(Long surveyId, AdminSurveyUpdateRequestDto adminSurveyUpdateRequestDto) {
+        Survey survey = surveyHelper.findSurveyByIdOrThrow(surveyId);
+        return surveyMapper.toSurveyIdResponse(surveyHelper.updateAdminSurvey(survey, adminSurveyUpdateRequestDto));
     }
 
     @Override
     public void deleteAdminSurvey(Long surveyId) {
         surveyHelper.deleteAdminSurvey(surveyId);
+    }
+
+    private void createSurveyAndSave(User user, SurveyCreateRequestDto surveyCreateRequestDto) {
+        Survey survey = surveyHelper.createSurveyAndSave(user, surveyCreateRequestDto);
+        Payment payment = paymentHelper.createPaymentAndSave(surveyCreateRequestDto.paymentInfo());
+        survey.setPayment(payment);
     }
 
     private void validateAuthorizedUser(Survey survey, User user) {

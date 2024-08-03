@@ -16,8 +16,8 @@ public interface TossFeignController {
     TossPaymentsResponseDto createPayments(@RequestBody final TossPaymentsRequestDto requestDto);
 
     @GetMapping("/{paymentKey}")
-    TossPaymentsResponseDto getPaymentDetail(@PathVariable final String paymentKey);
+    TossPaymentsResponseDto getPaymentDetail(@PathVariable(value = "paymentKey") final String paymentKey);
 
     @PostMapping("/{paymentKey}/cancel")
-    TossPaymentsResponseDto cancelPayments(@PathVariable final String paymentKey, @RequestBody final TossPaymentsCancelRequestDto requestDto);
+    TossPaymentsResponseDto cancelPayments(@PathVariable(value = "paymentKey") final String paymentKey, @RequestBody final TossPaymentsCancelRequestDto requestDto);
 }

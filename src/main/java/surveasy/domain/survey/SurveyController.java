@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyUpdateRequestDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
@@ -46,9 +46,10 @@ public class SurveyController {
 
     @Operation(summary = "Web 설문 주문하기")
     @PostMapping
-    public SurveyIdResponse createSurvey(@CurrentUser User user,
-                                         @RequestBody @Valid SurveyCreateRequestDto surveyCreateRequestDto) {
-        return surveyService.createSurvey(user, surveyCreateRequestDto);
+    public ResponseEntity<SurveyCreateResponseDto> createSurvey(@CurrentUser User user,
+                                                                @RequestBody @Valid SurveyCreateRequestDto surveyCreateRequestDto) {
+        SurveyCreateResponseDto responseDto = surveyService.createSurvey(user, surveyCreateRequestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Web 설문 리스트 불러오기")
@@ -100,8 +101,8 @@ public class SurveyController {
     @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link, dueDate, headCount")
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId,
-                                              @RequestBody SurveyAdminDTO surveyAdminDTO) {
-        return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
+                                              @RequestBody AdminSurveyUpdateRequestDto adminSurveyUpdateRequestDto) {
+        return surveyService.updateAdminSurvey(surveyId, adminSurveyUpdateRequestDto);
     }
 
     @Operation(summary = "어드민 설문 삭제")
