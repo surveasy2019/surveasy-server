@@ -7,6 +7,8 @@ import surveasy.domain.payment.dto.request.PaymentCreateRequestDto;
 
 import java.time.LocalDateTime;
 
+import static surveasy.global.common.util.EntityUpdateValueUtils.updateValue;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
@@ -49,5 +51,9 @@ public class Payment {
                 .paymentKey(paymentCreateRequestDto.paymentKey())
                 .orderId(paymentCreateRequestDto.orderId())
                 .build();
+    }
+
+    public void updateIsRefunded(boolean isRefunded) {
+        this.isRefunded = updateValue(this.isRefunded, isRefunded);
     }
 }

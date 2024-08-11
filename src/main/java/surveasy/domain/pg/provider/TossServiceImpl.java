@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import surveasy.domain.payment.domain.RefundType;
 import surveasy.domain.payment.dto.request.PaymentCreateRequestDto;
+import surveasy.domain.pg.dto.request.TossPaymentsCancelRequestDto;
 import surveasy.domain.pg.dto.request.TossPaymentsRequestDto;
 import surveasy.domain.pg.dto.response.TossPaymentsResponseDto;
 import surveasy.global.common.util.toss.TossFeignController;
@@ -27,6 +28,8 @@ public class TossServiceImpl implements TossService {
 
     @Override
     public TossPaymentsResponseDto cancelPayments(RefundType refundType, String paymentKey, Integer cancelAmount) {
-        return null;
+        if(paymentKey.isEmpty() || cancelAmount == 0) return null;
+        TossPaymentsCancelRequestDto requestDto = TossPaymentsCancelRequestDto.of(refundType, CANCEL_REASON, cancelAmount);
+        return tossFeignController.cancelPayments(paymentKey, requestDto);
     }
 }

@@ -78,11 +78,11 @@ public class SurveyController {
         return surveyService.updateSurvey(surveyId, surveyUpdateRequestDto, user);
     }
 
-    @Operation(summary = "Web 마이페이지 설문 삭제")
+    @Operation(summary = "Web 마이페이지 설문 환불")
     @DeleteMapping("/{surveyId}")
-    public SurveyIdResponse deleteSurvey(@PathVariable Long surveyId,
+    public SurveyRefundResponseDto refundSurvey(@PathVariable Long surveyId,
                                          @CurrentUser User user) {
-        return surveyService.deleteSurvey(surveyId, user);
+        return surveyService.refundSurvey(surveyId, user);
     }
 
     @Operation(summary = "Admin 설문 리스트")

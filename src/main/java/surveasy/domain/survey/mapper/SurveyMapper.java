@@ -50,4 +50,8 @@ public class SurveyMapper {
     public SurveyCreateResponseDto toSurveyCreateResponseDto(TossPaymentsResponseDto responseDto) {
         return SurveyCreateResponseDto.of(responseDto);
     }
+
+    public SurveyRefundResponseDto toSurveyRefundResponseDto(TossPaymentsResponseDto responseDto) {
+        return SurveyRefundResponseDto.of(responseDto);
+    }
 }

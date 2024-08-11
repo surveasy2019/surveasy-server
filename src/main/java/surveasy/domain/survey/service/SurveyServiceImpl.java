@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.helper.PanelHelper;
 import surveasy.domain.payment.domain.Payment;
+import surveasy.domain.payment.domain.RefundType;
 import surveasy.domain.payment.helper.PaymentHelper;
 import surveasy.domain.pg.dto.response.TossPaymentsResponseDto;
 import surveasy.domain.pg.provider.TossServiceImpl;
@@ -81,10 +82,15 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public SurveyIdResponse deleteSurvey(Long surveyId, User user) {
+    public SurveyRefundResponseDto refundSurvey(Long surveyId, User user) {
         Survey survey = surveyHelper.findSurveyByIdOrThrow(surveyId);
         validateAuthorizedUser(survey, user);
-        return surveyMapper.toSurveyIdResponse(surveyHelper.deleteSurvey(survey));
+        Payment payment = survey.getPayment();
+        RefundType refundType = paymentHelper.getRefundType(survey);
+        Integer refundPrice = paymentHelper.getRefundPrice(refundType, survey, payment);
+        TossPaymentsResponseDto responseDto = tossServiceImpl.cancelPayments(refundType, payment.getPaymentKey(), refundPrice);
+        payment.updateIsRefunded(true);
+        return surveyMapper.toSurveyRefundResponseDto(responseDto);
     }
 
     @Override

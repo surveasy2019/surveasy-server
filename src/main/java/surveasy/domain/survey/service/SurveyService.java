@@ -27,7 +27,7 @@ public interface SurveyService {
 
     SurveyIdResponse updateSurvey(Long surveyId, SurveyUpdateRequestDto surveyUpdateRequestDto, User user);
 
-    SurveyIdResponse deleteSurvey(Long surveyId, User user);
+    SurveyRefundResponseDto refundSurvey(Long surveyId, User user);
 
     SurveyAdminListResponse getAdminSurveyList(Pageable pageable, String username);
 
