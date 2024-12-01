@@ -17,7 +17,12 @@ public enum SurveyHeadcount {
     HEAD_140(10, 140),
     HEAD_160(11, 160),
     HEAD_180(12, 180),
-    HEAD_200(13, 200);
+    HEAD_200(13, 200),
+    HEAD_220(14, 220),
+    HEAD_240(15, 240),
+    HEAD_260(16, 260),
+    HEAD_280(17, 280),
+    HEAD_300(18, 300);
 
     private final int idx;
 
