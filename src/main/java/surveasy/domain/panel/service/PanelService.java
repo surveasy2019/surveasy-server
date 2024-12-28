@@ -34,6 +34,8 @@ public interface PanelService {
 
     PanelInfoVo getPanelInfoVo(Panel panel);
 
+    PanelWatermarkInfoResponse getPanelWatermarkInfo(Panel panel);
+
     PanelInfoVo updatePanelInfo(Panel panel, PanelInfoUpdateDTO panelInfoUpdateDTO);
 
     PanelAdminListResponse getAdminPanelList(Pageable pageable, String keyword);
