@@ -9,6 +9,7 @@ import surveasy.domain.panel.dto.response.*;
 import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
+import surveasy.domain.panel.vo.PanelWatermarkVo;
 
 import java.util.List;
 
@@ -50,6 +51,10 @@ public class PanelMapper {
 
     public PanelInfoVo toPanelInfoVo(Panel panel) {
         return PanelInfoVo.from(panel);
+    }
+
+    public PanelWatermarkInfoResponse toPanelWatermarkInfoResponse(PanelWatermarkVo panelWatermarkVo) {
+        return PanelWatermarkInfoResponse.of(panelWatermarkVo);
     }
 
     public PanelTokenResponse toPanelTokenResponse(String accessToken, String refreshToken) {

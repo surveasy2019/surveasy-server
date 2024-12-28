@@ -103,6 +103,12 @@ public class PanelController {
         return ResponseEntity.ok(panelService.getPanelInfoVo(panel));
     }
 
+    @GetMapping("/watermark")
+    @Operation(summary = "App 워터마크 패널 정보 불러오기")
+    public ResponseEntity<PanelWatermarkInfoResponse> getPanelWatermarkInfo(@CurrentPanel Panel panel) {
+        return ResponseEntity.ok(panelService.getPanelWatermarkInfo(panel));
+    }
+
     @PatchMapping("")
     @Operation(summary = "App 마이페이지 패널 정보 수정하기")
     public ResponseEntity<PanelInfoVo> updatePanelInfo(
