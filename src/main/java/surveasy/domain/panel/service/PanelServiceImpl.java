@@ -14,6 +14,7 @@ import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
+import surveasy.domain.panel.vo.PanelWatermarkVo;
 import surveasy.domain.response.helper.ResponseHelper;
 import surveasy.global.config.jwt.TokenProvider;
 
@@ -79,6 +80,11 @@ public class PanelServiceImpl implements PanelService {
 
     public PanelInfoVo getPanelInfoVo(Panel panel) {
         return panelMapper.toPanelInfoVo(panel);
+    }
+
+    public PanelWatermarkInfoResponse getPanelWatermarkInfo(Panel panel) {
+        PanelWatermarkVo panelWatermarkVo = PanelWatermarkVo.of(panel);
+        return panelMapper.toPanelWatermarkInfoResponse(panelWatermarkVo);
     }
 
     public PanelAdminListResponse getAdminPanelList(Pageable pageable, String keyword) {
