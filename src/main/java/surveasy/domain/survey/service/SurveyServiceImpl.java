@@ -21,6 +21,8 @@ import surveasy.domain.survey.mapper.SurveyMapper;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
 import surveasy.domain.survey.vo.SurveyListVo;
 import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
+import surveasy.domain.user.vo.FirebaseUserVo;
+import surveasy.global.common.util.FirebaseUtils;
 import surveasy.global.config.user.PanelDetails;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class SurveyServiceImpl implements SurveyService {
     private final SurveyHelper surveyHelper;
     private final SurveyMapper surveyMapper;
     private final PanelHelper panelHelper;
+    private final FirebaseUtils firebaseUtils;
 
     public SurveyIdResponse createSurvey(SurveyCreateRequestDto surveyCreateRequestDto) {
         Survey newSurvey = surveyMapper.toEntity(surveyCreateRequestDto);
@@ -87,8 +90,10 @@ public class SurveyServiceImpl implements SurveyService {
         return surveyHelper.getAdminSurveyList(pageable, username);
     }
 
-    public Survey getAdminSurvey(Long surveyId) {
-        return surveyHelper.getAdminSurvey(surveyId);
+    public SurveyAdminDetailResponse getAdminSurvey(Long surveyId) {
+        Survey survey = surveyHelper.getAdminSurvey(surveyId);
+        FirebaseUserVo userInfo = firebaseUtils.getFirebaseUserVo(survey.getEmail());
+        return SurveyAdminDetailResponse.of(survey, userInfo);
     }
 
     public SurveyIdResponse updateAdminSurvey(Long id, SurveyAdminDTO surveyAdminDTO) {

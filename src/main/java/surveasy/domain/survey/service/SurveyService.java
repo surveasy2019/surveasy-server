@@ -31,7 +31,7 @@ public interface SurveyService {
 
     SurveyAdminListResponse getAdminSurveyList(Pageable pageable, String username);
 
-    Survey getAdminSurvey(Long surveyId);
+    SurveyAdminDetailResponse getAdminSurvey(Long surveyId);
 
     SurveyIdResponse updateAdminSurvey(Long surveyId, SurveyAdminDTO surveyAdminDTO);
 

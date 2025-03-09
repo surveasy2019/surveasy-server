@@ -89,7 +89,7 @@ public class SurveyController {
 
     @Operation(summary = "Admin 설문 1개 상세 정보")
     @GetMapping("/admin/{surveyId}")
-    public ResponseEntity<Survey> getAdminSurvey(@PathVariable Long surveyId) {
+    public ResponseEntity<SurveyAdminDetailResponse> getAdminSurvey(@PathVariable Long surveyId) {
         return ResponseEntity.ok(surveyService.getAdminSurvey(surveyId));
     }
 
