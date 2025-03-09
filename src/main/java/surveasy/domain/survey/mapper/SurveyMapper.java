@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import surveasy.domain.panel.domain.option.PanelStatus;
-import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
+import surveasy.domain.pg.dto.response.TossPaymentsResponseDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
@@ -16,16 +15,9 @@ import surveasy.domain.survey.vo.SurveyMyPageOrderVo;
 
 import java.util.List;
 
-// Mapper의 역할 1 : Entity로 매핑
-// Mapper의 역할 2 : DTO로 매핑
-
 @Component
 @RequiredArgsConstructor
 public class SurveyMapper {
-
-    public Survey toEntity(SurveyCreateRequestDto surveyCreateRequestDto) {
-        return Survey.from(surveyCreateRequestDto);
-    }
 
     public SurveyIdResponse toSurveyIdResponse(Long surveyId) {
         return SurveyIdResponse.from(surveyId);
@@ -53,5 +45,13 @@ public class SurveyMapper {
 
     public SurveyAppListResponse toSurveyAppList(Page<SurveyAppListVo> surveyAppList, PanelStatus status) {
         return SurveyAppListResponse.of(surveyAppList, status);
+    }
+
+    public SurveyCreateResponseDto toSurveyCreateResponseDto(TossPaymentsResponseDto responseDto) {
+        return SurveyCreateResponseDto.of(responseDto);
+    }
+
+    public SurveyRefundResponseDto toSurveyRefundResponseDto(TossPaymentsResponseDto responseDto) {
+        return SurveyRefundResponseDto.of(responseDto);
     }
 }

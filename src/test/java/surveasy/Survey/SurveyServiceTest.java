@@ -46,7 +46,7 @@ public class SurveyServiceTest {
 //                .build();
 
         // when
-        surveyService.createSurvey(surveyCreateRequestDto);
+        surveyService.createSurvey(null, surveyCreateRequestDto);
         Survey findSurvey = surveyRepository.findById(1L).orElseThrow();
 
         // then

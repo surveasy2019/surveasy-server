@@ -5,7 +5,6 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,13 +24,13 @@ import surveasy.domain.panel.dto.response.PanelTokenResponse;
 import surveasy.domain.panel.exception.*;
 import surveasy.domain.panel.mapper.PanelMapper;
 import surveasy.domain.panel.repository.PanelRepository;
-import surveasy.domain.panel.util.RedisUtil;
+import surveasy.global.common.util.RedisUtils;
 import surveasy.domain.panel.vo.PanelAdminCsvVo;
 import surveasy.domain.survey.domain.target.TargetGender;
 import surveasy.global.common.SurveyOptions;
-import surveasy.global.common.dto.PageInfo;
-import surveasy.global.common.util.DateAndStringUtils;
-import surveasy.global.config.jwt.TokenProvider;
+import surveasy.global.common.enm.AuthType;
+import surveasy.global.common.util.string.DateAndStringUtils;
+import surveasy.global.security.jwt.TokenProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,18 +40,13 @@ import java.util.concurrent.ExecutionException;
 @Component
 @RequiredArgsConstructor
 public class PanelHelper {
-
-    private final PanelMapper panelMapper;
-    private final PanelRepository panelRepository;
-
-    private final TokenProvider tokenProvider;
-
-    private final RedisUtil redisUtil;
-
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     private static final String COLLECTION_NAME = "panelData";
     private static final String COLLECTION_FS_NAME = "FirstSurvey";
+    private final PanelMapper panelMapper;
+    private final PanelRepository panelRepository;
+    private final TokenProvider tokenProvider;
+    private final RedisUtils redisUtils;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
@@ -191,8 +185,8 @@ public class PanelHelper {
         }
 
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
 
         return panelMapper.toOAuth2Response(existingPanel, additionalInfo, accessToken, refreshToken);
     }
@@ -204,8 +198,8 @@ public class PanelHelper {
 
         if(isSignedUp) {
             final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-            final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-            final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+            final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+            final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
             return panelMapper.toOAuth2AppleResponse(true, PanelTokenResponse.of(accessToken, refreshToken));
         }
 
@@ -237,15 +231,15 @@ public class PanelHelper {
 
         Panel panel = addNewPanelApple(panelAppleSignUpDTO);
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
         return PanelTokenResponse.of(accessToken, refreshToken);
     }
 
 
     /* [App] 리프레쉬 토큰 검증 */
     public void matchesRefreshToken(String refreshToken, Panel panel) {
-        String savedToken = redisUtil.getRefreshToken(panel.getId().toString());
+        String savedToken = redisUtils.getRefreshToken(panel.getId().toString());
         if(savedToken == null || !savedToken.equals(refreshToken)) {
             throw RefreshTokenNotFound.EXCEPTION;
         }

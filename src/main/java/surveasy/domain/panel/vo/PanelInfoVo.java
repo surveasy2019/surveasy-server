@@ -5,7 +5,7 @@ import lombok.Getter;
 import surveasy.domain.panel.domain.Panel;
 import surveasy.domain.panel.domain.option.AccountType;
 import surveasy.domain.survey.domain.target.TargetGender;
-import surveasy.global.common.util.DateAndStringUtils;
+import surveasy.global.common.util.string.DateAndStringUtils;
 
 import java.time.LocalDate;
 

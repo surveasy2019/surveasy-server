@@ -1,7 +1,6 @@
 package surveasy.domain.survey.repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -26,8 +25,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static surveasy.domain.payment.domain.QPayment.payment;
 import static surveasy.domain.survey.domain.QSurvey.survey;
 import static surveasy.domain.response.domain.QResponse.response;
+import static surveasy.domain.user.domain.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -55,12 +56,13 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     @Override
-    public long countByEmailAndStatus(String email, SurveyStatus status) {
+    public long countByUserIdAndStatus(Long userId, SurveyStatus status) {
         return jpaQueryFactory
                 .select(survey.count())
                 .from(survey)
+                .leftJoin(survey.user, user)
                 .where(
-                        eqEmail(email),
+                        eqUserId(userId),
                         eqStatus(status)
                 )
                 .fetchFirst();
@@ -104,8 +106,9 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         survey.targetInput,
                         survey.headCount,
                         survey.responseCount,
-                        survey.username))
+                        user.name))
                 .from(survey)
+                .leftJoin(survey.user, user)
                 .where(
                         inVisibleStatus()
                 )
@@ -124,7 +127,7 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
     }
 
     @Override
-    public List<SurveyMyPageOrderVo> findAllSurveyMyPageVosByEmail(String email) {
+    public List<SurveyMyPageOrderVo> findAllSurveyMyPageVosByUserId(Long userId) {
         return jpaQueryFactory
                 .select(Projections.constructor(SurveyMyPageOrderVo.class,
                         survey.id,
@@ -136,15 +139,16 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
                         survey.targetAgeListStr,
                         survey.targetGender,
                         survey.status,
-                        survey.price,
+                        payment.price,
                         survey.identity,
                         survey.link,
                         survey.uploadedAt,
                         survey.dueDate,
                         survey.reviewId))
                 .from(survey)
+                .leftJoin(survey.payment, payment)
                 .where(
-                        eqEmail(email)
+                        eqUserId(userId)
                 )
                 .orderBy(survey.id.desc())
                 .fetch();
@@ -267,12 +271,12 @@ public class SurveyRepositoryImpl implements SurveyRepositoryCustom {
         return surveyId != null ? survey.id.eq(surveyId) : null;
     }
 
-    private BooleanExpression eqEmail(String email) {
-        return email != null ? survey.email.eq(email) : null;
+    private BooleanExpression eqUserId(Long userId) {
+        return userId != null ? survey.user.id.eq(userId) : null;
     }
 
     private BooleanExpression eqUsername(String username) {
-        return username != null ? survey.username.containsIgnoreCase(username) : null;
+        return username != null ? survey.user.name.containsIgnoreCase(username) : null;
     }
 
     private BooleanExpression eqStatus(SurveyStatus status) {

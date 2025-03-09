@@ -16,7 +16,8 @@ import surveasy.domain.panel.vo.PanelInfoVo;
 import surveasy.domain.panel.vo.PanelResponseInfoVo;
 import surveasy.domain.panel.vo.PanelWatermarkVo;
 import surveasy.domain.response.helper.ResponseHelper;
-import surveasy.global.config.jwt.TokenProvider;
+import surveasy.global.common.enm.AuthType;
+import surveasy.global.security.jwt.TokenProvider;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,8 +36,8 @@ public class PanelServiceImpl implements PanelService {
     public PanelTokenResponse signInEmail(PanelEmailSignInDTO panelEmailSignInDTO) throws ExecutionException, InterruptedException {
         Panel panel = panelHelper.addExistingPanelIfNeed(panelEmailSignInDTO);
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
         return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
     }
 
@@ -51,9 +52,9 @@ public class PanelServiceImpl implements PanelService {
     public PanelTokenResponse signUp(Panel panel, PanelSignUpDTO panelSignUpDTO) {
         panel = panelHelper.signUp(panel, panelSignUpDTO);
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
-        final String accessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        final String accessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
         tokenProvider.deleteRefreshToken(panel.getId());
-        final String refreshToken = tokenProvider.createRefreshToken(panel.getId(), authentication);
+        final String refreshToken = tokenProvider.createRefreshToken(AuthType.PANEL, panel.getId(), authentication);
         return panelMapper.toPanelTokenResponse(accessToken, refreshToken);
     }
 
@@ -93,11 +94,11 @@ public class PanelServiceImpl implements PanelService {
 
     public PanelTokenResponse reissueToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         final String refreshToken = refreshTokenRequestDTO.getRefreshToken();
-        final Panel panel = panelHelper.findPanelById(Long.parseLong(tokenProvider.getTokenPanelId(refreshToken)));
+        final Panel panel = panelHelper.findPanelById(Long.parseLong(tokenProvider.getTokenId(refreshToken)));
         final Authentication authentication = tokenProvider.panelAuthorizationInput(panel);
         tokenProvider.validateRefreshToken(refreshToken);
         panelHelper.matchesRefreshToken(refreshToken, panel);
-        final String newAccessToken = tokenProvider.createAccessToken(panel.getId(), authentication);
+        final String newAccessToken = tokenProvider.createAccessToken(AuthType.PANEL, panel.getId(), authentication);
         return panelMapper.toPanelTokenResponse(newAccessToken, refreshToken);
     }
 
