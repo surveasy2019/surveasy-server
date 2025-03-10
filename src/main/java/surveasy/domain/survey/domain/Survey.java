@@ -12,11 +12,15 @@ import surveasy.domain.survey.domain.option.SurveyLanguage;
 import surveasy.domain.survey.domain.option.SurveySpendTime;
 import surveasy.domain.survey.domain.target.TargetAge;
 import surveasy.domain.survey.domain.target.TargetGender;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDto;
 import surveasy.global.common.util.ListAndStringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static surveasy.global.common.util.EntityUpdateValueUtils.updateValue;
 
 @Entity
 @Getter @Setter
@@ -159,7 +163,7 @@ public class Survey {
         this.responseCount = 0;
     }
 
-    public static Survey from(SurveyCreateRequestDto surveyCreateRequestDto) {
+    public static Survey createSurvey(SurveyCreateRequestDto surveyCreateRequestDto) {
         return Survey.builder()
                 .headCount(surveyCreateRequestDto.getHeadCount())
                 .spendTime(surveyCreateRequestDto.getSpendTime())
@@ -181,5 +185,25 @@ public class Survey {
                 .email(surveyCreateRequestDto.getEmail())
                 .username(surveyCreateRequestDto.getUsername())
                 .build();
+    }
+
+    public void updateSurvey(AdminSurveyUpdateDto adminSurveyUpdateDto) {
+        this.status = updateValue(this.status, adminSurveyUpdateDto.status());
+        this.noticeToPanel = updateValue(this.noticeToPanel, adminSurveyUpdateDto.noticeToPanel());
+        this.reward = updateValue(this.reward, adminSurveyUpdateDto.reward());
+        this.link = updateValue(this.link, adminSurveyUpdateDto.link());
+        this.dueDate = updateValue(this.dueDate, adminSurveyUpdateDto.dueDate());
+        this.headCount = updateValue(this.headCount, adminSurveyUpdateDto.headCount());
+    }
+
+    public void updateSurveySid(Long sid) {
+        this.sid = sid;
+    }
+
+    public void updateMySurvey(SurveyMyPageEditDto surveyMyPageEditDto) {
+        this.title = updateValue(this.title, surveyMyPageEditDto.title());
+        this.link = updateValue(this.link, surveyMyPageEditDto.link());
+        this.headCount = updateValue(this.headCount, surveyMyPageEditDto.headCount());
+        this.price = updateValue(this.price, surveyMyPageEditDto.price());
     }
 }

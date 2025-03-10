@@ -3,15 +3,13 @@ package surveasy.domain.survey.service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateDto;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
-import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
 import surveasy.domain.survey.dto.response.app.SurveyAppListResponse;
 import surveasy.domain.survey.dto.response.web.*;
 import surveasy.domain.survey.vo.SurveyAppListDetailVo;
-import surveasy.global.config.user.PanelDetails;
 
 @Service
 public interface SurveyService {
@@ -25,7 +23,7 @@ public interface SurveyService {
 
     SurveyMyPageOrderListResponse getSurveyMyPageOrderList(String email);
 
-    SurveyIdResponse editMyPageSurvey(Long surveyId, SurveyMyPageEditDTO surveyMyPageEditDTO);
+    SurveyIdResponse editMyPageSurvey(Long surveyId, SurveyMyPageEditDto surveyMyPageEditDTO);
 
     SurveyIdResponse deleteMyPageSurvey(Long surveyId);
 
@@ -33,7 +31,7 @@ public interface SurveyService {
 
     SurveyAdminDetailResponse getAdminSurvey(Long surveyId);
 
-    SurveyIdResponse updateAdminSurvey(Long surveyId, SurveyAdminDTO surveyAdminDTO);
+    SurveyIdResponse updateAdminSurvey(Long surveyId, AdminSurveyUpdateDto adminSurveyUpdateDto);
 
     void deleteAdminSurvey(Long surveyId);
 
