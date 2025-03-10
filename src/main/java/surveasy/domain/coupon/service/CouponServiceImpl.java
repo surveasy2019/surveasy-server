@@ -3,40 +3,47 @@ package surveasy.domain.coupon.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import surveasy.domain.coupon.dto.request.CouponCreateDTO;
-import surveasy.domain.coupon.dto.request.CouponUpdateDTO;
+import surveasy.domain.coupon.domain.Coupon;
+import surveasy.domain.coupon.dto.request.CouponCreateRequestDto;
+import surveasy.domain.coupon.dto.request.CouponUpdateRequestDto;
 import surveasy.domain.coupon.dto.response.CouponDiscountPercentResponse;
 import surveasy.domain.coupon.dto.response.CouponIdResponse;
 import surveasy.domain.coupon.dto.response.CouponListResponse;
 import surveasy.domain.coupon.helper.CouponHelper;
 import surveasy.domain.coupon.mapper.CouponMapper;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class CouponServiceImpl implements CouponService {
-
     private final CouponHelper couponHelper;
     private final CouponMapper couponMapper;
 
     @Override
     public CouponDiscountPercentResponse getCouponDiscountPercent(String code) {
-        return couponMapper.toCouponDiscountPercentResponse(couponHelper.getCouponDiscountPercent(code));
+        Integer discountPercent = couponHelper.getCouponDiscountPercent(code);
+        return couponMapper.toCouponDiscountPercentResponse(discountPercent);
     }
 
     @Override
     public CouponListResponse getCouponList() {
-        return couponMapper.toCouponListResponse(couponHelper.getCouponList());
+        List<Coupon> couponList = couponHelper.getCouponList();
+        return couponMapper.toCouponListResponse(couponList);
     }
 
     @Override
-    public CouponIdResponse createCoupon(CouponCreateDTO couponCreateDTO) {
-        return couponMapper.toCouponIdResponse(couponHelper.createCoupon(couponCreateDTO));
+    public CouponIdResponse createCoupon(CouponCreateRequestDto couponCreateRequestDto) {
+        Coupon coupon = couponHelper.createCouponAndSave(couponCreateRequestDto);
+        return couponMapper.toCouponIdResponse(coupon.getId());
     }
 
     @Override
-    public CouponIdResponse updateCoupon(Long couponId, CouponUpdateDTO couponUpdateDTO) {
-        return couponMapper.toCouponIdResponse(couponHelper.updateCoupon(couponId, couponUpdateDTO));
+    public CouponIdResponse updateCoupon(Long couponId, CouponUpdateRequestDto couponUpdateRequestDto) {
+        Coupon coupon = couponHelper.findCouponByCouponId(couponId);
+        coupon.updateCoupon(couponUpdateRequestDto);
+        return couponMapper.toCouponIdResponse(coupon.getId());
     }
 
     @Override
