@@ -19,7 +19,7 @@ public class ActivepanelController {
 
     private final ActivepanelService activepanelService;
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Active Panel 현황")
     public ActivePanelResponse getActivePanel() {
         return activepanelService.getActivePanel();
