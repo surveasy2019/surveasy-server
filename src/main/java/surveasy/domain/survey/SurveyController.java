@@ -10,9 +10,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import surveasy.domain.panel.domain.Panel;
-import surveasy.domain.survey.domain.Survey;
-import surveasy.domain.survey.dto.request.admin.SurveyAdminDTO;
-import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDTO;
+import surveasy.domain.survey.dto.request.admin.AdminSurveyUpdateDto;
+import surveasy.domain.survey.dto.request.web.SurveyMyPageEditDto;
 import surveasy.domain.survey.dto.request.web.SurveyMyPageEmailDTO;
 import surveasy.domain.survey.dto.request.web.SurveyCreateRequestDto;
 import surveasy.domain.survey.dto.response.app.SurveyAppHomeListResponse;
@@ -70,7 +69,7 @@ public class SurveyController {
     @Operation(summary = "Web 마이페이지 설문 수정 - title, link, headcount, price")
     @PatchMapping("/{surveyId}")
     public SurveyIdResponse editMyPageSurvey(@PathVariable Long surveyId,
-                                             @RequestBody SurveyMyPageEditDTO surveyMyPageEditDTO) {
+                                             @RequestBody SurveyMyPageEditDto surveyMyPageEditDTO) {
         return surveyService.editMyPageSurvey(surveyId, surveyMyPageEditDTO);
     }
 
@@ -89,15 +88,15 @@ public class SurveyController {
 
     @Operation(summary = "Admin 설문 1개 상세 정보")
     @GetMapping("/admin/{surveyId}")
-    public ResponseEntity<Survey> getAdminSurvey(@PathVariable Long surveyId) {
+    public ResponseEntity<SurveyAdminDetailResponse> getAdminSurvey(@PathVariable Long surveyId) {
         return ResponseEntity.ok(surveyService.getAdminSurvey(surveyId));
     }
 
     @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link, dueDate, headCount")
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId,
-                                              @RequestBody SurveyAdminDTO surveyAdminDTO) {
-        return surveyService.updateAdminSurvey(surveyId, surveyAdminDTO);
+                                              @RequestBody AdminSurveyUpdateDto adminSurveyUpdateDto) {
+        return surveyService.updateAdminSurvey(surveyId, adminSurveyUpdateDto);
     }
 
     @Operation(summary = "어드민 설문 삭제")

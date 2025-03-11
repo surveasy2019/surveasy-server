@@ -6,15 +6,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import surveasy.domain.coupon.dto.request.CouponCreateDTO;
+import surveasy.domain.coupon.dto.request.CouponCreateRequestDto;
+import surveasy.domain.coupon.dto.request.CouponUpdateRequestDto;
 import surveasy.global.common.util.DateAndStringUtils;
 
 import java.time.LocalDate;
 
+import static surveasy.global.common.util.EntityUpdateValueUtils.updateValue;
+
 @Entity
 @Getter
 @Setter
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Coupon {
 
     @Id
@@ -31,19 +36,20 @@ public class Coupon {
     private String createdAt;
 
     @NotNull
+    @Builder.Default
     private CouponStatus status = CouponStatus.VALID;
 
-    @Builder
-    private Coupon(String code, Integer discountPercent) {
-        this.code = code;
-        this.discountPercent = discountPercent;
-        this.createdAt = DateAndStringUtils.localDateToString(LocalDate.now());
+    public static Coupon createCoupon(CouponCreateRequestDto couponCreateRequestDto) {
+        return Coupon.builder()
+                .code(couponCreateRequestDto.code())
+                .discountPercent(couponCreateRequestDto.discountPercent())
+                .createdAt(DateAndStringUtils.localDateToString(LocalDate.now()))
+                .build();
     }
 
-    public static Coupon from(CouponCreateDTO couponCreateDTO) {
-        return Coupon.builder()
-                .code(couponCreateDTO.getCode())
-                .discountPercent(couponCreateDTO.getDiscountPercent())
-                .build();
+    public void updateCoupon(CouponUpdateRequestDto couponUpdateRequestDto) {
+        this.code = updateValue(this.code, couponUpdateRequestDto.code());
+        this.discountPercent = updateValue(this.discountPercent, couponUpdateRequestDto.discountPercent());
+        this.status = updateValue(this.status, couponUpdateRequestDto.status());
     }
 }

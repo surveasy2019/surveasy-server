@@ -10,7 +10,8 @@ public enum SurveyStatus {
     IN_PROGRESS(2, "응답 수집중"),
     DONE(3, "응답 수집 완료"),
     REFUND_PARTIAL(4, "부분 환불"),
-    REFUND_ALL(5, "전체 환불");
+    REFUND_ALL(5, "전체 환불"),
+    CANNOT(6, "진행 불가");
 
     private final int progress;
     private final String value;

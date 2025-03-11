@@ -1,8 +1,8 @@
 package surveasy.domain.coupon.service;
 
 import org.springframework.stereotype.Service;
-import surveasy.domain.coupon.dto.request.CouponCreateDTO;
-import surveasy.domain.coupon.dto.request.CouponUpdateDTO;
+import surveasy.domain.coupon.dto.request.CouponCreateRequestDto;
+import surveasy.domain.coupon.dto.request.CouponUpdateRequestDto;
 import surveasy.domain.coupon.dto.response.CouponDiscountPercentResponse;
 import surveasy.domain.coupon.dto.response.CouponIdResponse;
 import surveasy.domain.coupon.dto.response.CouponListResponse;
@@ -13,9 +13,9 @@ public interface CouponService {
 
     CouponListResponse getCouponList();
 
-    CouponIdResponse createCoupon(CouponCreateDTO couponCreateDTO);
+    CouponIdResponse createCoupon(CouponCreateRequestDto couponCreateRequestDto);
 
-    CouponIdResponse updateCoupon(Long couponId, CouponUpdateDTO couponUpdateDTO);
+    CouponIdResponse updateCoupon(Long couponId, CouponUpdateRequestDto couponUpdateRequestDto);
 
     void deleteCoupon(Long couponId);
 }
