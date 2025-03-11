@@ -1,7 +1,6 @@
 package surveasy.domain.response.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,6 @@ import surveasy.global.config.user.PanelDetails;
 @RequiredArgsConstructor
 @Transactional
 @Service
-@Slf4j
 public class ResponseServiceImpl implements ResponseService {
     private final ResponseHelper responseHelper;
     private final ResponseMapper responseMapper;
@@ -49,10 +47,5 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     public AdminSurveyResponseListResponse getAdminSurveyResponseList(Long surveyId) {
         return responseMapper.toAdminSurveyResponseListResponse(responseHelper.getAdminSurveyResponseList(surveyId));
-    }
-
-    @Override
-    public void doneAggregation() {
-        responseHelper.doneAggregation();
     }
 }
