@@ -20,6 +20,4 @@ public interface ResponseService {
     ResponseIdResponse updateResponseAdmin(Long responseId, ResponseUpdateRequestDTO responseUpdateRequestDTO);
 
     AdminSurveyResponseListResponse getAdminSurveyResponseList(Long surveyId);
-
-    void doneAggregation();
 }
