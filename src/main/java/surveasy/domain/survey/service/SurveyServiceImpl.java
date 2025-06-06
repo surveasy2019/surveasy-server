@@ -118,7 +118,7 @@ public class SurveyServiceImpl implements SurveyService {
             survey.updateSurveySid(surveyHelper.findMaxSid() + 1);      // sid 발급
         }
         if(adminSurveyUpdateDto.status().equals(SurveyStatus.CANNOT)) {
-            emailUtils.sendSurveyCannotMail(survey.getEmail(), survey.getTargetInput());
+            emailUtils.sendSurveyCannotMail(survey.getEmail(), survey.getTargetInput(), survey.getPrice());
         }
         return surveyMapper.toSurveyIdResponse(survey.getId());
     }

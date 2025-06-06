@@ -22,8 +22,8 @@ public class EmailUtils {
         javaMailSender.send(createCsvMail());
     }
 
-    public void sendSurveyCannotMail(String email, String surveyTarget) {
-        javaMailSender.send(createSurveyCannotMail(email, surveyTarget));
+    public void sendSurveyCannotMail(String email, String surveyTarget, Integer surveyPrice) {
+        javaMailSender.send(createSurveyCannotMail(email, surveyTarget, surveyPrice));
     }
 
     private MimeMessage createCsvMail() {
@@ -42,7 +42,7 @@ public class EmailUtils {
         }
     }
 
-    private MimeMessage createSurveyCannotMail(String email, String surveyTarget) {
+    private MimeMessage createSurveyCannotMail(String email, String surveyTarget, Integer surveyPrice) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -56,6 +56,7 @@ public class EmailUtils {
                     "\n" +
                     "도움을 드리지 못해 죄송합니다.\n" +
                     "계좌 정보 알려주시면 전액 환불해드리겠습니다.\n" +
+                    "- 금액 : " + surveyPrice + "원\n" +
                     "\n" +
                     "감사합니다.\n" +
                     "서베이지 드림\n" +
