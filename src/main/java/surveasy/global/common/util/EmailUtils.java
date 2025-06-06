@@ -26,6 +26,10 @@ public class EmailUtils {
         javaMailSender.send(createSurveyCannotMail(email, surveyTarget, surveyPrice));
     }
 
+    public void sendSurveyInProgressMail(String email, String username, String surveyTitle) {
+        javaMailSender.send(createSurveyInProgressMail(email, username, surveyTitle));
+    }
+
     private MimeMessage createCsvMail() {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         FileSystemResource fileSystemResource = new FileSystemResource(new File("output" + File.separator + LocalDate.now() + ".csv"));
@@ -57,6 +61,31 @@ public class EmailUtils {
                     "도움을 드리지 못해 죄송합니다.\n" +
                     "계좌 정보 알려주시면 전액 환불해드리겠습니다.\n" +
                     "- 금액 : " + surveyPrice + "원\n" +
+                    "\n" +
+                    "감사합니다.\n" +
+                    "서베이지 드림\n" +
+                    "\n" +
+                    "\n" +
+                    "--\n" +
+                    "서베이지 Surveasy\n" +
+                    "\n" +
+                    "E-mail: official@gosurveasy.com | Website: www.gosurveasy.com");
+            return mimeMessage;
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private MimeMessage createSurveyInProgressMail(String email, String username, String surveyTitle) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("[서베이지] 설문 응답 수집 시작 안내");
+            mimeMessageHelper.setText("안녕하세요 " + username + "님, 서베이지입니다.\n" +
+                    "\n" +
+                    "의뢰해주신 [" + surveyTitle + "] 설문 검수 완료 후 패널 대상으로 배포되었습니다.\n" +
+                    "기한 내에 응답 빠르게 수집할 수 있도록 하겠습니다\n" +
                     "\n" +
                     "감사합니다.\n" +
                     "서베이지 드림\n" +
