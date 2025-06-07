@@ -92,6 +92,13 @@ public class SurveyController {
         return ResponseEntity.ok(surveyService.getAdminSurvey(surveyId));
     }
 
+    @Operation(summary = "Admin 설문 링크 엑세스 권한 안내 메일 발송")
+    @GetMapping("/admin/{surveyId}/mail/access")
+    public ResponseEntity<SurveyAdminDetailResponse> sendSurveyWrongAccessMail(@PathVariable Long surveyId) {
+        surveyService.sendSurveyWrongAccessMail(surveyId);
+        return ResponseEntity.ok(null);
+    }
+
     @Operation(summary = "Admin 설문 정보 업데이트 - status, noticeToPanel, reward, link, dueDate, headCount")
     @PatchMapping("/admin/{surveyId}")
     public SurveyIdResponse updateAdminSurvey(@PathVariable Long surveyId,

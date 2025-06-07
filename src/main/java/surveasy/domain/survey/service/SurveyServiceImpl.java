@@ -111,6 +111,12 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    public void sendSurveyWrongAccessMail(Long surveyId) {
+        Survey survey = surveyHelper.getAdminSurvey(surveyId);
+        emailUtils.sendSurveyWrongAccessMail(survey.getEmail());
+    }
+
+    @Override
     public SurveyIdResponse updateAdminSurvey(Long surveyId, AdminSurveyUpdateDto adminSurveyUpdateDto) {
         Survey survey = surveyHelper.findSurveyById(surveyId);
         survey.updateSurvey(adminSurveyUpdateDto);

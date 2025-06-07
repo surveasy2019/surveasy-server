@@ -1,5 +1,6 @@
 package surveasy.global.common.util;
 
+import jakarta.activation.FileDataSource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeUtility;
@@ -28,6 +29,10 @@ public class EmailUtils {
 
     public void sendSurveyInProgressMail(String email, String username, String surveyTitle) {
         javaMailSender.send(createSurveyInProgressMail(email, username, surveyTitle));
+    }
+    
+    public void sendSurveyWrongAccessMail(String email) {
+        javaMailSender.send(createSurveyWrongAccessMail(email));
     }
 
     private MimeMessage createCsvMail() {
@@ -95,6 +100,28 @@ public class EmailUtils {
                     "서베이지 Surveasy\n" +
                     "\n" +
                     "E-mail: official@gosurveasy.com | Website: www.gosurveasy.com");
+            return mimeMessage;
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private MimeMessage createSurveyWrongAccessMail(String email) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("[서베이지] 설문 검수 결과 안내");
+            mimeMessageHelper.setText("안녕하세요, 서베이지입니다.\n\n" +
+                    "의뢰해주신 설문의 경우, 첨부된 이미지와 같이 엑세스 권한이 필요하다고 확인됩니다.\n" +
+                    "설문에 바로 참여할 수 있는 링크로 수정하여, 메일로 회신 주시면 감사하겠습니다.\n\n" +
+                    "감사합니다.\n서베이지 드림\n\n" +
+                    "--\n서베이지 Surveasy\n" +
+                    "E-mail: official@gosurveasy.com | Website: www.gosurveasy.com");
+
+            File file = new File("src/main/resources/static/images/survey_access.png");
+            mimeMessageHelper.addAttachment("surveasy.png", file);
+
             return mimeMessage;
         } catch (MessagingException e) {
             throw new RuntimeException(e);
