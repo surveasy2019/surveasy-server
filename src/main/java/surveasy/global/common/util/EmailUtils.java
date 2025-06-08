@@ -5,13 +5,13 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeUtility;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.time.LocalDate;
 
 @Component
@@ -119,11 +119,10 @@ public class EmailUtils {
                     "--\n서베이지 Surveasy\n" +
                     "E-mail: official@gosurveasy.com | Website: www.gosurveasy.com");
 
-            File file = new File("src/main/resources/static/images/survey_access.png");
-            mimeMessageHelper.addAttachment("surveasy.png", file);
-
+            InputStream imageStream = getClass().getResourceAsStream("/static/images/survey_access.png");
+            mimeMessageHelper.addAttachment("surveasy.png", new ByteArrayResource(imageStream.readAllBytes()));
             return mimeMessage;
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);
         }
     }
