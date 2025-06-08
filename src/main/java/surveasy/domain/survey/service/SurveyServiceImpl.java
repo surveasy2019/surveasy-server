@@ -111,14 +111,21 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    public void sendSurveyWrongAccessMail(Long surveyId) {
+        Survey survey = surveyHelper.getAdminSurvey(surveyId);
+        emailUtils.sendSurveyWrongAccessMail(survey.getEmail());
+    }
+
+    @Override
     public SurveyIdResponse updateAdminSurvey(Long surveyId, AdminSurveyUpdateDto adminSurveyUpdateDto) {
         Survey survey = surveyHelper.findSurveyById(surveyId);
         survey.updateSurvey(adminSurveyUpdateDto);
         if(survey.getSid() == 0 && adminSurveyUpdateDto.status().equals(SurveyStatus.IN_PROGRESS)) {
             survey.updateSurveySid(surveyHelper.findMaxSid() + 1);      // sid 발급
+            emailUtils.sendSurveyInProgressMail(survey.getEmail(), survey.getUsername(), survey.getTitle());
         }
         if(adminSurveyUpdateDto.status().equals(SurveyStatus.CANNOT)) {
-            emailUtils.sendSurveyCannotMail(survey.getEmail(), survey.getTargetInput());
+            emailUtils.sendSurveyCannotMail(survey.getEmail(), survey.getTargetInput(), survey.getPrice());
         }
         return surveyMapper.toSurveyIdResponse(survey.getId());
     }

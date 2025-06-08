@@ -31,6 +31,8 @@ public interface SurveyService {
 
     SurveyAdminDetailResponse getAdminSurvey(Long surveyId);
 
+    void sendSurveyWrongAccessMail(Long surveyId);
+
     SurveyIdResponse updateAdminSurvey(Long surveyId, AdminSurveyUpdateDto adminSurveyUpdateDto);
 
     void deleteAdminSurvey(Long surveyId);
